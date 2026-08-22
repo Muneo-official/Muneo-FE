@@ -56,7 +56,7 @@ jobs:
       - name: Health Check
         run: |
           for i in {1..5}; do
-            if curl -f -s -L --max-time 10 "https://muneo-client-web.vercel.app" > /dev/null; then
+            if curl -f -s -L --max-time 10 "https://muneo-fe.vercel.app" > /dev/null; then
               echo "Health check passed on attempt $i"
               exit 0
             fi
@@ -69,5 +69,5 @@ jobs:
       - name: Summary
         run: |
           echo "### 배포 완료 🚀" >> $GITHUB_STEP_SUMMARY
-          echo "- **URL**: https://muneo-client-web.vercel.app" >> $GITHUB_STEP_SUMMARY
+          echo "- **URL**: https://muneo-fe.vercel.app" >> $GITHUB_STEP_SUMMARY
           echo "- **Commit**: ${{ github.sha }}" >> $GITHUB_STEP_SUMMARY
