@@ -1,6 +1,6 @@
 import { ArrowLeftMdIcon } from '@muneo/design-system';
 import { notFound } from 'next/navigation';
-import { getServerEstimates, getServerRiskDetections } from '@/api/history';
+import { getServerHistory } from '@/api/history';
 import { getServerMe } from '@/api/user/server';
 import { TransitionLink } from '@/components/TransitionLink';
 import { mapApiReportToDiagnosisResult } from '../../analysis/_lib/mapApiReport';
@@ -12,7 +12,7 @@ export default async function HistoryDetailPage({ params }: { params: Promise<{ 
   const { id } = await params;
   const user = await getServerMe();
 
-  const [estimates, risks] = await Promise.all([getServerEstimates(user.id), getServerRiskDetections(user.id)]);
+  const { estimates, risks } = await getServerHistory(user.id);
 
   const estimate = estimates.find((e) => e.id === id);
   if (estimate) {

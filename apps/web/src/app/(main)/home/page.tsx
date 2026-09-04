@@ -1,5 +1,5 @@
 import { DellSquareIcon, DoneRingRoundFillIcon, SadIcon, vars } from '@muneo/design-system';
-import { getServerEstimates, getServerRiskDetections, type EstimateItem, type RiskItem } from '@/api/history';
+import { getServerHistory, type EstimateItem, type RiskItem } from '@/api/history';
 import { getServerMe } from '@/api/user/server';
 import { HistoryTable } from './_components/HistoryTable/HistoryTable';
 import { SummaryCard } from './_components/SummaryCard/SummaryCard';
@@ -53,7 +53,7 @@ const buildView = (estimates: EstimateItem[], risks: RiskItem[]) => {
 const HomePage = async () => {
   const user = await getServerMe();
 
-  const [estimates, risks] = await Promise.all([getServerEstimates(user.id), getServerRiskDetections(user.id)]);
+  const { estimates, risks } = await getServerHistory(user.id);
 
   const { stats, rows } = buildView(estimates, risks);
 

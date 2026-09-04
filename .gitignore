@@ -45,3 +45,7 @@ playwright/.auth/
 
 # debug
 npm-debug.log*
+.env*
+
+# debug artifacts
+cookies.txt

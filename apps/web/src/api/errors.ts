@@ -22,8 +22,9 @@ export const isApiError = (e: unknown): e is ApiError => e instanceof ApiError;
 
 export const toApiError = (e: unknown): ApiError => {
   if (isClientError(e) && e.body !== null && typeof e.body === 'object') {
-    const body = e.body as Partial<ApiErrorResponse>;
-    return new ApiError(body.code ?? 'UNKNOWN', body.message ?? 'API 오류가 발생했습니다.', e.status, body.error);
+    const body = e.body as Partial<ApiErrorResponse> & { detail?: string };
+    const message = body.message ?? body.detail ?? 'API 오류가 발생했습니다.';
+    return new ApiError(body.code ?? 'UNKNOWN', message, e.status, body.error);
   }
   if (isClientError(e)) {
     return new ApiError('UNKNOWN', 'API 오류가 발생했습니다.', e.status);

@@ -6,8 +6,10 @@ export const getApiBaseUrl = (): string => {
   return apiBaseUrl.replace(/\/$/, '');
 };
 
+// 브라우저 요청은 Next.js 프록시(app/api/[...path])를 경유한다.
+// 로컬 http 환경에서 Secure·SameSite=None 세션 쿠키가 저장되지 않는 문제를 프록시가 Set-Cookie rewrite로 해결한다.
 export const getClientApiBaseUrl = (): string => {
-  if (process.env.NODE_ENV === 'development' && typeof window !== 'undefined') {
+  if (typeof window !== 'undefined') {
     return window.location.origin;
   }
   return getApiBaseUrl();

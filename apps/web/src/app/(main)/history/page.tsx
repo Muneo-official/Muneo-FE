@@ -1,5 +1,5 @@
 import { Suspense } from 'react';
-import { getServerEstimates, getServerRiskDetections, type EstimateItem, type RiskItem } from '@/api/history';
+import { getServerHistory, type EstimateItem, type RiskItem } from '@/api/history';
 import { getServerMe } from '@/api/user/server';
 import { mapApiReportToDiagnosisResult } from '../analysis/_lib/mapApiReport';
 import { HistoryContent } from './_components/HistoryContent/HistoryContent';
@@ -51,7 +51,7 @@ const buildHistoryRows = (estimates: EstimateItem[], risks: RiskItem[]): History
 
 const HistoryPage = async () => {
   const user = await getServerMe();
-  const [estimates, risks] = await Promise.all([getServerEstimates(user.id), getServerRiskDetections(user.id)]);
+  const { estimates, risks } = await getServerHistory(user.id);
   const rows = buildHistoryRows(estimates, risks);
 
   return (

@@ -29,6 +29,13 @@ export const serverFetch = async <T>(path: string, options: ServerFetchOptions =
 
   if (!res.ok) {
     const errorBody = await res.json().catch(() => null);
+    // 4xx는 호출부에서 폴백/리다이렉트로 처리하는 예상된 흐름이라 warn, 5xx만 error로 남긴다.
+    const logRequestFailure = res.status >= 500 ? console.error : console.warn;
+    logRequestFailure('[serverFetch] request failed', {
+      url: `${getApiBaseUrl()}/${path}`,
+      status: res.status,
+      body: errorBody,
+    });
     const err = new Error(`API Error: ${res.status}`);
     Object.assign(err, { status: res.status, body: errorBody });
     throw toApiError(err);
