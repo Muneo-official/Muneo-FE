@@ -3,14 +3,39 @@ import { cache } from 'react';
 import { serverFetch } from '../server-client';
 import { type EstimateItem, type RiskItem } from './types';
 
+/**
+ * 목록 응답을 배열로 정규화한다.
+ * AI 중계 엔드포인트는 원본 배열을 그대로 내려주지만, 공통 응답 봉투(`{ result }`)로
+ * 감싸 오거나 예상 밖의 형태가 오는 경우가 있어 배열이 아니면 빈 목록으로 대체한다.
+ */
+const asList = <T>(payload: unknown, label: string): T[] => {
+  if (Array.isArray(payload)) {
+    return payload as T[];
+  }
+
+  const result = (payload as { result?: unknown } | null)?.result;
+  if (Array.isArray(result)) {
+    return result as T[];
+  }
+
+  console.warn(`[history] ${label} 응답이 배열이 아니라 빈 목록으로 대체`, payload);
+  return [];
+};
+
 export const getServerEstimates = cache(
   async (userId: number): Promise<EstimateItem[]> =>
-    serverFetch<EstimateItem[]>('api/v1/estimates', { headers: { 'x-user-id': String(userId) } })
+    asList<EstimateItem>(
+      await serverFetch<unknown>('api/v1/estimates', { headers: { 'x-user-id': String(userId) } }),
+      'estimates'
+    )
 );
 
 export const getServerRiskDetections = cache(
   async (userId: number): Promise<RiskItem[]> =>
-    serverFetch<RiskItem[]>('api/v1/risk-detector', { headers: { 'x-user-id': String(userId) } })
+    asList<RiskItem>(
+      await serverFetch<unknown>('api/v1/risk-detector', { headers: { 'x-user-id': String(userId) } }),
+      'risk-detector'
+    )
 );
 
 const settleList = async <T>(promise: Promise<T[]>, label: string): Promise<T[]> => {

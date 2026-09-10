@@ -49,7 +49,7 @@ export const container = style({
   alignItems: 'center',
   justifyContent: 'center',
   minHeight: '60vh',
-  padding: '120px 24px 40px',
+  padding: '200px 24px 40px',
 });
 
 export const mascotWrap = style({
