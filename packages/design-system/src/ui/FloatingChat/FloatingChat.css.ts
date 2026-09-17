@@ -1,7 +1,11 @@
 import { style } from '@vanilla-extract/css';
+import { media } from '../../styles/responsive';
 import { vars } from '../../styles/tokens.css';
 
 export const root = style({
+  '@media': {
+    [media.mobile]: { maxHeight: 'none' },
+  },
   display: 'flex',
   flexDirection: 'column',
   width: '100%',
@@ -80,6 +84,9 @@ export const headerActions = style({
 });
 
 export const iconButton = style({
+  '@media': {
+    [media.mobile]: { width: '44px', height: '44px' },
+  },
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'center',
@@ -104,6 +111,9 @@ export const iconButton = style({
 });
 
 export const body = style({
+  '@media': {
+    [media.mobile]: { minHeight: 0 },
+  },
   display: 'flex',
   flexDirection: 'column',
   flex: 1,

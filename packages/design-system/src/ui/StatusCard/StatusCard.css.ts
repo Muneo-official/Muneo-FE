@@ -1,9 +1,11 @@
 import { style } from '@vanilla-extract/css';
 import { recipe } from '@vanilla-extract/recipes';
+import { media } from '../../styles/responsive';
 import { vars } from '../../styles/tokens.css';
 
 export const cardRecipe = recipe({
   base: {
+    '@media': { [media.compact]: { padding: '12px', minWidth: 0 } },
     display: 'inline-flex',
     flexDirection: 'column',
     justifyContent: 'center',
@@ -28,6 +30,7 @@ export const cardRecipe = recipe({
 });
 
 export const inner = style({
+  '@media': { [media.compact]: { minWidth: 0, gap: '8px' } },
   display: 'flex',
   gap: vars.space.md,
   alignItems: 'center',
@@ -46,6 +49,8 @@ export const content = style({
   gap: '2px',
   flex: '1 0 0',
   whiteSpace: 'nowrap',
+  minWidth: 0,
+  '@media': { [media.compact]: { whiteSpace: 'normal' } },
 });
 
 export const label = style({

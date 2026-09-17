@@ -1,13 +1,20 @@
 import { globalStyle, style } from '@vanilla-extract/css';
+import { media } from '../../styles/responsive';
 import { vars } from '../../styles/tokens.css';
 import { typographyStyles } from '../../styles/typography';
 
 export const wrapper = style({
+  '@media': {
+    [media.mobile]: { maxWidth: '100%' },
+  },
   position: 'relative',
   display: 'inline-block',
 });
 
 export const trigger = style({
+  '@media': {
+    [media.mobile]: { width: '100%', minHeight: '44px', padding: '11px 8px' },
+  },
   ...typographyStyles.labelSm,
   fontWeight: vars.typography.fontWeight.regular,
   color: vars.color.neutral.n500,
@@ -41,6 +48,9 @@ export const triggerOpen = style({
 });
 
 export const panel = style({
+  '@media': {
+    [media.mobile]: { maxWidth: 'calc(100vw - 64px)' },
+  },
   position: 'absolute',
   top: 'calc(100% + 4px)',
   left: 0,

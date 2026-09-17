@@ -1,7 +1,9 @@
 import { style } from '@vanilla-extract/css';
+import { media } from '../../styles/responsive';
 import { vars } from '../../styles/tokens.css';
 
 export const wrapper = style({
+  '@media': { [media.mobile]: { height: '52px', padding: '4px 6px 4px 16px' } },
   display: 'flex',
   alignItems: 'center',
   width: '100%',
@@ -22,6 +24,7 @@ export const wrapper = style({
 });
 
 export const input = style({
+  '@media': { [media.mobile]: { fontSize: '16px' } },
   flex: 1,
   border: 'none',
   outline: 'none',
@@ -39,6 +42,7 @@ export const input = style({
 });
 
 export const sendButton = style({
+  '@media': { [media.mobile]: { width: '44px', height: '44px' } },
   flexShrink: 0,
   display: 'flex',
   alignItems: 'center',

@@ -1,4 +1,5 @@
 import { style } from '@vanilla-extract/css';
+import { media } from '../../styles/responsive';
 import { vars } from '../../styles/tokens.css';
 
 export const backdrop = style({
@@ -13,6 +14,9 @@ export const backdrop = style({
 });
 
 export const modal = style({
+  '@media': {
+    [media.mobile]: { padding: '28px 24px', maxHeight: 'calc(100dvh - 32px)', overflowY: 'auto' },
+  },
   width: 'min(332px, calc(100vw - 32px))',
   display: 'flex',
   flexDirection: 'column',
@@ -26,6 +30,9 @@ export const modal = style({
 });
 
 export const inner = style({
+  '@media': {
+    [media.mobile]: { width: '100%', maxWidth: '212px' },
+  },
   display: 'flex',
   flexDirection: 'column',
   alignItems: 'center',
@@ -74,6 +81,9 @@ export const actions = style({
 });
 
 export const actionButton = style({
+  '@media': {
+    [media.mobile]: { minWidth: 0, flex: 1 },
+  },
   minWidth: '100px',
   padding: `${vars.space.md} ${vars.space.lg}`,
   borderRadius: '12px',

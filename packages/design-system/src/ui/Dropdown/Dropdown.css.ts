@@ -1,4 +1,5 @@
 import { style } from '@vanilla-extract/css';
+import { media } from '../../styles/responsive';
 import { vars } from '../../styles/tokens.css';
 import { typographyStyles } from '../../styles/typography';
 
@@ -9,6 +10,9 @@ export const wrapper = style({
 });
 
 export const trigger = style({
+  '@media': {
+    [media.mobile]: { minHeight: '44px' },
+  },
   ...typographyStyles.labelSm,
   fontWeight: vars.typography.fontWeight.regular,
   color: vars.color.neutral.n900,
@@ -38,6 +42,9 @@ export const trigger = style({
 });
 
 export const panel = style({
+  '@media': {
+    [media.mobile]: { width: '100%', maxHeight: 'min(320px, 50dvh)', overflowY: 'auto', padding: '6px 12px' },
+  },
   position: 'absolute',
   top: 'calc(100% + 4px)',
   left: 0,
@@ -59,6 +66,9 @@ export const panel = style({
 });
 
 export const optionItem = style({
+  '@media': {
+    [media.mobile]: { minHeight: '44px', display: 'flex', alignItems: 'center', whiteSpace: 'normal' },
+  },
   ...typographyStyles.labelSm,
   fontWeight: vars.typography.fontWeight.regular,
   color: vars.color.neutral.n900,

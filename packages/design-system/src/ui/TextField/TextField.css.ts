@@ -1,4 +1,5 @@
 import { style } from '@vanilla-extract/css';
+import { media } from '../../styles/responsive';
 import { vars } from '../../styles/tokens.css';
 
 export const wrapper = style({
@@ -56,6 +57,9 @@ export const iconWrapper = style({
 });
 
 export const input = style({
+  '@media': {
+    [media.mobile]: { fontSize: '16px' },
+  },
   fontFamily: vars.typography.fontFamily,
   fontSize: '13px',
   fontWeight: vars.typography.fontWeight.regular,

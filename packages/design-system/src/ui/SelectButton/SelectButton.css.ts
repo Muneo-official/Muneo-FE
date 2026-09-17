@@ -1,9 +1,11 @@
 import { recipe } from '@vanilla-extract/recipes';
+import { media } from '../../styles/responsive';
 import { vars } from '../../styles/tokens.css';
 import { typographyStyles } from '../../styles/typography';
 
 export const selectButtonRecipe = recipe({
   base: {
+    '@media': { [media.mobile]: { minHeight: '44px' } },
     ...typographyStyles.label,
     fontWeight: vars.typography.fontWeight.bold,
     fontFamily: vars.typography.fontFamily,

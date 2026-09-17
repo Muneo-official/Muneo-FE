@@ -1,9 +1,11 @@
 import { recipe } from '@vanilla-extract/recipes';
+import { media } from '../../styles/responsive';
 import { vars } from '../../styles/tokens.css';
 import { typographyStyles } from '../../styles/typography';
 
 export const buttonRecipe = recipe({
   base: {
+    '@media': { [media.mobile]: { minHeight: '44px' } },
     display: 'inline-flex',
     alignItems: 'center',
     justifyContent: 'center',
