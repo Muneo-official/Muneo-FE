@@ -1,5 +1,5 @@
 import { vars } from '@muneo/design-system';
-import { style } from '@vanilla-extract/css';
+import { keyframes, style } from '@vanilla-extract/css';
 
 export {
   modal,
@@ -145,4 +145,21 @@ export const signupLink = style({
       pointerEvents: 'none',
     },
   },
+});
+
+const spin = keyframes({
+  to: { transform: 'rotate(360deg)' },
+});
+
+export const spinner = style({
+  '@media': {
+    '(prefers-reduced-motion: reduce)': { animationDuration: '2s' },
+  },
+  width: '16px',
+  height: '16px',
+  flexShrink: 0,
+  borderRadius: '50%',
+  border: '2px solid currentColor',
+  borderRightColor: 'transparent',
+  animation: `${spin} 0.7s linear infinite`,
 });

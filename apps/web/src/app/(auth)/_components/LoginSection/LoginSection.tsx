@@ -11,7 +11,7 @@ interface LoginSectionProps {
 }
 
 export const LoginSection = ({ onLogoClick, onClose, onForgotPassword, onSignUp }: LoginSectionProps) => {
-  const { register, errors, isLoading, isKakaoLoading, onSubmit, handleKakaoLogin } = useLoginForm();
+  const { register, errors, isLoading, isRedirecting, isKakaoLoading, onSubmit, handleKakaoLogin } = useLoginForm();
 
   const handleForgotPassword =
     onForgotPassword ??
@@ -24,6 +24,7 @@ export const LoginSection = ({ onLogoClick, onClose, onForgotPassword, onSignUp 
       register={register}
       errors={errors}
       isLoading={isLoading}
+      isRedirecting={isRedirecting}
       isKakaoLoading={isKakaoLoading}
       onSubmit={onSubmit}
       onLogoClick={onLogoClick}

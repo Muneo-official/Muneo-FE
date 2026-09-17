@@ -12,6 +12,7 @@ export interface LoginModalProps {
   register: UseFormRegister<LoginFormValues>;
   errors: FieldErrors<LoginFormValues>;
   isLoading?: boolean;
+  isRedirecting?: boolean;
   isKakaoLoading?: boolean;
   onSubmit: (e?: React.BaseSyntheticEvent) => Promise<void>;
   onKakaoLogin?: () => void;
@@ -26,6 +27,7 @@ export const LoginModal = ({
   register,
   errors,
   isLoading,
+  isRedirecting,
   isKakaoLoading,
   onSubmit,
   onKakaoLogin,
@@ -76,8 +78,15 @@ export const LoginModal = ({
         </div>
 
         <div className={styles.actionSection}>
-          <Button type="submit" variant="primary" className={styles.fullWidth} disabled={isBusy}>
-            로그인
+          <Button
+            type="submit"
+            variant="primary"
+            className={styles.fullWidth}
+            disabled={isBusy}
+            aria-busy={Boolean(isLoading)}
+          >
+            {isLoading && <span className={styles.spinner} aria-hidden />}
+            {isRedirecting ? '홈으로 이동 중...' : isLoading ? '로그인 중...' : '로그인'}
           </Button>
 
           <div className={styles.divider}>
