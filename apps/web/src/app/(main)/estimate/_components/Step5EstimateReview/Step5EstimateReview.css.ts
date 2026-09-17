@@ -1,4 +1,4 @@
-import { vars } from '@muneo/design-system';
+import { media, vars } from '@muneo/design-system';
 import { globalStyle, style } from '@vanilla-extract/css';
 
 export const container = style({
@@ -25,6 +25,10 @@ export const selectionOnlyText = style({
 });
 
 export const card = style({
+  '@media': {
+    [media.compact]: { flexDirection: 'column', gap: '28px' },
+    [media.mobile]: { padding: '20px 16px' },
+  },
   backgroundColor: vars.color.white,
   borderRadius: '12px',
   padding: '20px 40px 28px',
@@ -38,6 +42,10 @@ export const card = style({
 /* ── 좌측 패널 ── */
 
 export const leftPanel = style({
+  '@media': {
+    [media.compact]: { width: '100%' },
+    [media.mobile]: { padding: '16px 12px' },
+  },
   backgroundColor: '#FAFDFF',
   border: `1px solid #FAFDFF`,
   borderRadius: '12px',
@@ -72,6 +80,9 @@ export const summaryTitle = style({
 });
 
 export const editButton = style({
+  '@media': {
+    [media.mobile]: { minHeight: '44px' },
+  },
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'center',
@@ -96,6 +107,9 @@ export const summaryRows = style({
 });
 
 export const summaryRow = style({
+  '@media': {
+    [media.mobile]: { whiteSpace: 'normal', gap: '12px', lineHeight: 1.5 },
+  },
   display: 'flex',
   alignItems: 'flex-start',
   justifyContent: 'space-between',
@@ -263,6 +277,9 @@ export const totalValue = style({
 /* ── 우측 패널 ── */
 
 export const rightPanel = style({
+  '@media': {
+    [media.compact]: { width: '100%' },
+  },
   display: 'flex',
   flexDirection: 'column',
   gap: '28px',
@@ -271,6 +288,16 @@ export const rightPanel = style({
 });
 
 export const totalBanner = style({
+  '@media': {
+    [media.mobile]: {
+      height: 'auto',
+      minHeight: '90px',
+      padding: '20px 16px',
+      flexDirection: 'column',
+      alignItems: 'flex-start',
+      gap: '12px',
+    },
+  },
   background: `linear-gradient(to right, ${vars.color.semantic.success}, #34D399)`,
   borderRadius: '10px',
   padding: '15px 27px',
@@ -297,6 +324,9 @@ export const bannerSubtitle = style({
 });
 
 export const bannerAmount = style({
+  '@media': {
+    [media.mobile]: { fontSize: '22px' },
+  },
   fontSize: vars.typography.fontSize['2xl'],
   fontWeight: vars.typography.fontWeight.bold,
   fontFamily: vars.typography.fontFamily,
@@ -305,6 +335,9 @@ export const bannerAmount = style({
 });
 
 export const bannerRef = style({
+  '@media': {
+    [media.mobile]: { whiteSpace: 'normal' },
+  },
   fontSize: vars.typography.fontSize.sm,
   fontWeight: vars.typography.fontWeight.bold,
   fontFamily: vars.typography.fontFamily,
@@ -344,6 +377,9 @@ export const accordionItemWrapper = style({
 });
 
 export const accordionHeader = style({
+  '@media': {
+    [media.mobile]: { gap: '12px', flexWrap: 'wrap' },
+  },
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'space-between',
@@ -407,6 +443,7 @@ export const accordionBody = style({
 });
 
 export const accordionBodyOpen = style({
+  '@media': { [media.mobile]: { maxHeight: 'none' } },
   maxHeight: '1000px',
   paddingBottom: '16px',
 });
@@ -428,12 +465,18 @@ const accordionTableHeaderBase = {
 } as const;
 
 export const accordionTableHeader = style({
+  '@media': {
+    [media.mobile]: { gridTemplateColumns: 'minmax(0, 1fr) minmax(0, 1.4fr) 44px', gap: '8px' },
+  },
   display: 'grid',
   gridTemplateColumns: '1fr 220px 60px',
   ...accordionTableHeaderBase,
 });
 
 export const accordionTableHeaderNoRef = style({
+  '@media': {
+    [media.mobile]: { gridTemplateColumns: 'minmax(0, 1fr) minmax(0, 1.4fr)', gap: '8px' },
+  },
   display: 'grid',
   gridTemplateColumns: '1fr 220px',
   ...accordionTableHeaderBase,
@@ -465,12 +508,28 @@ const accordionRowContentBase = {
 } as const;
 
 export const accordionRowContent = style({
+  '@media': {
+    [media.mobile]: {
+      gridTemplateColumns: 'minmax(0, 1fr) minmax(0, 1.4fr) 44px',
+      gap: '8px',
+      overflowWrap: 'anywhere',
+      lineHeight: 1.5,
+    },
+  },
   display: 'grid',
   gridTemplateColumns: '1fr 220px 60px',
   ...accordionRowContentBase,
 });
 
 export const accordionRowContentNoRef = style({
+  '@media': {
+    [media.mobile]: {
+      gridTemplateColumns: 'minmax(0, 1fr) minmax(0, 1.4fr)',
+      gap: '8px',
+      overflowWrap: 'anywhere',
+      lineHeight: 1.5,
+    },
+  },
   display: 'grid',
   gridTemplateColumns: '1fr 220px',
   ...accordionRowContentBase,
@@ -493,6 +552,9 @@ export const accordionItemDivider = style({
 });
 
 export const footnotes = style({
+  '@media': {
+    [media.mobile]: { width: '100%' },
+  },
   display: 'flex',
   flexDirection: 'column',
   gap: '4px',
@@ -570,6 +632,9 @@ export const infoText = style({
 });
 
 export const actionRow = style({
+  '@media': {
+    [media.mobile]: { flexWrap: 'wrap', gap: '12px' },
+  },
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'flex-end',

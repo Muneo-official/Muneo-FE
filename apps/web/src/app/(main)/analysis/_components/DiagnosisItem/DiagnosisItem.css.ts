@@ -1,7 +1,10 @@
-import { vars } from '@muneo/design-system';
+import { media, vars } from '@muneo/design-system';
 import { style } from '@vanilla-extract/css';
 
 export const item = style({
+  '@media': {
+    [media.mobile]: { flexWrap: 'wrap', padding: '16px', gap: '12px' },
+  },
   backgroundColor: vars.color.white,
   border: `1px solid ${vars.color.neutral.n200}`,
   borderRadius: '12px',
@@ -40,6 +43,9 @@ export const badgeUnclear = style({
 });
 
 export const texts = style({
+  '@media': {
+    [media.mobile]: { flex: '1 1 160px' },
+  },
   display: 'flex',
   flexDirection: 'column',
   gap: '5px',
@@ -48,6 +54,9 @@ export const texts = style({
 });
 
 export const title = style({
+  '@media': {
+    [media.mobile]: { lineHeight: 1.5, overflowWrap: 'anywhere' },
+  },
   fontFamily: vars.typography.fontFamily,
   fontSize: '13px',
   fontWeight: vars.typography.fontWeight.bold,
@@ -56,6 +65,9 @@ export const title = style({
 });
 
 export const description = style({
+  '@media': {
+    [media.mobile]: { whiteSpace: 'normal', lineHeight: 1.6, overflowWrap: 'anywhere' },
+  },
   fontFamily: vars.typography.fontFamily,
   fontSize: '12px',
   fontWeight: vars.typography.fontWeight.regular,
@@ -67,6 +79,9 @@ export const description = style({
 });
 
 export const actionNote = style({
+  '@media': {
+    [media.mobile]: { whiteSpace: 'normal', lineHeight: 1.5 },
+  },
   display: 'flex',
   alignItems: 'center',
   gap: '4px',

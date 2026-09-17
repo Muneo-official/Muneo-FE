@@ -1,7 +1,11 @@
-import { vars } from '@muneo/design-system';
+import { media, vars } from '@muneo/design-system';
 import { style } from '@vanilla-extract/css';
 
 const cardBase = style({
+  '@media': {
+    [media.compact]: { width: '100%', minWidth: 0, height: 'auto', minHeight: '80px', padding: '12px' },
+    [media.mobile]: { padding: '12px 8px' },
+  },
   position: 'relative',
   width: '160px',
   height: '80px',

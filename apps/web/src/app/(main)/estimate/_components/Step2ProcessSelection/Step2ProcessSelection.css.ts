@@ -1,4 +1,4 @@
-import { vars } from '@muneo/design-system';
+import { media, vars } from '@muneo/design-system';
 import { keyframes, style } from '@vanilla-extract/css';
 
 const fadeSlideDown = keyframes({
@@ -14,6 +14,9 @@ export const container = style({
 });
 
 export const header = style({
+  '@media': {
+    [media.compact]: { flexDirection: 'column', alignItems: 'flex-start', whiteSpace: 'normal' },
+  },
   display: 'flex',
   alignItems: 'flex-end',
   gap: '13px',
@@ -21,6 +24,9 @@ export const header = style({
 });
 
 export const title = style({
+  '@media': {
+    [media.mobile]: { fontSize: '20px', lineHeight: 1.5 },
+  },
   fontSize: vars.typography.fontSize.xl,
   fontWeight: vars.typography.fontWeight.bold,
   fontFamily: vars.typography.fontFamily,
@@ -34,6 +40,9 @@ export const titleAccent = style({
 });
 
 export const titleHint = style({
+  '@media': {
+    [media.compact]: { whiteSpace: 'normal', lineHeight: 1.5 },
+  },
   fontSize: vars.typography.fontSize.xs,
   fontWeight: vars.typography.fontWeight.regular,
   fontFamily: vars.typography.fontFamily,
@@ -43,6 +52,9 @@ export const titleHint = style({
 });
 
 export const card = style({
+  '@media': {
+    [media.mobile]: { minHeight: 0 },
+  },
   backgroundColor: vars.color.white,
   borderRadius: '12px',
   minHeight: '630px',
@@ -52,6 +64,9 @@ export const card = style({
 });
 
 export const tabBar = style({
+  '@media': {
+    [media.mobile]: { padding: '0 16px', gap: '8px' },
+  },
   display: 'flex',
   alignItems: 'center',
   gap: '10px',
@@ -83,6 +98,10 @@ export const tabActive = style([
 export const tabInactive = style([tabBase, { color: vars.color.neutral.n500, borderBottomColor: 'transparent' }]);
 
 export const cardBody = style({
+  '@media': {
+    [media.compact]: { padding: '28px 24px' },
+    [media.mobile]: { padding: '24px 16px', gap: '28px' },
+  },
   flex: 1,
   display: 'flex',
   flexDirection: 'column',
@@ -108,12 +127,19 @@ export const sectionLabel = style({
 });
 
 export const processGrid = style({
+  '@media': {
+    [media.compact]: { display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))', gap: '12px' },
+    [media.mobile]: { gridTemplateColumns: 'repeat(2, minmax(0, 1fr))', gap: '10px' },
+  },
   display: 'flex',
   flexDirection: 'column',
   gap: '20px',
 });
 
 export const processRow = style({
+  '@media': {
+    [media.compact]: { display: 'contents' },
+  },
   display: 'flex',
   gap: '28px',
   alignItems: 'center',
@@ -279,4 +305,14 @@ export const infoNote = style({
   backgroundColor: vars.color.neutral.n100,
   borderRadius: vars.radius.base,
   margin: 0,
+});
+
+export const optionalGrid = style({
+  display: 'flex',
+  gap: '28px',
+  alignItems: 'stretch',
+  '@media': {
+    [media.compact]: { display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))', gap: '12px' },
+    [media.mobile]: { gridTemplateColumns: 'repeat(2, minmax(0, 1fr))', gap: '10px' },
+  },
 });

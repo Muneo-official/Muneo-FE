@@ -14,7 +14,7 @@ const InputView = () => {
         <h1 className={styles.pageTitle}>견적서 진단</h1>
         <p className={styles.pageSubtitle}>업체 견적서의 누락·중복·불분명 항목을 AI가 분석합니다.</p>
       </div>
-      <div style={{ display: 'flex', gap: '17px', alignItems: 'stretch' }}>
+      <div className={styles.inputLayout}>
         <InputForm />
         <UploadPanel />
       </div>

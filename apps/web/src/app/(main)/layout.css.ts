@@ -1,4 +1,4 @@
-import { vars } from '@muneo/design-system';
+import { media, vars } from '@muneo/design-system';
 import { globalStyle, style } from '@vanilla-extract/css';
 
 export const wrapper = style({
@@ -7,6 +7,9 @@ export const wrapper = style({
 });
 
 export const main = style({
+  '@media': {
+    [media.tablet]: { marginLeft: 0, paddingTop: '64px' },
+  },
   marginLeft: vars.layout.sidebarWidth,
   flex: 1,
   minWidth: 0,

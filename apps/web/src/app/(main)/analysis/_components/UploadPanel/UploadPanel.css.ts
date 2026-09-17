@@ -1,7 +1,11 @@
-import { vars } from '@muneo/design-system';
+import { media, vars } from '@muneo/design-system';
 import { style } from '@vanilla-extract/css';
 
 export const card = style({
+  '@media': {
+    [media.compact]: { width: '100%' },
+    [media.mobile]: { padding: '24px 16px' },
+  },
   backgroundColor: vars.color.white,
   borderRadius: '15px',
   width: '600px',
@@ -41,6 +45,9 @@ export const body = style({
 });
 
 export const dropzone = style({
+  '@media': {
+    [media.mobile]: { height: 'auto', minHeight: '180px', padding: '20px 12px' },
+  },
   border: `2px dashed ${vars.color.brand.primaryLight}`,
   borderRadius: '15px',
   height: '180px',
@@ -97,6 +104,9 @@ export const fileList = style({
 });
 
 export const fileItem = style({
+  '@media': {
+    [media.mobile]: { padding: '12px', gap: '8px' },
+  },
   backgroundColor: vars.color.neutral.n100,
   border: `1px solid ${vars.color.neutral.n200}`,
   borderRadius: '15px',
@@ -107,12 +117,18 @@ export const fileItem = style({
 });
 
 export const fileInfo = style({
+  '@media': {
+    [media.mobile]: { minWidth: 0 },
+  },
   display: 'flex',
   flexDirection: 'column',
   gap: '4px',
 });
 
 export const fileName = style({
+  '@media': {
+    [media.mobile]: { whiteSpace: 'normal', overflowWrap: 'anywhere' },
+  },
   fontFamily: vars.typography.fontFamily,
   fontSize: vars.typography.fontSize.xs,
   color: vars.color.semantic.info,
@@ -128,6 +144,9 @@ export const fileSize = style({
 });
 
 export const fileDelete = style({
+  '@media': {
+    [media.mobile]: { minHeight: '44px', minWidth: '44px', flexShrink: 0 },
+  },
   fontFamily: vars.typography.fontFamily,
   fontSize: '11px',
   color: vars.color.semantic.danger,
@@ -143,6 +162,9 @@ export const divider = style({
 });
 
 export const actions = style({
+  '@media': {
+    [media.mobile]: { flexWrap: 'wrap' },
+  },
   display: 'flex',
   gap: '12px',
   alignItems: 'center',

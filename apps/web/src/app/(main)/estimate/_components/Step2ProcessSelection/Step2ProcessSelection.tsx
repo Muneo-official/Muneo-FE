@@ -330,7 +330,7 @@ export const Step2ProcessSelection = () => {
 
             <div className={styles.processSection}>
               <span className={styles.sectionLabel}>선택 공정 (필요 시 추가)</span>
-              <div className={styles.processRow}>
+              <div className={styles.optionalGrid}>
                 {OPTIONAL_PROCESSES.map((process) => (
                   <ProcessCheckbox
                     key={process.id}

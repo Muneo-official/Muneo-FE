@@ -1,4 +1,4 @@
-import { vars } from '@muneo/design-system';
+import { media, vars } from '@muneo/design-system';
 import { style } from '@vanilla-extract/css';
 
 export const form = style({
@@ -9,6 +9,9 @@ export const form = style({
 });
 
 export const actionsRow = style({
+  '@media': {
+    [media.mobile]: { flexWrap: 'wrap', gap: '16px' },
+  },
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'space-between',
@@ -23,6 +26,9 @@ export const fields = style({
 });
 
 export const submitButton = style({
+  '@media': {
+    [media.mobile]: { width: '100%' },
+  },
   width: '200px',
 });
 
@@ -69,6 +75,9 @@ export const socialBadgeIcon = style({
 });
 
 export const socialBadgeText = style({
+  '@media': {
+    [media.mobile]: { overflowWrap: 'anywhere', minWidth: 0 },
+  },
   fontFamily: vars.typography.fontFamily,
   lineHeight: 'normal',
   fontSize: vars.typography.fontSize.sm,

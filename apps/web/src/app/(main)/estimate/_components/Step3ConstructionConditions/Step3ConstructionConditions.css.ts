@@ -1,4 +1,4 @@
-import { vars } from '@muneo/design-system';
+import { media, vars } from '@muneo/design-system';
 import { style } from '@vanilla-extract/css';
 
 export const container = style({
@@ -9,6 +9,9 @@ export const container = style({
 });
 
 export const header = style({
+  '@media': {
+    [media.compact]: { flexDirection: 'column', alignItems: 'flex-start', whiteSpace: 'normal' },
+  },
   display: 'flex',
   alignItems: 'flex-end',
   gap: '13px',
@@ -16,6 +19,9 @@ export const header = style({
 });
 
 export const title = style({
+  '@media': {
+    [media.mobile]: { fontSize: '20px', lineHeight: 1.5 },
+  },
   fontSize: vars.typography.fontSize.xl,
   fontWeight: vars.typography.fontWeight.bold,
   fontFamily: vars.typography.fontFamily,
@@ -29,6 +35,9 @@ export const titleAccent = style({
 });
 
 export const titleHint = style({
+  '@media': {
+    [media.compact]: { whiteSpace: 'normal', lineHeight: 1.5 },
+  },
   fontSize: vars.typography.fontSize.xs,
   fontWeight: vars.typography.fontWeight.medium,
   fontFamily: vars.typography.fontFamily,
@@ -39,6 +48,9 @@ export const titleHint = style({
 });
 
 export const card = style({
+  '@media': {
+    [media.mobile]: { padding: '24px 16px' },
+  },
   backgroundColor: vars.color.white,
   borderRadius: '12px',
   boxShadow: '0px 2px 2px 0px rgba(0,0,0,0.11)',
@@ -47,12 +59,18 @@ export const card = style({
 });
 
 export const fields = style({
+  '@media': {
+    [media.mobile]: { gap: '32px' },
+  },
   display: 'flex',
   flexDirection: 'column',
   gap: '95px',
 });
 
 export const fieldRows = style({
+  '@media': {
+    [media.mobile]: { gap: '28px' },
+  },
   display: 'flex',
   flexDirection: 'column',
   gap: '45px',
@@ -65,6 +83,9 @@ export const field = style({
 });
 
 export const fieldHeader = style({
+  '@media': {
+    [media.mobile]: { height: 'auto', flexWrap: 'wrap', whiteSpace: 'normal', gap: '6px' },
+  },
   display: 'flex',
   alignItems: 'flex-end',
   gap: '8px',
@@ -96,18 +117,27 @@ export const buttonRow = style({
 });
 
 export const twoColRow = style({
+  '@media': {
+    [media.compact]: { gridTemplateColumns: '1fr', gap: '28px' },
+  },
   display: 'grid',
   gridTemplateColumns: '1fr 1fr',
   alignItems: 'center',
 });
 
 export const twoColLeft = style({
+  '@media': {
+    [media.mobile]: { gap: '20px', flexWrap: 'wrap' },
+  },
   display: 'flex',
   gap: '52px',
   alignItems: 'center',
 });
 
 export const twoColRight = style({
+  '@media': {
+    [media.mobile]: { gridTemplateColumns: '1fr', gap: '28px' },
+  },
   display: 'grid',
   gridTemplateColumns: '1fr 1fr',
   alignItems: 'center',
@@ -135,6 +165,9 @@ export const areaInput = style({
 });
 
 export const areaInputNumber = style({
+  '@media': {
+    [media.mobile]: { fontSize: '16px' },
+  },
   fontSize: vars.typography.fontSize.sm,
   fontWeight: vars.typography.fontWeight.bold,
   fontFamily: vars.typography.fontFamily,

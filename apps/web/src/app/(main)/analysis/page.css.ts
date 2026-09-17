@@ -1,7 +1,11 @@
-import { vars } from '@muneo/design-system';
+import { media, vars } from '@muneo/design-system';
 import { style } from '@vanilla-extract/css';
 
 export const page = style({
+  '@media': {
+    [media.compact]: { padding: '32px 32px 100px' },
+    [media.mobile]: { padding: '28px 16px 100px', minHeight: 'calc(100dvh - 64px)' },
+  },
   backgroundColor: vars.color.neutral.nSurface,
   minHeight: '100vh',
   padding: '46px 60px 100px',
@@ -72,4 +76,11 @@ export const retryButton = style({
   ':hover': {
     backgroundColor: vars.color.neutral.n100,
   },
+});
+
+export const inputLayout = style({
+  display: 'flex',
+  gap: '17px',
+  alignItems: 'stretch',
+  '@media': { [media.compact]: { flexDirection: 'column' } },
 });

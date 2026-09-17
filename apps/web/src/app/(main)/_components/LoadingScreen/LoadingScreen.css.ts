@@ -1,4 +1,4 @@
-import { vars } from '@muneo/design-system';
+import { media, vars } from '@muneo/design-system';
 import { keyframes, style } from '@vanilla-extract/css';
 
 const float = keyframes({
@@ -44,6 +44,7 @@ const cardOut = keyframes({
 const MOTION = '(prefers-reduced-motion: reduce)' as const;
 
 export const container = style({
+  '@media': { [media.mobile]: { padding: '48px 8px 32px', minHeight: 'calc(100dvh - 180px)' } },
   display: 'flex',
   flexDirection: 'column',
   alignItems: 'center',
@@ -100,6 +101,7 @@ export const workingDot = style({
 });
 
 export const msgWrap = style({
+  '@media': { [media.mobile]: { height: 'auto', minHeight: '22px' } },
   height: '22px',
   display: 'flex',
   alignItems: 'center',

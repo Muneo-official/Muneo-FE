@@ -33,60 +33,62 @@ const RiskCell = ({ risk }: { risk: RiskStatus }) => {
 export const HistoryTable = ({ rows, onRowClick }: HistoryTableProps) => {
   return (
     <div className={styles.card}>
-      <table className={styles.table}>
-        <colgroup>
-          <col className={styles.colId} />
-          <col className={styles.colDate} />
-          <col className={styles.colAnalysisType} />
-          <col className={styles.colConstructionType} />
-          <col className={styles.colRisk} />
-          <col className={styles.colStatus} />
-        </colgroup>
-        <thead className={styles.thead}>
-          <tr>
-            {COLUMNS.map((col) => (
-              <th key={col} className={styles.th}>
-                {col}
-              </th>
-            ))}
-          </tr>
-        </thead>
-        <tbody>
-          {rows.length === 0 ? (
+      <div className={styles.tableScroll} role="region" aria-label="분석 이력 목록" tabIndex={0}>
+        <table className={styles.table}>
+          <colgroup>
+            <col className={styles.colId} />
+            <col className={styles.colDate} />
+            <col className={styles.colAnalysisType} />
+            <col className={styles.colConstructionType} />
+            <col className={styles.colRisk} />
+            <col className={styles.colStatus} />
+          </colgroup>
+          <thead className={styles.thead}>
             <tr>
-              <td colSpan={COLUMNS.length} className={styles.emptyRow}>
-                조회된 이력이 없습니다.
-              </td>
+              {COLUMNS.map((col) => (
+                <th key={col} className={styles.th}>
+                  {col}
+                </th>
+              ))}
             </tr>
-          ) : (
-            rows.map((row, idx) => (
-              <tr
-                key={row.id}
-                className={styles.tr}
-                role="button"
-                tabIndex={0}
-                onClick={() => onRowClick?.(row.id)}
-                onKeyDown={(e) => {
-                  if (e.key === 'Enter' || e.key === ' ') {
-                    onRowClick?.(row.id);
-                  }
-                }}
-              >
-                <td className={styles.td}>{idx + 1}</td>
-                <td className={styles.td}>{row.date}</td>
-                <td className={styles.tdAnalysisType}>{row.analysisType}</td>
-                <td className={styles.td}>{row.constructionType}</td>
-                <td className={styles.td}>
-                  <RiskCell risk={row.risk} />
-                </td>
-                <td className={styles.td}>
-                  <span className={getStatusClass(row.status)}>{row.status}</span>
+          </thead>
+          <tbody>
+            {rows.length === 0 ? (
+              <tr>
+                <td colSpan={COLUMNS.length} className={styles.emptyRow}>
+                  조회된 이력이 없습니다.
                 </td>
               </tr>
-            ))
-          )}
-        </tbody>
-      </table>
+            ) : (
+              rows.map((row, idx) => (
+                <tr
+                  key={row.id}
+                  className={styles.tr}
+                  role="button"
+                  tabIndex={0}
+                  onClick={() => onRowClick?.(row.id)}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                      onRowClick?.(row.id);
+                    }
+                  }}
+                >
+                  <td className={styles.td}>{idx + 1}</td>
+                  <td className={styles.td}>{row.date}</td>
+                  <td className={styles.tdAnalysisType}>{row.analysisType}</td>
+                  <td className={styles.td}>{row.constructionType}</td>
+                  <td className={styles.td}>
+                    <RiskCell risk={row.risk} />
+                  </td>
+                  <td className={styles.td}>
+                    <span className={getStatusClass(row.status)}>{row.status}</span>
+                  </td>
+                </tr>
+              ))
+            )}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 };

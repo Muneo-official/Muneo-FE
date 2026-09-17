@@ -1,7 +1,10 @@
-import { vars } from '@muneo/design-system';
+import { media, vars } from '@muneo/design-system';
 import { globalStyle, style } from '@vanilla-extract/css';
 
 export const card = style({
+  '@media': {
+    [media.mobile]: { padding: '20px 16px' },
+  },
   backgroundColor: vars.color.white,
   borderRadius: '16px',
   boxShadow: '0px 2px 2px 0px rgba(0, 0, 0, 0.11)',
@@ -55,6 +58,9 @@ export const viewAllLink = style({
 });
 
 export const table = style({
+  '@media': {
+    [media.mobile]: { minWidth: '640px' },
+  },
   width: '100%',
   borderCollapse: 'collapse',
   tableLayout: 'fixed',
@@ -155,3 +161,9 @@ export const analysisEstimate = style([
   badge,
   { backgroundColor: vars.color.semantic.infoBg, color: vars.color.semantic.info },
 ]);
+
+export const tableScroll = style({
+  width: '100%',
+  overflowX: 'auto',
+  overscrollBehaviorX: 'contain',
+});

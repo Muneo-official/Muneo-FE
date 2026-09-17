@@ -1,4 +1,4 @@
-import { vars } from '@muneo/design-system';
+import { media, vars } from '@muneo/design-system';
 import { keyframes, style } from '@vanilla-extract/css';
 
 const SPRING_OUT = 'cubic-bezier(0.34, 1.56, 0.64, 1)';
@@ -26,6 +26,8 @@ export const wrap = style({
   width: 'fit-content',
   animation: `${popIn} 300ms ${SPRING_OUT} both`,
   '@media': {
+    [media.mobile]: { maxWidth: '100%', flexWrap: 'wrap' },
+
     '(prefers-reduced-motion: reduce)': { animation: 'none' },
   },
 });
@@ -42,6 +44,9 @@ export const text = style({
 });
 
 export const btn = style({
+  '@media': {
+    [media.mobile]: { minHeight: '44px' },
+  },
   flexShrink: 0,
   background: 'none',
   border: 'none',

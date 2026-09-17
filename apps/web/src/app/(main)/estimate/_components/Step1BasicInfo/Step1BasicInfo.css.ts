@@ -1,4 +1,4 @@
-import { vars } from '@muneo/design-system';
+import { media, vars } from '@muneo/design-system';
 import { style } from '@vanilla-extract/css';
 
 export const container = style({
@@ -9,6 +9,9 @@ export const container = style({
 });
 
 export const header = style({
+  '@media': {
+    [media.compact]: { flexDirection: 'column', alignItems: 'flex-start', whiteSpace: 'normal' },
+  },
   display: 'flex',
   alignItems: 'flex-end',
   gap: '10px',
@@ -17,6 +20,9 @@ export const header = style({
 });
 
 export const title = style({
+  '@media': {
+    [media.mobile]: { fontSize: '20px', lineHeight: 1.5 },
+  },
   fontSize: vars.typography.fontSize.xl,
   fontWeight: vars.typography.fontWeight.bold,
   fontFamily: vars.typography.fontFamily,
@@ -30,6 +36,9 @@ export const titleAccent = style({
 });
 
 export const titleHint = style({
+  '@media': {
+    [media.compact]: { whiteSpace: 'normal', lineHeight: 1.5 },
+  },
   fontSize: vars.typography.fontSize.xs,
   fontWeight: vars.typography.fontWeight.medium,
   fontFamily: vars.typography.fontFamily,
@@ -39,6 +48,9 @@ export const titleHint = style({
 });
 
 export const card = style({
+  '@media': {
+    [media.mobile]: { padding: '24px 16px' },
+  },
   backgroundColor: vars.color.white,
   borderRadius: '12px',
   padding: '20px 40px 28px',
@@ -48,6 +60,9 @@ export const card = style({
 });
 
 export const fields = style({
+  '@media': {
+    [media.mobile]: { gap: '32px' },
+  },
   display: 'flex',
   flexDirection: 'column',
   gap: '65px',
@@ -55,6 +70,9 @@ export const fields = style({
 });
 
 export const fieldGroup = style({
+  '@media': {
+    [media.mobile]: { width: '100%' },
+  },
   display: 'flex',
   flexDirection: 'column',
   gap: '30px',
@@ -74,6 +92,9 @@ export const fieldWithGap = style({
 });
 
 export const fieldHeader = style({
+  '@media': {
+    [media.mobile]: { height: 'auto', flexWrap: 'wrap', whiteSpace: 'normal', gap: '6px' },
+  },
   display: 'flex',
   alignItems: 'flex-end',
   gap: '8px',
@@ -98,6 +119,9 @@ export const fieldHint = style({
 });
 
 export const buttonRow = style({
+  '@media': {
+    [media.mobile]: { flexWrap: 'wrap', gap: '8px' },
+  },
   display: 'flex',
   gap: '12px',
   alignItems: 'center',
@@ -118,6 +142,9 @@ export const areaInput = style({
 });
 
 export const areaInputNumber = style({
+  '@media': {
+    [media.mobile]: { fontSize: '16px' },
+  },
   fontSize: vars.typography.fontSize.sm,
   fontWeight: vars.typography.fontWeight.bold,
   fontFamily: vars.typography.fontFamily,

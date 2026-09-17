@@ -1,3 +1,4 @@
+import { media } from '@muneo/design-system';
 import { keyframes, style } from '@vanilla-extract/css';
 
 const pulse = keyframes({
@@ -6,6 +7,10 @@ const pulse = keyframes({
 });
 
 export const page = style({
+  '@media': {
+    [media.compact]: { padding: '32px 32px 100px' },
+    [media.mobile]: { padding: '28px 16px 100px', minHeight: 'calc(100dvh - 64px)' },
+  },
   backgroundColor: '#f8f9fc',
   minHeight: '100vh',
   padding: '46px 60px 100px',
@@ -26,6 +31,7 @@ export const greetingSection = style({
 });
 
 const skeletonBase = style({
+  maxWidth: '100%',
   backgroundColor: '#e5e7eb',
   borderRadius: '8px',
   animation: `${pulse} 1.5s ease-in-out infinite`,
@@ -48,6 +54,10 @@ export const skeletonSubtitle = style([
 ]);
 
 export const summaryRow = style({
+  '@media': {
+    [media.compact]: { gap: '12px' },
+    [media.mobile]: { flexDirection: 'column' },
+  },
   display: 'flex',
   gap: '22px',
   width: '100%',

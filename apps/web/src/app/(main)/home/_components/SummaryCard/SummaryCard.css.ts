@@ -1,7 +1,10 @@
-import { vars } from '@muneo/design-system';
+import { media, vars } from '@muneo/design-system';
 import { style } from '@vanilla-extract/css';
 
 export const card = style({
+  '@media': {
+    [media.mobile]: { padding: '20px', borderRadius: '12px' },
+  },
   flex: '1 0 0',
   backgroundColor: vars.color.white,
   borderRadius: '20px',

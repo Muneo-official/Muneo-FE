@@ -1,7 +1,11 @@
-import { vars } from '@muneo/design-system';
+import { media, vars } from '@muneo/design-system';
 import { style } from '@vanilla-extract/css';
 
 export const card = style({
+  '@media': {
+    [media.tablet]: { maxWidth: '100%' },
+    [media.mobile]: { width: '100%', padding: '24px 16px' },
+  },
   backgroundColor: vars.color.white,
   borderRadius: '12px',
   boxShadow: '0px 2px 2px 0px rgba(0, 0, 0, 0.11)',
@@ -11,6 +15,9 @@ export const card = style({
 });
 
 export const inner = style({
+  '@media': {
+    [media.tablet]: { width: '100%' },
+  },
   display: 'flex',
   flexDirection: 'column',
   gap: vars.space.lg,

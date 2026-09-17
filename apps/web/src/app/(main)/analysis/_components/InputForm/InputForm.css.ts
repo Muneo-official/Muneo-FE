@@ -1,7 +1,11 @@
-import { vars } from '@muneo/design-system';
+import { media, vars } from '@muneo/design-system';
 import { style } from '@vanilla-extract/css';
 
 export const card = style({
+  '@media': {
+    [media.compact]: { minWidth: 0 },
+    [media.mobile]: { padding: '24px 16px' },
+  },
   backgroundColor: vars.color.white,
   borderRadius: '12px',
   padding: '28px 30px',
@@ -27,12 +31,18 @@ export const fields = style({
 });
 
 export const fieldRow = style({
+  '@media': {
+    [media.mobile]: { flexDirection: 'column', gap: '24px' },
+  },
   display: 'flex',
   gap: '30px',
   alignItems: 'flex-start',
 });
 
 export const fieldGroup = style({
+  '@media': {
+    [media.mobile]: { width: '100%' },
+  },
   display: 'flex',
   flexDirection: 'column',
   gap: '4px',
@@ -41,6 +51,9 @@ export const fieldGroup = style({
 });
 
 export const fieldGroupFixed = style({
+  '@media': {
+    [media.mobile]: { width: '100%' },
+  },
   display: 'flex',
   flexDirection: 'column',
   gap: '4px',

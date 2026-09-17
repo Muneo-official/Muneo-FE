@@ -16,10 +16,10 @@ export const StepActions = ({
 }: StepActionsProps) => {
   return (
     <div className={styles.container}>
-      <Button variant="primary" size="md" style={{ width: '189px' }} onClick={onNext}>
+      <Button variant="primary" size="md" className={styles.actionButton} onClick={onNext}>
         다음 단계
       </Button>
-      <Button variant="outlineSecondary" size="md" style={{ width: '189px' }} onClick={onSecondary}>
+      <Button variant="outlineSecondary" size="md" className={styles.actionButton} onClick={onSecondary}>
         {showResetIcon ? (
           <span className={styles.resetIconWrapper}>
             <ArrowUndoDownLeftIcon width={16} height={16} />

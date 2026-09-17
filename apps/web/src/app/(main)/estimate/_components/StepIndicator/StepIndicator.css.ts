@@ -1,7 +1,11 @@
-import { vars } from '@muneo/design-system';
+import { media, vars } from '@muneo/design-system';
 import { style } from '@vanilla-extract/css';
 
 export const container = style({
+  '@media': {
+    [media.compact]: { width: '100%', maxWidth: '700px', justifyContent: 'center', gap: '8px' },
+    [media.mobile]: { gap: '4px' },
+  },
   display: 'flex',
   alignItems: 'center',
   gap: '10px',
@@ -66,6 +70,9 @@ export const stepNumberPending = style([stepNumber, { color: vars.color.neutral.
 export const stepNumberActive = style([stepNumber, { color: vars.color.white }]);
 
 export const stepLabel = style({
+  '@media': {
+    [media.mobile]: { fontSize: '10px', whiteSpace: 'normal' },
+  },
   fontSize: vars.typography.fontSize.xs,
   fontWeight: vars.typography.fontWeight.bold,
   fontFamily: vars.typography.fontFamily,
@@ -79,6 +86,9 @@ export const stepLabelActive = style([stepLabel, { color: '#4E23A9' }]);
 export const stepLabelCompleted = style([stepLabel, { color: vars.color.semantic.success }]);
 
 export const connector = style({
+  '@media': {
+    [media.compact]: { width: 'auto', flex: 1, minWidth: '8px', flexShrink: 1 },
+  },
   width: '120px',
   height: '2px',
   flexShrink: 0,
