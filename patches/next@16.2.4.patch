@@ -1,0 +1,28 @@
+diff --git a/dist/esm/shared/lib/errors/code-frame.js b/dist/esm/shared/lib/errors/code-frame.js
+index 8bc5f240c96f87be117e3852b839f8f1a7e4f125..b8d37bd465a6664c8202bedabae563e2913ae244 100644
+--- a/dist/esm/shared/lib/errors/code-frame.js
++++ b/dist/esm/shared/lib/errors/code-frame.js
+@@ -7,6 +7,9 @@ import { getBindingsSync } from '../../../build/swc';
+     if (options.maxWidth === undefined) {
+         options.maxWidth = process.stdout.columns;
+     }
++    // next-code-frame 문법 하이라이터가 멀티바이트(한글) 줄을 잘릴 때 char boundary 밖을 슬라이싱해
++    // Rust panic -> Node 프로세스 abort가 난다 (vercel/next.js#92641, 수정 PR #96805). 하이라이트만 끈다.
++    options.highlightCode = false;
+     return getBindingsSync().codeFrameColumns(file, location, options);
+ }
+ 
+diff --git a/dist/shared/lib/errors/code-frame.js b/dist/shared/lib/errors/code-frame.js
+index fd6d0e2f787261196c2c92533567bbc264a53abd..d86851ca01d8c6d42a033b2870944f75b394336c 100644
+--- a/dist/shared/lib/errors/code-frame.js
++++ b/dist/shared/lib/errors/code-frame.js
+@@ -14,6 +14,9 @@ function codeFrameColumns(file, location, options = {}) {
+     if (options.maxWidth === undefined) {
+         options.maxWidth = process.stdout.columns;
+     }
++    // next-code-frame 문법 하이라이터가 멀티바이트(한글) 줄을 잘릴 때 char boundary 밖을 슬라이싱해
++    // Rust panic -> Node 프로세스 abort가 난다 (vercel/next.js#92641, 수정 PR #96805). 하이라이트만 끈다.
++    options.highlightCode = false;
+     return (0, _swc.getBindingsSync)().codeFrameColumns(file, location, options);
+ }
+ 
