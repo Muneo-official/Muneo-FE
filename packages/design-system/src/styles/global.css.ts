@@ -1,4 +1,5 @@
 import { globalStyle } from '@vanilla-extract/css';
+import { media } from './responsive';
 import { vars } from './tokens.css';
 
 globalStyle('*, *::before, *::after', {
@@ -9,6 +10,7 @@ globalStyle('*, *::before, *::after', {
 
 globalStyle('html', {
   fontFamily: vars.typography.fontFamily,
+  WebkitTextSizeAdjust: '100%',
   lineHeight: vars.typography.lineHeight.lg,
   WebkitFontSmoothing: 'antialiased',
   MozOsxFontSmoothing: 'grayscale',
@@ -21,4 +23,8 @@ globalStyle('body', {
 
 globalStyle('button, input, textarea, select', {
   fontFamily: 'inherit',
+});
+
+globalStyle('input, textarea, select', {
+  '@media': { [media.mobile]: { fontSize: '16px' } },
 });
