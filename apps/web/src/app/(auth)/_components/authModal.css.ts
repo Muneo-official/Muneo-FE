@@ -1,7 +1,10 @@
-import { vars } from '@muneo/design-system';
+import { media, vars } from '@muneo/design-system';
 import { style } from '@vanilla-extract/css';
 
 export const modal = style({
+  '@media': {
+    [media.mobile]: { width: '100%', maxWidth: '404px', padding: '44px 20px 28px' },
+  },
   position: 'relative',
   backgroundColor: vars.color.white,
   borderRadius: '16px',
@@ -9,6 +12,9 @@ export const modal = style({
 });
 
 export const closeButton = style({
+  '@media': {
+    [media.mobile]: { minWidth: '44px', minHeight: '44px' },
+  },
   position: 'absolute',
   top: '4px',
   right: '4px',
@@ -57,6 +63,9 @@ export const fullWidth = style({
 });
 
 export const footerRow = style({
+  '@media': {
+    [media.mobile]: { flexWrap: 'wrap', justifyContent: 'center', gap: '8px' },
+  },
   display: 'flex',
   alignItems: 'center',
   gap: '13px',

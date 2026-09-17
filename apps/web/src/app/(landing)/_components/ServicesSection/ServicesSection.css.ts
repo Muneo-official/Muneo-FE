@@ -1,7 +1,11 @@
-import { vars } from '@muneo/design-system';
+import { media, vars } from '@muneo/design-system';
 import { style } from '@vanilla-extract/css';
 
 export const section = style({
+  '@media': {
+    [media.tablet]: { minHeight: 'auto', padding: '64px 0', scrollMarginTop: '80px' },
+    [media.mobile]: { scrollMarginTop: '104px' },
+  },
   display: 'flex',
   flexDirection: 'column',
   alignItems: 'center',
@@ -12,6 +16,10 @@ export const section = style({
 });
 
 export const container = style({
+  '@media': {
+    [media.compact]: { padding: '0 32px' },
+    [media.mobile]: { padding: '0 20px' },
+  },
   display: 'flex',
   flexDirection: 'column',
   justifyContent: 'center',
@@ -25,6 +33,9 @@ export const container = style({
 });
 
 export const inner = style({
+  '@media': {
+    [media.mobile]: { gap: '32px' },
+  },
   display: 'flex',
   flexDirection: 'column',
   alignItems: 'center',
@@ -41,6 +52,10 @@ export const innerVisible = style({
 });
 
 export const cardsRow = style({
+  '@media': {
+    [media.tablet]: { gap: '16px' },
+    [media.mobile]: { flexDirection: 'column' },
+  },
   display: 'flex',
   gap: '32px',
   alignItems: 'center',
@@ -51,6 +66,9 @@ export const cardsRow = style({
 });
 
 export const card = style({
+  '@media': {
+    [media.compact]: { padding: '24px', minWidth: 0 },
+  },
   display: 'flex',
   flexDirection: 'column',
   alignItems: 'flex-start',
@@ -102,6 +120,9 @@ export const cardTitle = style({
 });
 
 export const cardDescription = style({
+  '@media': {
+    [media.mobile]: { lineHeight: 1.7 },
+  },
   fontFamily: vars.typography.fontFamily,
   fontWeight: vars.typography.fontWeight.regular,
   fontSize: vars.typography.fontSize.base,

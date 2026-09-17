@@ -1,4 +1,4 @@
-import { vars } from '@muneo/design-system';
+import { media, vars } from '@muneo/design-system';
 import { keyframes, style } from '@vanilla-extract/css';
 
 const slideDown = keyframes({
@@ -7,6 +7,9 @@ const slideDown = keyframes({
 });
 
 export const header = style({
+  '@media': {
+    [media.mobile]: { height: '104px' },
+  },
   animation: `${slideDown} 0.4s cubic-bezier(0, 0, 0.2, 1) both`,
   position: 'fixed',
   top: 0,
@@ -31,6 +34,10 @@ export const headerScrolled = style({
 });
 
 export const inner = style({
+  '@media': {
+    [media.tablet]: { padding: '0 24px' },
+    [media.mobile]: { padding: '8px 16px 0', flexWrap: 'wrap', justifyContent: 'space-between', gap: '4px' },
+  },
   display: 'flex',
   alignItems: 'center',
   width: '100%',
@@ -52,6 +59,9 @@ export const logoLink = style({
 });
 
 export const tagline = style({
+  '@media': {
+    [media.tablet]: { display: 'none' },
+  },
   fontFamily: vars.typography.fontFamily,
   fontSize: vars.typography.fontSize.xs,
   fontWeight: vars.typography.fontWeight.regular,
@@ -62,6 +72,9 @@ export const tagline = style({
 });
 
 export const nav = style({
+  '@media': {
+    [media.mobile]: { order: 3, flex: '0 0 100%' },
+  },
   display: 'flex',
   alignItems: 'center',
   flex: '1 0 0',
@@ -69,6 +82,10 @@ export const nav = style({
 });
 
 export const navList = style({
+  '@media': {
+    [media.tablet]: { gap: '24px' },
+    [media.mobile]: { width: '100%', justifyContent: 'space-around', gap: '12px' },
+  },
   display: 'flex',
   alignItems: 'center',
   gap: '53px',
@@ -78,6 +95,9 @@ export const navList = style({
 });
 
 export const navLink = style({
+  '@media': {
+    [media.mobile]: { display: 'flex', alignItems: 'center', minHeight: '44px', fontSize: '13px' },
+  },
   fontFamily: vars.typography.fontFamily,
   fontSize: '15px',
   fontWeight: vars.typography.fontWeight.regular,

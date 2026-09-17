@@ -1,4 +1,4 @@
-import { vars } from '@muneo/design-system';
+import { media, vars } from '@muneo/design-system';
 import { keyframes, style } from '@vanilla-extract/css';
 
 const fadeUp = keyframes({
@@ -17,6 +17,10 @@ const fadeUpCenter = keyframes({
 });
 
 export const section = style({
+  '@media': {
+    [media.tablet]: { minHeight: '100svh' },
+    [media.mobile]: { marginTop: '-104px', padding: '144px 0 64px' },
+  },
   position: 'relative',
   display: 'flex',
   padding: '124px 0 48px',
@@ -30,6 +34,10 @@ export const section = style({
 });
 
 export const container = style({
+  '@media': {
+    [media.compact]: { padding: '0 32px 6vh', gap: '100px' },
+    [media.mobile]: { padding: '0 20px', gap: '36px' },
+  },
   display: 'flex',
   flexDirection: 'column',
   alignItems: 'center',
@@ -42,6 +50,9 @@ export const container = style({
 });
 
 export const row = style({
+  '@media': {
+    [media.compact]: { flexDirection: 'column', gap: '40px', alignItems: 'stretch' },
+  },
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'space-between',
@@ -49,6 +60,9 @@ export const row = style({
 });
 
 export const left = style({
+  '@media': {
+    [media.compact]: { alignItems: 'center', textAlign: 'center' },
+  },
   display: 'flex',
   flexDirection: 'column',
   alignItems: 'flex-start',
@@ -56,6 +70,9 @@ export const left = style({
 });
 
 export const headline = style({
+  '@media': {
+    [media.mobile]: { fontSize: 'clamp(28px, 7.5vw, 38px)', lineHeight: 1.35 },
+  },
   display: 'flex',
   flexDirection: 'column',
   gap: '7px',
@@ -84,6 +101,9 @@ export const headlineLine2 = style({
 });
 
 export const subContent = style({
+  '@media': {
+    [media.compact]: { alignItems: 'center', gap: '24px' },
+  },
   display: 'flex',
   flexDirection: 'column',
   alignItems: 'flex-start',
@@ -95,6 +115,9 @@ export const subContent = style({
 });
 
 export const descriptionSection = style({
+  '@media': {
+    [media.compact]: { alignItems: 'center' },
+  },
   display: 'flex',
   flexDirection: 'column',
   alignItems: 'flex-start',
@@ -103,6 +126,9 @@ export const descriptionSection = style({
 });
 
 export const descriptionText = style({
+  '@media': {
+    [media.mobile]: { lineHeight: 1.6 },
+  },
   fontFamily: vars.typography.fontFamily,
   fontWeight: vars.typography.fontWeight.medium,
   fontSize: vars.typography.fontSize.md,
@@ -121,6 +147,9 @@ export const divider = style({
 });
 
 export const ctaWrapper = style({
+  '@media': {
+    [media.compact]: { alignItems: 'center' },
+  },
   display: 'flex',
   flexDirection: 'column',
   alignItems: 'flex-start',
@@ -135,6 +164,9 @@ export const ctaButton = style({
 });
 
 export const right = style({
+  '@media': {
+    [media.compact]: { width: '100%', maxWidth: '540px', alignSelf: 'center' },
+  },
   display: 'flex',
   flexDirection: 'column',
   alignItems: 'flex-start',
@@ -145,6 +177,10 @@ export const right = style({
 });
 
 export const previewCard = style({
+  '@media': {
+    [media.compact]: { width: '100%' },
+    [media.mobile]: { padding: '20px 16px 28px' },
+  },
   margin: 0,
   backgroundColor: vars.color.white,
   border: `1px solid ${vars.color.neutral.n200}`,
@@ -177,6 +213,10 @@ export const previewLabel = style({
 });
 
 export const statusCardsRow = style({
+  '@media': {
+    [media.compact]: { display: 'grid', gridTemplateColumns: 'repeat(3, minmax(0, 1fr))', gap: '8px' },
+    [media.mobile]: { gridTemplateColumns: 'minmax(0, 1fr)' },
+  },
   display: 'flex',
   gap: '18px',
   alignItems: 'center',
@@ -216,6 +256,9 @@ export const recentItem = style({
 });
 
 export const subHeadline = style({
+  '@media': {
+    [media.mobile]: { fontSize: '16px', lineHeight: 1.6 },
+  },
   fontFamily: vars.typography.fontFamilyDisplay,
   fontWeight: vars.typography.fontWeight.medium,
   fontSize: vars.typography.fontSize.lg,
@@ -230,6 +273,9 @@ export const subHeadline = style({
 });
 
 export const scrollIndicator = style({
+  '@media': {
+    [media.mobile]: { bottom: '12px' },
+  },
   position: 'absolute',
   bottom: '36px',
   left: '50%',

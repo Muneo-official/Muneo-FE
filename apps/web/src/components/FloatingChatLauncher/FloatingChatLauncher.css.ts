@@ -1,4 +1,4 @@
-import { vars } from '@muneo/design-system';
+import { media, vars } from '@muneo/design-system';
 import { keyframes, style } from '@vanilla-extract/css';
 
 const FLOATING_OFFSET = '32px';
@@ -63,6 +63,8 @@ export const floatingButton = style({
     },
   },
   '@media': {
+    [media.mobile]: { right: '16px', bottom: 'calc(16px + env(safe-area-inset-bottom))' },
+
     '(prefers-reduced-motion: reduce)': {
       transition: 'none',
     },
@@ -107,6 +109,15 @@ export const chatWrapper = style({
   transformOrigin: 'bottom right',
   animation: `${slideUpIn} 320ms ${EASE_OUT} both`,
   '@media': {
+    [media.mobile]: {
+      top: 'auto',
+      bottom: 'calc(80px + env(safe-area-inset-bottom))',
+      right: '12px',
+      width: 'calc(100% - 24px)',
+      maxWidth: '460px',
+      height: 'min(680px, calc(100dvh - 96px - env(safe-area-inset-top) - env(safe-area-inset-bottom)))',
+    },
+
     '(prefers-reduced-motion: reduce)': {
       animation: 'none',
     },

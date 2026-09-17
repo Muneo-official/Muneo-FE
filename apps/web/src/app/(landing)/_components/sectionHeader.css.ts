@@ -1,4 +1,4 @@
-import { vars } from '@muneo/design-system';
+import { media, vars } from '@muneo/design-system';
 import { style } from '@vanilla-extract/css';
 
 export const sectionHeader = style({
@@ -9,6 +9,9 @@ export const sectionHeader = style({
 });
 
 export const sectionTitle = style({
+  '@media': {
+    [media.mobile]: { fontSize: '26px', whiteSpace: 'normal', wordBreak: 'keep-all' },
+  },
   fontFamily: vars.typography.fontFamily,
   fontWeight: vars.typography.fontWeight.extraBold,
   fontSize: vars.typography.fontSize['3xl'],
@@ -29,6 +32,9 @@ export const sectionDivider = style({
 });
 
 export const sectionSubtitle = style({
+  '@media': {
+    [media.mobile]: { fontSize: '15px', lineHeight: 1.6, whiteSpace: 'normal', wordBreak: 'keep-all' },
+  },
   fontFamily: vars.typography.fontFamily,
   fontWeight: vars.typography.fontWeight.regular,
   fontSize: vars.typography.fontSize.md,

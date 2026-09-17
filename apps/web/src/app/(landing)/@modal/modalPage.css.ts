@@ -1,3 +1,4 @@
+import { media } from '@muneo/design-system';
 import { keyframes, style } from '@vanilla-extract/css';
 
 const fadeIn = keyframes({
@@ -28,6 +29,8 @@ export const backdrop = style({
     },
   },
   '@media': {
+    [media.mobile]: { padding: '16px' },
+
     '(prefers-reduced-motion: reduce)': {
       animation: 'none',
     },
@@ -38,6 +41,8 @@ export const modalWrapper = style({
   margin: 'auto',
   animation: `${slideUp} 0.25s ease`,
   '@media': {
+    [media.mobile]: { width: '100%', maxWidth: '404px' },
+
     '(prefers-reduced-motion: reduce)': {
       animation: 'none',
     },

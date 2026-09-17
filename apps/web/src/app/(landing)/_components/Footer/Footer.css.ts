@@ -1,4 +1,4 @@
-import { vars } from '@muneo/design-system';
+import { media, vars } from '@muneo/design-system';
 import { style } from '@vanilla-extract/css';
 
 export const footer = style({
@@ -8,6 +8,10 @@ export const footer = style({
 });
 
 export const container = style({
+  '@media': {
+    [media.tablet]: { padding: '32px' },
+    [media.mobile]: { padding: '32px 20px' },
+  },
   display: 'flex',
   flexDirection: 'column',
   gap: '28px',
@@ -18,6 +22,10 @@ export const container = style({
 });
 
 export const main = style({
+  '@media': {
+    [media.tablet]: { gap: '32px' },
+    [media.mobile]: { flexDirection: 'column' },
+  },
   display: 'flex',
   justifyContent: 'space-between',
   alignItems: 'flex-start',
@@ -30,6 +38,9 @@ export const brand = style({
 });
 
 export const logoRow = style({
+  '@media': {
+    [media.mobile]: { flexWrap: 'wrap' },
+  },
   display: 'flex',
   alignItems: 'center',
   gap: '10px',
@@ -53,6 +64,10 @@ export const description = style({
 });
 
 export const links = style({
+  '@media': {
+    [media.tablet]: { gap: '32px' },
+    [media.mobile]: { flexWrap: 'wrap' },
+  },
   display: 'flex',
   gap: '80px',
   listStyle: 'none',
@@ -88,6 +103,9 @@ export const linkGroupItems = style({
 });
 
 export const linkItem = style({
+  '@media': {
+    [media.mobile]: { display: 'inline-flex', alignItems: 'center', minHeight: '44px' },
+  },
   fontFamily: vars.typography.fontFamily,
   fontWeight: vars.typography.fontWeight.regular,
   fontSize: vars.typography.fontSize.sm,

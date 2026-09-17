@@ -1,7 +1,11 @@
-import { vars } from '@muneo/design-system';
+import { media, vars } from '@muneo/design-system';
 import { style } from '@vanilla-extract/css';
 
 export const section = style({
+  '@media': {
+    [media.tablet]: { minHeight: 'auto', padding: '64px 0', scrollMarginTop: '80px' },
+    [media.mobile]: { scrollMarginTop: '104px' },
+  },
   display: 'flex',
   flexDirection: 'column',
   alignItems: 'center',
@@ -13,6 +17,10 @@ export const section = style({
 });
 
 export const container = style({
+  '@media': {
+    [media.compact]: { padding: '0 32px' },
+    [media.mobile]: { padding: '0 20px' },
+  },
   display: 'flex',
   flexDirection: 'column',
   alignItems: 'center',
@@ -24,6 +32,9 @@ export const container = style({
 });
 
 export const inner = style({
+  '@media': {
+    [media.mobile]: { gap: '32px' },
+  },
   display: 'flex',
   flexDirection: 'column',
   alignItems: 'center',
@@ -66,6 +77,9 @@ export const questionHeading = style({
 });
 
 export const faqQuestion = style({
+  '@media': {
+    [media.mobile]: { padding: '20px 16px' },
+  },
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'space-between',
@@ -90,6 +104,9 @@ export const faqQuestionActive = style({
 });
 
 export const questionText = style({
+  '@media': {
+    [media.mobile]: { fontSize: '15px', lineHeight: 1.5 },
+  },
   fontFamily: vars.typography.fontFamily,
   fontWeight: vars.typography.fontWeight.semiBold,
   fontSize: vars.typography.fontSize.md,
@@ -134,6 +151,9 @@ export const faqAnswerInner = style({
 });
 
 export const answerText = style({
+  '@media': {
+    [media.mobile]: { padding: '20px 16px' },
+  },
   padding: vars.space['2xl'],
   fontFamily: vars.typography.fontFamily,
   fontWeight: vars.typography.fontWeight.regular,

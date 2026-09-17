@@ -1,4 +1,4 @@
-import { vars } from '@muneo/design-system';
+import { media, vars } from '@muneo/design-system';
 import { style } from '@vanilla-extract/css';
 
 export {
@@ -68,6 +68,9 @@ export const socialAccountIcon = style({
 });
 
 export const socialAccountText = style({
+  '@media': {
+    [media.mobile]: { overflowWrap: 'anywhere', minWidth: 0 },
+  },
   fontFamily: vars.typography.fontFamily,
   fontSize: '14px',
   color: 'rgba(10, 10, 10, 0.5)',
