@@ -1,5 +1,6 @@
 import { style } from '@vanilla-extract/css';
 import { recipe } from '@vanilla-extract/recipes';
+import { media } from '../../styles/responsive';
 import { vars } from '../../styles/tokens.css';
 
 export const sidebar = style({
@@ -7,7 +8,7 @@ export const sidebar = style({
   top: 0,
   left: 0,
   width: vars.layout.sidebarWidth,
-  height: '100vh',
+  height: '100dvh',
   backgroundColor: vars.color.white,
   boxShadow: '2px 0 3px rgba(0, 0, 0, 0.06)',
   display: 'flex',
@@ -19,6 +20,65 @@ export const sidebar = style({
   paddingRight: vars.space.sm,
   zIndex: 100,
   overflowY: 'auto',
+  '@media': {
+    [media.tablet]: {
+      width: '100%',
+      height: 'auto',
+      padding: 0,
+      overflowY: 'visible',
+    },
+  },
+});
+
+export const mobileBar = style({
+  display: 'none',
+  '@media': {
+    [media.tablet]: {
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+      height: '64px',
+      padding: '0 16px',
+      borderBottom: `1px solid ${vars.color.neutral.n200}`,
+    },
+  },
+});
+
+export const menuToggle = style({
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  gap: '8px',
+  minWidth: '80px',
+  minHeight: '44px',
+  padding: '8px 12px',
+  border: `1px solid ${vars.color.neutral.n200}`,
+  borderRadius: '10px',
+  backgroundColor: vars.color.white,
+  color: vars.color.neutral.n700,
+  cursor: 'pointer',
+});
+
+export const menuPanel = style({
+  display: 'flex',
+  flexDirection: 'column',
+  justifyContent: 'space-between',
+  gap: '24px',
+  flex: 1,
+  '@media': {
+    [media.tablet]: {
+      display: 'none',
+      maxHeight: 'calc(100dvh - 64px)',
+      overflowY: 'auto',
+      overscrollBehavior: 'contain',
+      padding: '12px 16px calc(16px + env(safe-area-inset-bottom))',
+      boxShadow: '0 12px 24px rgba(0, 0, 0, 0.08)',
+    },
+  },
+});
+
+export const menuPanelOpen = style({
+  '@media': { [media.tablet]: { display: 'flex' } },
 });
 
 export const topSection = style({
@@ -28,6 +88,7 @@ export const topSection = style({
 });
 
 export const logoArea = style({
+  '@media': { [media.tablet]: { display: 'none' } },
   display: 'flex',
   flexDirection: 'column',
   alignItems: 'center',
@@ -76,6 +137,7 @@ export const navIndicatorActive = style({
 
 export const navItemContent = recipe({
   base: {
+    '@media': { [media.tablet]: { minHeight: '44px' } },
     display: 'flex',
     alignItems: 'center',
     gap: '9px',
@@ -187,6 +249,7 @@ export const userEmailStyle = style({
 });
 
 export const logoutButton = style({
+  '@media': { [media.tablet]: { width: '44px', height: '44px' } },
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'center',
