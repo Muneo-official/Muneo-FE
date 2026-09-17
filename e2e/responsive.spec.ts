@@ -11,7 +11,7 @@ const expectNoHorizontalOverflow = async (page: Page) => {
     .toBe(true);
 };
 
-test.use({ storageState: 'playwright/.auth/user.json', reducedMotion: 'reduce' });
+test.use({ storageState: 'playwright/.auth/user.json', contextOptions: { reducedMotion: 'reduce' } });
 
 for (const width of [320, 390, 768, 1024, 1440]) {
   test(`${width}px에서 주요 페이지가 가로로 넘치지 않는다`, async ({ page }, testInfo) => {
