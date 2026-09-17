@@ -1,4 +1,4 @@
-import { vars } from '@muneo/design-system';
+import { media, vars } from '@muneo/design-system';
 import { keyframes, style, styleVariants } from '@vanilla-extract/css';
 
 const slideIn = keyframes({
@@ -7,6 +7,15 @@ const slideIn = keyframes({
 });
 
 export const toast = style({
+  '@media': {
+    [media.mobile]: {
+      left: '16px',
+      right: '16px',
+      bottom: 'calc(16px + env(safe-area-inset-bottom))',
+      minWidth: 0,
+      maxWidth: 'none',
+    },
+  },
   position: 'fixed',
   bottom: vars.space.xl,
   right: vars.space.xl,
@@ -42,11 +51,17 @@ export const tone = styleVariants({
 });
 
 export const message = style({
+  '@media': {
+    [media.mobile]: { minWidth: 0, overflowWrap: 'anywhere' },
+  },
   flex: 1,
   lineHeight: vars.typography.lineHeight.md,
 });
 
 export const closeButton = style({
+  '@media': {
+    [media.mobile]: { minWidth: '44px', minHeight: '44px' },
+  },
   background: 'none',
   border: 'none',
   padding: 0,

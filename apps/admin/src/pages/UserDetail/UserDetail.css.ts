@@ -1,4 +1,4 @@
-import { vars } from '@muneo/design-system';
+import { media, vars } from '@muneo/design-system';
 import { style } from '@vanilla-extract/css';
 
 export const page = style({
@@ -25,6 +25,9 @@ export const back = style({
 });
 
 export const header = style({
+  '@media': {
+    [media.mobile]: { flexWrap: 'wrap' },
+  },
   display: 'flex',
   alignItems: 'center',
   gap: vars.space.md,
@@ -39,8 +42,11 @@ export const title = style({
 });
 
 export const grid = style({
+  '@media': {
+    [media.mobile]: { gridTemplateColumns: 'minmax(0, 1fr)' },
+  },
   display: 'grid',
-  gridTemplateColumns: 'repeat(2, 1fr)',
+  gridTemplateColumns: 'repeat(2, minmax(0, 1fr))',
   gap: vars.space.lg,
 });
 
@@ -56,6 +62,7 @@ export const readLabel = style({
 });
 
 export const readValue = style({
+  overflowWrap: 'anywhere',
   fontSize: vars.typography.fontSize.sm,
   color: vars.color.neutral.n900,
   fontWeight: vars.typography.fontWeight.medium,
@@ -76,6 +83,9 @@ export const loading = style({
 });
 
 export const row = style({
+  '@media': {
+    [media.mobile]: { flexDirection: 'column', alignItems: 'flex-start' },
+  },
   display: 'flex',
   justifyContent: 'space-between',
   alignItems: 'center',
@@ -101,6 +111,9 @@ export const rowLabelDesc = style({
 });
 
 export const rowControl = style({
+  '@media': {
+    [media.mobile]: { flexWrap: 'wrap', width: '100%' },
+  },
   display: 'flex',
   gap: vars.space.sm,
   alignItems: 'center',
@@ -112,6 +125,9 @@ export const roleDropdownWrap = style({
 });
 
 export const formActions = style({
+  '@media': {
+    [media.mobile]: { flexWrap: 'wrap' },
+  },
   display: 'flex',
   justifyContent: 'flex-end',
   gap: vars.space.sm,

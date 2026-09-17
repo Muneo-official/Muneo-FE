@@ -1,4 +1,4 @@
-import { vars } from '@muneo/design-system';
+import { media, vars } from '@muneo/design-system';
 import { style } from '@vanilla-extract/css';
 
 export const wrapper = style({
@@ -11,6 +11,9 @@ export const wrapper = style({
 });
 
 export const card = style({
+  '@media': {
+    [media.mobile]: { padding: '24px' },
+  },
   width: '100%',
   maxWidth: '420px',
   padding: vars.space['3xl'],

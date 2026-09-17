@@ -1,7 +1,17 @@
-import { vars } from '@muneo/design-system';
+import { media, vars } from '@muneo/design-system';
 import { style } from '@vanilla-extract/css';
 
 export const sidebar = style({
+  '@media': {
+    [media.mobile]: {
+      width: '100%',
+      height: 'auto',
+      padding: '16px',
+      gap: '12px',
+      borderRight: 'none',
+      borderBottom: '1px solid #e5e7eb',
+    },
+  },
   width: vars.layout.sidebarWidth,
   height: '100%',
   backgroundColor: vars.color.white,
@@ -24,6 +34,9 @@ export const brand = style({
 });
 
 export const navList = style({
+  '@media': {
+    [media.mobile]: { flexDirection: 'row' },
+  },
   display: 'flex',
   flexDirection: 'column',
   gap: vars.space.xs,
@@ -60,6 +73,9 @@ export const navItemActive = style({
 });
 
 export const userBlock = style({
+  '@media': {
+    [media.mobile]: { display: 'grid', gridTemplateColumns: 'minmax(0, 1fr) auto', gap: '4px 12px' },
+  },
   marginTop: 'auto',
   display: 'flex',
   flexDirection: 'column',
@@ -76,12 +92,18 @@ export const userName = style({
 });
 
 export const userEmail = style({
+  '@media': {
+    [media.mobile]: { gridColumn: 1 },
+  },
   fontSize: vars.typography.fontSize.xs,
   color: vars.color.neutral.n500,
   wordBreak: 'break-all',
 });
 
 export const logoutBtn = style({
+  '@media': {
+    [media.mobile]: { gridColumn: 2, gridRow: '1 / 3', minHeight: '44px', marginTop: 0 },
+  },
   marginTop: vars.space.xs,
   padding: `${vars.space.xs} ${vars.space.sm}`,
   fontSize: vars.typography.fontSize.xs,

@@ -1,4 +1,4 @@
-import { vars } from '@muneo/design-system';
+import { media, vars } from '@muneo/design-system';
 import { style } from '@vanilla-extract/css';
 
 export const card = style({
@@ -9,6 +9,9 @@ export const card = style({
 });
 
 export const table = style({
+  '@media': {
+    [media.mobile]: { minWidth: '800px' },
+  },
   width: '100%',
   borderCollapse: 'collapse',
   fontSize: vars.typography.fontSize.sm,
@@ -50,6 +53,9 @@ export const empty = style({
 });
 
 export const pagination = style({
+  '@media': {
+    [media.mobile]: { flexWrap: 'wrap', gap: '12px' },
+  },
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'space-between',
@@ -68,6 +74,9 @@ export const pageButtons = style({
 });
 
 export const pageBtn = style({
+  '@media': {
+    [media.mobile]: { minHeight: '44px' },
+  },
   padding: `${vars.space.xs} ${vars.space.md}`,
   fontSize: vars.typography.fontSize.sm,
   color: vars.color.neutral.n700,
@@ -84,4 +93,10 @@ export const pageBtn = style({
       cursor: 'not-allowed',
     },
   },
+});
+
+export const tableScroll = style({
+  width: '100%',
+  overflowX: 'auto',
+  overscrollBehaviorX: 'contain',
 });

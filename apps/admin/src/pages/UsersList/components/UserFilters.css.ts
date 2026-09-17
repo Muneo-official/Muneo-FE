@@ -1,4 +1,4 @@
-import { vars } from '@muneo/design-system';
+import { media, vars } from '@muneo/design-system';
 import { globalStyle, style } from '@vanilla-extract/css';
 
 export const card = style({
@@ -12,6 +12,9 @@ export const card = style({
 });
 
 export const row = style({
+  '@media': {
+    [media.mobile]: { gridTemplateColumns: 'minmax(0, 1fr)' },
+  },
   display: 'grid',
   gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))',
   gap: vars.space.md,
