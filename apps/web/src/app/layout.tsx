@@ -17,29 +17,20 @@ import {
   SITE_URL,
 } from '@/constants/seo';
 import { QueryProvider } from './providers/QueryProvider';
+// 본문 폰트는 unicode-range로 쪼갠 서브셋을 쓴다. 전체 가변 폰트(2MB) 대신 화면에 쓰인 글자가 속한 조각만 받는다.
+import 'pretendard/dist/web/variable/pretendardvariable-dynamic-subset.css';
 import './globals.css';
 
-const pretendard = localFont({
-  src: './fonts/PretendardVariable.woff2',
-  variable: '--font-pretendard',
-  display: 'swap',
-  weight: '45 920',
-});
-
+// 디스플레이 폰트는 일부 제목(500·700)에만 쓰인다. 루트 레이아웃에서 preload하면 로그인 등
+// 쓰지 않는 페이지까지 모두 내려받으므로, 실제로 렌더될 때만 받도록 preload를 끈다.
 const paperlogy = localFont({
   src: [
-    { path: './fonts/Paperlogy-1Thin.ttf', weight: '100' },
-    { path: './fonts/Paperlogy-2ExtraLight.ttf', weight: '200' },
-    { path: './fonts/Paperlogy-3Light.ttf', weight: '300' },
-    { path: './fonts/Paperlogy-4Regular.ttf', weight: '400' },
-    { path: './fonts/Paperlogy-5Medium.ttf', weight: '500' },
-    { path: './fonts/Paperlogy-6SemiBold.ttf', weight: '600' },
-    { path: './fonts/Paperlogy-7Bold.ttf', weight: '700' },
-    { path: './fonts/Paperlogy-8ExtraBold.ttf', weight: '800' },
-    { path: './fonts/Paperlogy-9Black.ttf', weight: '900' },
+    { path: './fonts/Paperlogy-5Medium.woff2', weight: '500' },
+    { path: './fonts/Paperlogy-7Bold.woff2', weight: '700' },
   ],
   variable: '--font-paperlogy',
   display: 'swap',
+  preload: false,
 });
 
 export const metadata: Metadata = {
@@ -91,11 +82,7 @@ const gtmId = process.env.NEXT_PUBLIC_GTM_ID;
 
 const RootLayout = ({ children }: { children: React.ReactNode }) => {
   return (
-    <html
-      lang="ko"
-      className={`${lightTheme} ${pretendard.variable} ${paperlogy.variable}`}
-      data-scroll-behavior="smooth"
-    >
+    <html lang="ko" className={`${lightTheme} ${paperlogy.variable}`} data-scroll-behavior="smooth">
       <body>
         <QueryProvider>
           {children}
