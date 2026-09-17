@@ -66,7 +66,8 @@ export const SocialSignupModal = ({
           <CloseRoundFill />
         </button>
       )}
-      <form className={styles.inner} onSubmit={onSubmit} noValidate>
+      {/* JS 로드 전에 제출돼도 입력값이 GET 쿼리스트링(URL·방문 기록·분석 이벤트)에 남지 않도록 POST로 둔다. */}
+      <form className={styles.inner} method="post" onSubmit={onSubmit} noValidate>
         <div className={styles.upper}>
           <AuthModalHeader onLogoClick={onLogoClick} />
 
