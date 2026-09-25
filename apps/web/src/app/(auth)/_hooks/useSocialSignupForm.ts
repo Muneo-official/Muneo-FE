@@ -7,6 +7,7 @@ import { useForm } from 'react-hook-form';
 import { socialSignup } from '@/api/auth';
 import { isApiError } from '@/api/errors';
 import { useViewTransitionRouter } from '@/hooks/useViewTransitionRouter';
+import { trackAuth } from '@/lib/analytics';
 import { applyValidationErrors } from '@/lib/forms/applyValidationErrors';
 import { socialSignupSchema, type SocialSignupFormValues } from '@/lib/validations/auth';
 
@@ -40,6 +41,8 @@ export const useSocialSignupForm = (ticket: string) => {
         phoneNumber: data.phone,
         birthDate: data.birthDate,
       });
+      // 소셜 가입 티켓은 현재 카카오에서만 발급된다.
+      trackAuth('sign_up', 'kakao');
       push('/home');
       router.refresh();
     } catch (e) {

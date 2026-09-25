@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import { analyzeRisk, type RiskAnalyzeRequestBody, type RiskReport } from '@/api/analyze';
+import { trackEvent } from '@/lib/analytics';
 import { mapApiReportToDiagnosisResult } from '../_lib/mapApiReport';
 import { type AnalysisFormData, type DiagnosisResult, type UploadedFile } from '../_types/analysis.types';
 
@@ -108,10 +109,12 @@ export const useAnalysisStore = create<AnalysisStore>((set, get) => ({
       // 4. UI 상태 업데이트 — 저장은 사용자가 직접 버튼으로 트리거
       const diagnosisResult = mapApiReportToDiagnosisResult(report);
       set({ diagnosisResult, rawReport: report, rawInput: requestBody, view: 'report', loading: false });
+      trackEvent('analysis_submit_success', { file_count: files.length });
     } catch (err) {
       if (err instanceof Error && err.name === 'AbortError') {
         return;
       }
+      trackEvent('analysis_submit_error', { file_count: get().files.length });
       if (process.env.NODE_ENV === 'development') {
         console.error('[견적서 진단] 오류:', err);
       }

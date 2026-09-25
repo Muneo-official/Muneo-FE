@@ -3,6 +3,7 @@ import { redirect } from 'next/navigation';
 import { type ReactNode } from 'react';
 import { isApiError } from '@/api/errors';
 import { getServerMe } from '@/api/user/server';
+import { AnalyticsUser } from '@/components/analytics';
 import { type AuthUser } from '@/types/auth';
 import { SidebarShell } from './_components/SidebarShell';
 import { UserProvider } from './_components/UserProvider/UserProvider';
@@ -30,6 +31,7 @@ const MainLayout = async ({ children }: { children: ReactNode }) => {
 
   return (
     <UserProvider user={user}>
+      <AnalyticsUser id={user.id} authProvider={user.authProvider} role={user.role} />
       <div className={styles.wrapper}>
         <SidebarShell className={styles.sidebar} user={user} />
         <main className={styles.main}>{children}</main>

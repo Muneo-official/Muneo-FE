@@ -7,6 +7,7 @@ import { useForm } from 'react-hook-form';
 import { getKakaoLoginUrl } from '@/api/auth';
 import { isApiError } from '@/api/errors';
 import { login } from '@/api/user';
+import { markSocialLoginStart, trackAuth } from '@/lib/analytics';
 import { loginSchema, type LoginFormValues } from '@/lib/validations/auth';
 
 export const useLoginForm = () => {
@@ -39,6 +40,7 @@ export const useLoginForm = () => {
     } finally {
       setIsSubmitting(false);
     }
+    trackAuth('login', 'email');
 
     // startViewTransition으로 감싸면 홈 렌더를 기다리는 동안 화면이 얼어붙어 진행 상태가 보이지 않는다.
     // 트랜지션으로 이동해 로그인 화면이 진행 상태를 계속 보여주다가, 홈이 준비되면 한 번에 전환되도록 한다.
@@ -53,6 +55,7 @@ export const useLoginForm = () => {
     setIsKakaoLoading(true);
     try {
       const { loginUrl } = await getKakaoLoginUrl();
+      markSocialLoginStart('kakao');
       window.location.href = loginUrl;
     } catch (e) {
       console.error('카카오 로그인 URL 조회 실패', e);

@@ -6,6 +6,7 @@ import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { signup } from '@/api/user';
 import { useViewTransitionRouter } from '@/hooks/useViewTransitionRouter';
+import { trackAuth } from '@/lib/analytics';
 import { applyValidationErrors } from '@/lib/forms/applyValidationErrors';
 import { signupSchema, type SignupFormValues } from '@/lib/validations/auth';
 
@@ -44,6 +45,7 @@ export const useSignupForm = () => {
         phoneNumber: data.phone,
         birthDate: data.birthDate,
       });
+      trackAuth('sign_up', 'email');
       push('/home');
       router.refresh();
     } catch (e) {

@@ -2,6 +2,7 @@
 
 import { create } from 'zustand';
 import { type EstimateGenerateResponse } from '@/api/estimate';
+import { trackEvent } from '@/lib/analytics';
 import {
   BASIC_PROCESSES,
   type EstimateStep,
@@ -78,6 +79,7 @@ export const useEstimateStore = create<EstimateStore>((set, get) => ({
   nextStep: () => {
     const { currentStep } = get();
     if (currentStep < MAX_STEP) {
+      trackEvent('estimate_step_complete', { step: currentStep });
       set({ currentStep: (currentStep + 1) as EstimateStep });
     }
   },

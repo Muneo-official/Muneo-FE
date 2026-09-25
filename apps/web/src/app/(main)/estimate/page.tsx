@@ -2,6 +2,7 @@
 
 import { useEffect } from 'react';
 import { generateEstimate } from '@/api/estimate';
+import { trackEvent } from '@/lib/analytics';
 import { EstimateLoadingScreen } from './_components/EstimateLoadingScreen/EstimateLoadingScreen';
 import { Step1BasicInfo } from './_components/Step1BasicInfo/Step1BasicInfo';
 import { Step2ProcessSelection } from './_components/Step2ProcessSelection/Step2ProcessSelection';
@@ -41,6 +42,7 @@ const EstimatePage = () => {
 
     const fetchEstimate = async () => {
       setGeneratingState(true, null);
+      const processCount = step2.selectedProcesses.length;
       try {
         const payload = mapToApiPayload(step1, step2, step3, step4);
         const [result] = await Promise.all([
@@ -49,8 +51,10 @@ const EstimatePage = () => {
         ]);
         setEstimateResult(result);
         setGeneratingState(false, null);
+        trackEvent('estimate_generate_success', { process_count: processCount });
       } catch {
         setGeneratingState(false, '가견적 생성에 실패했습니다. 다시 시도해 주세요.');
+        trackEvent('estimate_generate_error', { process_count: processCount });
       }
     };
 
