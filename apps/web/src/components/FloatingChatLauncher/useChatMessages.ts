@@ -3,6 +3,7 @@
 import { useCallback, useState } from 'react';
 import { useAskChatbot } from '@/api/chatbot';
 import { ApiError, isApiError } from '@/api/errors';
+import { trackEvent } from '@/lib/analytics';
 
 export type ChatMessageKind = 'text' | 'login-required';
 export type ChatMessageStatus = 'loading' | 'typing' | 'done';
@@ -45,6 +46,7 @@ export const useChatMessages = () => {
       if (!trimmed || isPending) {
         return false;
       }
+      trackEvent('chat_message_send');
       const pendingId = createMessageId();
       setMessages((prev) => [
         ...prev,
