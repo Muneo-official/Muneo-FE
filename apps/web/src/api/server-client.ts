@@ -1,5 +1,7 @@
 import 'server-only';
 import { cookies } from 'next/headers';
+import { redirect } from 'next/navigation';
+import { isServiceUnavailableStatus } from '@/lib/serviceAvailability';
 import { getApiBaseUrl } from './baseUrl';
 import { toApiError } from './errors';
 
@@ -20,12 +22,22 @@ export const serverFetch = async <T>(path: string, options: ServerFetchOptions =
     new Headers(customHeaders).forEach((value, key) => headers.set(key, value));
   }
 
-  const res = await fetch(`${getApiBaseUrl()}/${path}`, {
-    ...rest,
-    headers,
-    body: body !== undefined ? JSON.stringify(body) : undefined,
-    cache: 'no-store',
-  });
+  let res: Response;
+  try {
+    res = await fetch(`${getApiBaseUrl()}/${path}`, {
+      ...rest,
+      headers,
+      body: body !== undefined ? JSON.stringify(body) : undefined,
+      cache: 'no-store',
+      signal: rest.signal ?? AbortSignal.timeout(10000),
+    });
+  } catch {
+    redirect('/maintenance');
+  }
+
+  if (isServiceUnavailableStatus(res.status)) {
+    redirect('/maintenance');
+  }
 
   if (!res.ok) {
     const errorBody = await res.json().catch(() => null);

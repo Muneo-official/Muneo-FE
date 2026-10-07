@@ -4,6 +4,7 @@ import { type ReactNode } from 'react';
 import { isApiError } from '@/api/errors';
 import { getServerMe } from '@/api/user/server';
 import { AnalyticsUser } from '@/components/analytics';
+import { isServiceUnavailableStatus } from '@/lib/serviceAvailability';
 import { type AuthUser } from '@/types/auth';
 import { SidebarShell } from './_components/SidebarShell';
 import { UserProvider } from './_components/UserProvider/UserProvider';
@@ -25,6 +26,9 @@ const MainLayout = async ({ children }: { children: ReactNode }) => {
   } catch (e) {
     if (isApiError(e) && e.status === 401) {
       redirect('/login');
+    }
+    if (isApiError(e) && isServiceUnavailableStatus(e.status)) {
+      redirect('/maintenance');
     }
     throw e;
   }

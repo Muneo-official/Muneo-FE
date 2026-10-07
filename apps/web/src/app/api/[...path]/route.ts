@@ -69,6 +69,12 @@ const appendSetCookies = (request: NextRequest, response: NextResponse, upstream
 };
 
 const proxy = async (request: NextRequest, { params }: { params: Promise<{ path: string[] }> }) => {
+  if (process.env.MAINTENANCE_MODE === 'true') {
+    return NextResponse.json(
+      { code: 'MAINTENANCE', message: '서비스 점검 중입니다.' },
+      { status: 503, headers: { 'Retry-After': '60', 'Cache-Control': 'no-store' } }
+    );
+  }
   const { path } = await params;
   const method = request.method.toUpperCase();
   const hasBody = method !== 'GET' && method !== 'HEAD';
@@ -79,6 +85,7 @@ const proxy = async (request: NextRequest, { params }: { params: Promise<{ path:
       headers: getForwardHeaders(request),
       body: hasBody ? await request.arrayBuffer() : undefined,
       redirect: 'manual',
+      signal: AbortSignal.any([request.signal, AbortSignal.timeout(240000)]),
     });
   } catch (e) {
     console.error('[api proxy] upstream fetch failed', e);

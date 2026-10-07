@@ -1,4 +1,5 @@
 import 'server-only';
+import { unstable_rethrow } from 'next/navigation';
 import { cache } from 'react';
 import { serverFetch } from '../server-client';
 import { type EstimateItem, type RiskItem } from './types';
@@ -42,6 +43,7 @@ const settleList = async <T>(promise: Promise<T[]>, label: string): Promise<T[]>
   try {
     return await promise;
   } catch (e) {
+    unstable_rethrow(e);
     // 한쪽 API가 죽어도 페이지는 살리는 의도된 폴백이므로 warn 레벨로만 남긴다.
     console.warn(`[history] ${label} 조회 실패 — 빈 목록으로 대체`, e);
     return [];

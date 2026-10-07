@@ -29,7 +29,6 @@ const AnalysisPage = () => {
   const form = useAnalysisStore((s) => s.form);
   const files = useAnalysisStore((s) => s.files);
   const cancelAnalysis = useAnalysisStore((s) => s.cancelAnalysis);
-  const reset = useAnalysisStore((s) => s.reset);
 
   if (loading) {
     return (
@@ -39,22 +38,16 @@ const AnalysisPage = () => {
     );
   }
 
-  if (error) {
-    return (
-      <div className={styles.page}>
-        <div className={styles.loadingState}>
-          <p className={styles.errorText}>{error}</p>
-          <button type="button" onClick={reset} className={styles.retryButton}>
-            다시 시도
-          </button>
-        </div>
-      </div>
-    );
-  }
-
   return (
     <div className={styles.page}>
-      <div className={styles.content}>{view === 'input' ? <InputView /> : <DiagnosisReport />}</div>
+      <div className={styles.content}>
+        {error && (
+          <p role="alert" className={styles.errorText}>
+            {error} 입력한 내용을 확인하고 다시 진단해 주세요.
+          </p>
+        )}
+        {view === 'input' ? <InputView /> : <DiagnosisReport />}
+      </div>
     </div>
   );
 };

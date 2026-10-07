@@ -21,6 +21,9 @@ export const isClientError = (e: unknown): e is ClientError => e instanceof Erro
 export const isApiError = (e: unknown): e is ApiError => e instanceof ApiError;
 
 export const toApiError = (e: unknown): ApiError => {
+  if (isApiError(e)) {
+    return e;
+  }
   if (isClientError(e) && e.body !== null && typeof e.body === 'object') {
     const body = e.body as Partial<ApiErrorResponse> & { detail?: string };
     const message = body.message ?? body.detail ?? 'API 오류가 발생했습니다.';

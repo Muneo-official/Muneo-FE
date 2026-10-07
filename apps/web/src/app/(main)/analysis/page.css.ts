@@ -42,40 +42,10 @@ export const pageSubtitle = style({
   lineHeight: 'normal',
 });
 
-export const loadingState = style({
-  display: 'flex',
-  flexDirection: 'column',
-  alignItems: 'center',
-  justifyContent: 'center',
-  gap: '16px',
-  minHeight: '400px',
-});
-
-export const loadingText = style({
-  fontFamily: vars.typography.fontFamily,
-  fontSize: vars.typography.fontSize.md,
-  color: vars.color.neutral.n500,
-});
-
 export const errorText = style({
   fontFamily: vars.typography.fontFamily,
   fontSize: vars.typography.fontSize.md,
   color: vars.color.semantic.danger,
-});
-
-export const retryButton = style({
-  fontFamily: vars.typography.fontFamily,
-  fontSize: vars.typography.fontSize.sm,
-  fontWeight: vars.typography.fontWeight.medium,
-  color: vars.color.neutral.n700,
-  backgroundColor: 'transparent',
-  border: `1px solid ${vars.color.neutral.n300}`,
-  borderRadius: '8px',
-  padding: '8px 20px',
-  cursor: 'pointer',
-  ':hover': {
-    backgroundColor: vars.color.neutral.n100,
-  },
 });
 
 export const inputLayout = style({

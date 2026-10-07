@@ -1,4 +1,5 @@
 import { NextResponse, type NextRequest } from 'next/server';
+import { getLoginHref } from '@/lib/authRedirect';
 
 const PROTECTED_PREFIXES = ['/home', '/estimate', '/analysis', '/history', '/profile'];
 
@@ -18,24 +19,35 @@ export const proxy = async (request: NextRequest) => {
     return NextResponse.next();
   }
 
+  const returnTo = pathname + request.nextUrl.search;
+  const maintenanceUrl = new URL(`/maintenance?next=${encodeURIComponent(returnTo)}`, request.url);
+  if (process.env.MAINTENANCE_MODE === 'true') {
+    return NextResponse.redirect(maintenanceUrl);
+  }
+
   const accessToken = request.cookies.get('access_token')?.value;
   if (accessToken) {
     return NextResponse.next();
   }
 
   let refreshRes: Response;
-  const apiBase = getApiBase();
   try {
+    const apiBase = getApiBase();
     refreshRes = await fetch(`${apiBase}/api/v1/users/refresh`, {
       method: 'POST',
       headers: { Cookie: request.headers.get('cookie') ?? '' },
+      signal: AbortSignal.timeout(10000),
     });
   } catch {
-    return NextResponse.redirect(new URL('/login', request.url));
+    return NextResponse.redirect(maintenanceUrl);
+  }
+
+  if (refreshRes.status >= 500) {
+    return NextResponse.redirect(maintenanceUrl);
   }
 
   if (!refreshRes.ok) {
-    return NextResponse.redirect(new URL('/login', request.url));
+    return NextResponse.redirect(new URL(getLoginHref(returnTo), request.url));
   }
 
   const response = NextResponse.next();
