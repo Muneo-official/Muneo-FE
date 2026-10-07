@@ -33,6 +33,8 @@ interface AnalysisStore {
   rawReport: RiskReport | null;
   /** 저장 API에 전달할 원본 요청 데이터 */
   rawInput: RiskAnalyzeRequestBody | null;
+  savedReportId: string | null;
+  setSavedReportId: (id: string) => void;
   setForm: (patch: Partial<AnalysisFormData>) => void;
   addFile: (file: File) => void;
   removeFile: (name: string) => void;
@@ -52,6 +54,8 @@ export const useAnalysisStore = create<AnalysisStore>((set, get) => ({
   diagnosisResult: null,
   rawReport: null,
   rawInput: null,
+  savedReportId: null,
+  setSavedReportId: (savedReportId) => set({ savedReportId }),
   setForm: (patch) => set((s) => ({ form: { ...s.form, ...patch } })),
   addFile: (file) =>
     set((s) => ({
@@ -108,7 +112,14 @@ export const useAnalysisStore = create<AnalysisStore>((set, get) => ({
 
       // 4. UI 상태 업데이트 — 저장은 사용자가 직접 버튼으로 트리거
       const diagnosisResult = mapApiReportToDiagnosisResult(report);
-      set({ diagnosisResult, rawReport: report, rawInput: requestBody, view: 'report', loading: false });
+      set({
+        savedReportId: null,
+        diagnosisResult,
+        rawReport: report,
+        rawInput: requestBody,
+        view: 'report',
+        loading: false,
+      });
       trackEvent('analysis_submit_success', { file_count: files.length });
     } catch (err) {
       if (err instanceof Error && err.name === 'AbortError') {
@@ -135,6 +146,7 @@ export const useAnalysisStore = create<AnalysisStore>((set, get) => ({
       diagnosisResult: null,
       rawReport: null,
       rawInput: null,
+      savedReportId: null,
       error: null,
       loading: false,
     });
@@ -147,6 +159,7 @@ export const useAnalysisStore = create<AnalysisStore>((set, get) => ({
       diagnosisResult: null,
       rawReport: null,
       rawInput: null,
+      savedReportId: null,
       error: null,
       loading: false,
     }),

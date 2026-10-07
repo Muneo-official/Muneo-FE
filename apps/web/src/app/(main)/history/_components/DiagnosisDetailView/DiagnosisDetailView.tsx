@@ -1,6 +1,7 @@
 'use client';
 
 import { CircleWarningIcon, StatusCard, TriangleWarningIcon } from '@muneo/design-system';
+import { DiagnosisFeedback } from '@/app/(main)/analysis/_components/DiagnosisFeedback/DiagnosisFeedback';
 import { DiagnosisInsights } from '@/app/(main)/analysis/_components/DiagnosisInsights/DiagnosisInsights';
 import { ProcessSection } from '@/app/(main)/analysis/_components/ProcessSection/ProcessSection';
 import { type DiagnosisResult } from '@/app/(main)/analysis/_types/analysis.types';
@@ -8,9 +9,10 @@ import * as styles from './DiagnosisDetailView.css';
 
 interface DiagnosisDetailViewProps {
   result: DiagnosisResult;
+  reportId?: string;
 }
 
-export const DiagnosisDetailView = ({ result }: DiagnosisDetailViewProps) => {
+export const DiagnosisDetailView = ({ result, reportId }: DiagnosisDetailViewProps) => {
   return (
     <div className={styles.container}>
       <div className={styles.reportHeader}>
@@ -58,6 +60,8 @@ export const DiagnosisDetailView = ({ result }: DiagnosisDetailViewProps) => {
           <ProcessSection key={section.id} section={section} />
         ))}
       </div>
+
+      <DiagnosisFeedback key={reportId} reportId={reportId} />
     </div>
   );
 };

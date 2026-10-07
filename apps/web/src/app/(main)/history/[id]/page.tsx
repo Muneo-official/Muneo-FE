@@ -41,7 +41,10 @@ export default async function HistoryDetailPage({ params }: { params: Promise<{ 
             분석 이력
           </TransitionLink>
           <div className={styles.content}>
-            <DiagnosisDetailView result={mapApiReportToDiagnosisResult(risk.result.report, risk.created_at)} />
+            <DiagnosisDetailView
+              reportId={risk.id}
+              result={mapApiReportToDiagnosisResult(risk.result.report, risk.created_at)}
+            />
           </div>
         </div>
       </div>
