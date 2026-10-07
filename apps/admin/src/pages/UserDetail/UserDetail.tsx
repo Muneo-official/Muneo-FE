@@ -2,6 +2,7 @@ import { Modal } from '@muneo/design-system';
 import { Badge } from '@/components/Badge';
 import { Card } from '@/components/Card';
 import { ROLE_LABEL, PROVIDER_LABEL } from '@/lib/formatters';
+import { UserActivity } from './components/UserActivity/UserActivity';
 import { UserDangerZone } from './components/UserDangerZone';
 import { UserEditForm } from './components/UserEditForm';
 import { UserRoleSection } from './components/UserRoleSection';
@@ -28,7 +29,7 @@ export const UserDetail = () => {
     goBack,
   } = useUserDetail();
 
-  if (!Number.isFinite(userId) || userId <= 0) {
+  if (!Number.isSafeInteger(userId) || userId <= 0) {
     return <div className={styles.loading}>잘못된 사용자 ID입니다.</div>;
   }
 
@@ -90,6 +91,8 @@ export const UserDetail = () => {
           </div>
         </div>
       </Card>
+
+      <UserActivity key={userId} userId={userId} />
 
       <UserEditForm form={form} errors={errors} isSubmitting={isSubmitting} onChange={setForm} onSubmit={submitForm} />
 

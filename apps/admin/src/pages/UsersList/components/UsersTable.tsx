@@ -31,7 +31,19 @@ export const UsersTable = ({ data, isLoading, onRowClick, onPrevPage, onNextPage
             <tr key={user.id} className={styles.tr} onClick={() => onRowClick(user.id)}>
               <td className={styles.td}>{user.id}</td>
               <td className={styles.td}>{user.email}</td>
-              <td className={styles.td}>{user.name}</td>
+              <td className={styles.td}>
+                <button
+                  type="button"
+                  className={styles.pageBtn}
+                  onClick={(event) => {
+                    event.stopPropagation();
+                    onRowClick(user.id);
+                  }}
+                  aria-label={`${user.name} 사용자 상세 보기`}
+                >
+                  {user.name}
+                </button>
+              </td>
               <td className={styles.td}>{formatPhone(user.phoneNumber)}</td>
               <td className={styles.td}>{PROVIDER_LABEL[user.authProvider]}</td>
               <td className={styles.td}>
