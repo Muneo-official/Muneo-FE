@@ -74,6 +74,7 @@ export interface EstimateGenerateResponse {
   참고_사례_수: number;
   참고_사례: ReferenceSample[];
   검색_쿼리: string;
+  데이터_부족_공종?: string[] | null;
 }
 
 export interface EstimateSaveRequest {

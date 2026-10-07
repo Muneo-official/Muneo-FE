@@ -27,7 +27,8 @@ export const BASIC_PROCESSES = [
 ] as const satisfies readonly ProcessInfo[];
 
 export const OPTIONAL_PROCESSES = [
-  { id: 'sash', name: '샷시', description: '샷시(창문) 교체\n현관 중문 설치' },
+  { id: 'sash', name: '창호 (샷시)', description: '샷시(창문) 교체\n발코니 터닝·폴딩도어' },
+  { id: 'door', name: '도어', description: '방문·중문·현관문\n문틀, 손잡이 등 부속' },
   { id: 'film', name: '필름', description: '문틀, 샤시 래핑\n가구 표면 필름' },
   { id: 'furniture', name: '가구', description: '붙박이장, 신발장\n냉장고장 맞춤 제작' },
 ] as const satisfies readonly ProcessInfo[];

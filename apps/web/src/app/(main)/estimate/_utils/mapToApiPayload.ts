@@ -15,6 +15,7 @@ const PROCESS_ID_TO_KO: Record<string, string> = {
   painting: '도장',
   finishing: '마감/공과잡비',
   sash: '창호',
+  door: '도어',
   film: '필름',
   furniture: '가구',
 };

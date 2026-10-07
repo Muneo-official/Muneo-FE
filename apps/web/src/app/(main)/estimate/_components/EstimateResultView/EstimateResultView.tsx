@@ -12,7 +12,7 @@ const formatWon = (amount: number): string => {
 
 const formatRange = (min: number, max: number): string => `${formatWon(min)} ~ ${formatWon(max)}`;
 
-const SELECTION_ONLY_KO = new Set(['전기/조명', '목공', '도장', '마감/공과잡비', '창호', '필름', '가구']);
+const SELECTION_ONLY_KO = new Set(['전기/조명', '목공', '도장', '마감/공과잡비', '창호', '도어', '필름', '가구']);
 
 // ─────────── 아코디언 아이템 ───────────
 
@@ -26,6 +26,7 @@ interface ProcessEstimateDisplay {
   processName: string;
   totalRange: string;
   items: DisplayItem[];
+  insufficientData: boolean;
 }
 
 const buildDisplayItems = (lineItems: EstimateLineItem[]): DisplayItem[] =>
@@ -77,7 +78,9 @@ const AccordionItem = ({ estimate }: { estimate: ProcessEstimateDisplay }) => {
             ))}
           </div>
         ) : (
-          <p className={styles.emptyNote}>상세 항목 준비 중입니다.</p>
+          <p className={styles.emptyNote}>
+            {estimate.insufficientData ? '참고할 사례가 부족해 금액을 산출하지 못했어요.' : '상세 항목 준비 중입니다.'}
+          </p>
         )}
       </div>
     </div>
@@ -243,7 +246,10 @@ export const EstimateResultView = ({ input, result, onEdit, actions }: EstimateR
   const processCount = input.공종.length;
   const demolitionLabel = input.철거여부;
 
-  const selectionOnlyNames = input.공종.filter((name) => SELECTION_ONLY_KO.has(name));
+  const insufficientNames = result.데이터_부족_공종 ?? [];
+  const selectionOnlyNames = input.공종.filter(
+    (name) => SELECTION_ONLY_KO.has(name) && !insufficientNames.includes(name)
+  );
 
   const accordionItems: ProcessEstimateDisplay[] = result.선택_공종.map((processName) => {
     const rangeData = result.공종별_단가_범위[processName];
@@ -252,6 +258,7 @@ export const EstimateResultView = ({ input, result, onEdit, actions }: EstimateR
       processName,
       totalRange: rangeData ? formatRange(rangeData.최소, rangeData.최대) : '-',
       items: buildDisplayItems(lineItems),
+      insufficientData: insufficientNames.includes(processName),
     };
   });
 
@@ -282,6 +289,15 @@ export const EstimateResultView = ({ input, result, onEdit, actions }: EstimateR
             <div className={styles.selectionOnlyNotice}>
               <span className={styles.selectionOnlyText}>
                 ℹ 공종 선택만 반영된 항목: {selectionOnlyNames.join(', ')} — 세부 단가는 현장 방문 후 확인하세요.
+              </span>
+            </div>
+          )}
+
+          {insufficientNames.length > 0 && (
+            <div className={styles.selectionOnlyNotice}>
+              <span className={styles.selectionOnlyText}>
+                ℹ 참고 사례가 부족해 금액을 산출하지 못한 항목: {insufficientNames.join(', ')} — 현장 견적으로
+                확인하세요.
               </span>
             </div>
           )}
