@@ -18,6 +18,7 @@ const initialStep1: Step1Data = {
   spaceType: null,
   area: null,
   roomCount: null,
+  bathroomCount: null,
 };
 
 const initialStep2: Step2Data = {

@@ -1,6 +1,6 @@
 'use client';
 
-import { SelectButton } from '@muneo/design-system';
+import { Button, SelectButton } from '@muneo/design-system';
 import { type ReactNode, useState } from 'react';
 import { useEstimateStore } from '../../_store/estimateStore';
 import {
@@ -9,12 +9,11 @@ import {
   SANITARY_WARES,
   WALLPAPER_ROOMS,
   type BathroomDetail,
-  type DemolitionDetail,
   type FlooringDetail,
   type KitchenDetail,
   type WallpaperDetail,
 } from '../../_types';
-import { ChatHint } from '../ChatHint/ChatHint';
+import { getMissingProcessFields, validateProcessSelection } from '../../_utils/validateEstimate';
 import { ProcessCheckbox } from '../ProcessCheckbox/ProcessCheckbox';
 import { StepActions } from '../StepActions/StepActions';
 import * as styles from './Step2ProcessSelection.css';
@@ -45,20 +44,6 @@ interface SectionProps<T> {
   data: Partial<T>;
   onChange: (patch: Partial<T>) => void;
 }
-
-const DemolitionSection = ({ data, onChange }: SectionProps<DemolitionDetail>) => (
-  <div className={styles.sectionBody}>
-    <Field label="철거 범위">
-      <div className={styles.buttonRow}>
-        {(['전체 철거', '부분 철거'] as const).map((opt) => (
-          <SelectButton key={opt} selected={data.scope === opt} onClick={() => onChange({ scope: opt })}>
-            {opt}
-          </SelectButton>
-        ))}
-      </div>
-    </Field>
-  </div>
-);
 
 const WallpaperSection = ({ data, onChange }: SectionProps<WallpaperDetail>) => (
   <div className={styles.sectionBody}>
@@ -117,10 +102,15 @@ const WallpaperSection = ({ data, onChange }: SectionProps<WallpaperDetail>) => 
           </SelectButton>
         ))}
       </div>
-      <ChatHint visible={data.underpaperWork === '모름'} message="도배 전 초배 작업이 필요한 경우는 언제인가요?" />
+      {data.underpaperWork === '모름' && (
+        <p className={styles.infoNote}>
+          초배는 벽면을 고르게 준비하는 작업이에요. 기존 벽면 상태에 따라 달라지므로 현장 방문 때 포함 여부를 확인해
+          주세요.
+        </p>
+      )}
     </Field>
     <p className={styles.infoNote}>
-      실크벽지 기준으로 산출됩니다. 합지 선택 시 약 35% 저렴, 천연벽지는 약 40% 비쌉니다.
+      벽지 종류와 시공 범위를 선택해 주세요. 브랜드·모델·벽면 상태에 따라 실제 금액은 달라질 수 있어요.
     </p>
   </div>
 );
@@ -165,27 +155,20 @@ const FlooringSection = ({ data, onChange }: SectionProps<FlooringDetail>) => (
           </SelectButton>
         ))}
       </div>
-      <ChatHint visible={data.floorDemolition === '모름'} message="기존 바닥을 철거해야 하는 상황은 어떤 경우인가요?" />
+      {data.floorDemolition === '모름' && (
+        <p className={styles.infoNote}>
+          바닥 들뜸이나 손상, 기존 자재에 따라 철거가 필요할 수 있어요. 현장 상태를 업체에 확인해 주세요.
+        </p>
+      )}
     </Field>
-    <p className={styles.infoNote}>강마루 기준 산출. 강화마루 약 25% 저렴, 원목마루 약 2배.</p>
+    <p className={styles.infoNote}>
+      자재 종류와 철거 여부를 기준으로 산출해요. 제품 규격과 바닥 상태는 현장에서 확인해 주세요.
+    </p>
   </div>
 );
 
 const BathroomSection = ({ data, onChange }: SectionProps<BathroomDetail>) => (
   <div className={styles.sectionBody}>
-    <Field label="욕실 개수">
-      <div className={styles.buttonRow}>
-        {(['1개', '2개', '3개 이상'] as const).map((opt) => (
-          <SelectButton
-            key={opt}
-            selected={data.bathroomCount === opt}
-            onClick={() => onChange({ bathroomCount: opt })}
-          >
-            {opt}
-          </SelectButton>
-        ))}
-      </div>
-    </Field>
     <Field label="욕실 크기">
       <div className={styles.buttonRow}>
         {(['소형(1평 미만)', '중형(1~2평)', '대형(2평 이상)'] as const).map((opt) => (
@@ -210,6 +193,9 @@ const BathroomSection = ({ data, onChange }: SectionProps<BathroomDetail>) => (
     </Field>
     <Field label="위생도기">
       <div className={styles.buttonRow}>
+        <SelectButton selected={data.sanitaryWare?.length === 0} onClick={() => onChange({ sanitaryWare: [] })}>
+          교체 안함
+        </SelectButton>
         {SANITARY_WARES.map((item) => (
           <SelectButton
             key={item}
@@ -221,7 +207,9 @@ const BathroomSection = ({ data, onChange }: SectionProps<BathroomDetail>) => (
         ))}
       </div>
     </Field>
-    <p className={styles.infoNote}>전면 리모델링 시 방수 공사가 필수 포함됩니다. 대형(2평 이상) 시 약 30% 할증.</p>
+    <p className={styles.infoNote}>
+      기본 정보에서 입력한 화장실 개수로 산출해요. 현재 산출 기준에는 방수 공사가 포함돼요.
+    </p>
   </div>
 );
 
@@ -236,13 +224,14 @@ const KitchenSection = ({ data, onChange }: SectionProps<KitchenDetail>) => (
         ))}
       </div>
     </Field>
-    <p className={styles.infoNote}>ㄱ자 기준으로 산출. ㄷ자 약 40% 추가.</p>
+    <p className={styles.infoNote}>
+      싱크대 형태를 기준으로 산출해요. 실제 길이·상판·브랜드는 업체 견적에서 확인해 주세요.
+    </p>
   </div>
 );
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const SECTION_MAP: Partial<Record<string, React.ComponentType<SectionProps<any>>>> = {
-  demolition: DemolitionSection,
   wallpaper: WallpaperSection,
   flooring: FlooringSection,
   bathroom: BathroomSection,
@@ -254,20 +243,19 @@ const SECTION_MAP: Partial<Record<string, React.ComponentType<SectionProps<any>>
 export const Step2ProcessSelection = () => {
   const { step2, step4, setStep2, setStep4, toggleProcess, nextStep, prevStep } = useEstimateStore();
   const [validationError, setValidationError] = useState<string | null>(null);
-  const [openId, setOpenId] = useState<string | null>(null);
+  const [openId, setOpenId] = useState<string | null>('wallpaper');
 
   const handleNext = () => {
     if (step2.selectedProcesses.length === 0) {
       setValidationError('공정을 1개 이상 선택해주세요.');
       return;
     }
-    const wallpaperSelected = step2.selectedProcesses.includes('wallpaper');
-    if (
-      wallpaperSelected &&
-      step4.wallpaper?.wallpaperScope === '부분 도배' &&
-      !step4.wallpaper?.partialRooms?.length
-    ) {
-      setValidationError('부분 도배 시공할 공간을 1개 이상 선택해주세요.');
+    const missing = validateProcessSelection(step2, step4)[0];
+    if (missing) {
+      const name = ALL_PROCESSES.find((process) => process.id === missing.id)?.name;
+      setValidationError(`${name}: ${missing.fields.join(', ')} 항목을 선택해 주세요.`);
+      setOpenId(missing.id);
+      requestAnimationFrame(() => document.getElementById(`detail-${missing.id}`)?.focus());
       return;
     }
     setValidationError(null);
@@ -308,6 +296,18 @@ export const Step2ProcessSelection = () => {
         </div>
 
         <div className={styles.cardBody}>
+          <div className={styles.buttonRow}>
+            <Button
+              variant="outlineSecondary"
+              onClick={() => setStep2({ selectedProcesses: ALL_PROCESSES.map((process) => process.id) })}
+            >
+              전체 선택
+            </Button>
+            <Button variant="outlineSecondary" onClick={() => setStep2({ selectedProcesses: [] })}>
+              전체 해제
+            </Button>
+            <span className={styles.detailHint}>{step2.selectedProcesses.length}개 공정 선택</span>
+          </div>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '20px', width: '100%' }}>
             <div className={styles.processSection}>
               <span className={styles.sectionLabel}>기본 공정 (자동 포함)</span>
@@ -347,9 +347,14 @@ export const Step2ProcessSelection = () => {
           {detailProcesses.length > 0 && (
             <div className={styles.detailSection}>
               <div className={styles.detailDivider} />
-              <span className={styles.detailTitle}>공정 세부 설정</span>
+              <span className={styles.detailTitle}>
+                공정 세부 설정 ·{' '}
+                {detailProcesses.filter((process) => getMissingProcessFields(process.id, step4).length === 0).length}/
+                {detailProcesses.length} 완료
+              </span>
               <p className={styles.detailHint}>
-                재질·범위에 따라 비용 차이가 큰 항목들이에요. 나머지 공정은 일반 기준으로 자동 반영됩니다.
+                선택한 공정의 모든 항목을 확인해 주세요. 판단이 어려운 항목은 ‘모름’을 선택할 수 있어요. 철거는 선택
+                여부만 반영되며, 나머지 공정은 일반 기준으로 산출돼요.
               </p>
               <div className={styles.accordionList}>
                 {detailProcesses.map((process) => {
@@ -359,13 +364,17 @@ export const Step2ProcessSelection = () => {
                     <div key={process.id} className={styles.accordionItem}>
                       <button
                         type="button"
+                        id={`detail-${process.id}`}
+                        aria-expanded={isOpen}
+                        aria-controls={`detail-body-${process.id}`}
                         className={styles.accordionHeader}
                         onClick={() => setOpenId(isOpen ? null : process.id)}
                       >
                         <span
                           className={`${styles.accordionHeaderText}${isOpen ? ` ${styles.accordionHeaderTextOpen}` : ''}`}
                         >
-                          {process.name}
+                          {process.name} ·{' '}
+                          {getMissingProcessFields(process.id, step4).length === 0 ? '입력 완료' : '입력 필요'}
                         </span>
                         <span
                           className={`${styles.accordionChevron}${isOpen ? ` ${styles.accordionChevronOpen}` : ''}`}
@@ -381,7 +390,12 @@ export const Step2ProcessSelection = () => {
                           </svg>
                         </span>
                       </button>
-                      <div className={`${styles.accordionBody}${isOpen ? ` ${styles.accordionBodyOpen}` : ''}`}>
+                      <div
+                        id={`detail-body-${process.id}`}
+                        inert={!isOpen}
+                        aria-hidden={!isOpen}
+                        className={`${styles.accordionBody}${isOpen ? ` ${styles.accordionBodyOpen}` : ''}`}
+                      >
                         <div
                           className={`${styles.accordionBodyInner}${isOpen ? ` ${styles.accordionBodyInnerOpen}` : ''}`}
                         >
@@ -398,7 +412,11 @@ export const Step2ProcessSelection = () => {
             </div>
           )}
 
-          {validationError && <p style={{ color: 'red', fontSize: '13px', marginBottom: '8px' }}>{validationError}</p>}
+          {validationError && (
+            <p role="alert" style={{ color: 'red', fontSize: '13px', marginBottom: '8px' }}>
+              {validationError}
+            </p>
+          )}
           <StepActions onNext={handleNext} onSecondary={prevStep} />
         </div>
       </div>

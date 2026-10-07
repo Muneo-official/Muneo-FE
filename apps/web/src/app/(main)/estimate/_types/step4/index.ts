@@ -45,4 +45,4 @@ export interface ProcessDetailMap {
   furniture: FurnitureDetail;
 }
 
-export type Step4Data = Partial<ProcessDetailMap>;
+export type Step4Data = { [K in keyof ProcessDetailMap]?: Partial<ProcessDetailMap[K]> };

@@ -1,3 +1,5 @@
+import { type BathroomCount } from './step4/bathroom';
+
 export const REGIONS = ['서울', '수도권', '지방'] as const;
 export type Region = (typeof REGIONS)[number];
 
@@ -12,4 +14,5 @@ export interface Step1Data {
   spaceType: SpaceType | null;
   area: number | null;
   roomCount: RoomCount | null;
+  bathroomCount: BathroomCount | null;
 }

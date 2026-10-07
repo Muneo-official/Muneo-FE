@@ -83,7 +83,7 @@ export const mapToApiPayload = (
     const wp = step4.wallpaper;
     let 범위: string[];
     if (wp.wallpaperScope === '부분 도배') {
-      범위 = wp.partialRooms;
+      범위 = wp.partialRooms ?? [];
     } else if (wp.wallpaperScope === '벽면만') {
       범위 = ['벽면'];
     } else {
@@ -111,10 +111,14 @@ export const mapToApiPayload = (
 
   if (hasBathroom && step4.bathroom) {
     const bt = step4.bathroom;
-    const hasSanitaryWare = bt.sanitaryWare.length > 0;
-    const hasShowerbooth = bt.sanitaryWare.includes('욕조') || bt.sanitaryWare.includes('샤워부스');
+    const hasSanitaryWare = (bt.sanitaryWare ?? []).length > 0;
+    const hasShowerbooth = bt.sanitaryWare?.includes('욕조') || bt.sanitaryWare?.includes('샤워부스');
     payload.욕실 = {
-      개수: bt.bathroomCount ? parseBathroomCount(bt.bathroomCount) : 1,
+      개수: step1.bathroomCount
+        ? parseBathroomCount(step1.bathroomCount)
+        : bt.bathroomCount
+          ? parseBathroomCount(bt.bathroomCount)
+          : 1,
       크기: bt.bathroomSize ? stripParens(bt.bathroomSize) : '',
       도기교체: hasSanitaryWare ? '있음' : '없음',
       방수포함: '있음',

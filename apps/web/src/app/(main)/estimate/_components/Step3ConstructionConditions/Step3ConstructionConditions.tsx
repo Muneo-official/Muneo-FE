@@ -1,14 +1,25 @@
 'use client';
 
 import { SelectButton } from '@muneo/design-system';
+import { useId, useState } from 'react';
 import { useEstimateStore } from '../../_store/estimateStore';
 import { BUILDING_AGES, CONSTRUCTION_TIMINGS, ELEVATOR_OPTIONS, OCCUPANCIES, TRUCK_ACCESSES } from '../../_types';
-import { ChatHint } from '../ChatHint/ChatHint';
+import { validateConditions } from '../../_utils/validateEstimate';
 import { StepActions } from '../StepActions/StepActions';
 import * as styles from './Step3ConstructionConditions.css';
 
 export const Step3ConstructionConditions = () => {
   const { step3, setStep3, nextStep, prevStep } = useEstimateStore();
+
+  const floorId = useId();
+  const [error, setError] = useState<string | null>(null);
+  const handleNext = () => {
+    const message = validateConditions(step3);
+    setError(message);
+    if (!message) {
+      nextStep();
+    }
+  };
 
   return (
     <div className={styles.container}>
@@ -16,7 +27,9 @@ export const Step3ConstructionConditions = () => {
         <h2 className={styles.title}>
           Step 3 <span className={styles.titleAccent}>공사 조건</span>을 입력해주세요
         </h2>
-        <span className={styles.titleHint}>(* 가견적 정확도 목표: ±20% 이내 — 상세 입력 시 정확도가 향상합니다.)</span>
+        <span className={styles.titleHint}>
+          가견적은 참고용 예상 범위이며, 현장 조건과 자재에 따라 실제 비용이 달라질 수 있어요.
+        </span>
       </div>
 
       <div className={styles.card}>
@@ -58,14 +71,17 @@ export const Step3ConstructionConditions = () => {
                 </div>
 
                 <div className={styles.floorField}>
-                  <span className={styles.fieldLabel}>층수</span>
+                  <label htmlFor={floorId} className={styles.fieldLabel}>
+                    층수
+                  </label>
                   <div className={styles.areaInput}>
                     <input
+                      id={floorId}
                       type="number"
                       min={0}
                       className={styles.areaInputNumber}
-                      value={step3.floor ?? 0}
-                      onChange={(e) => setStep3({ floor: Number(e.target.value) || null })}
+                      value={step3.floor ?? ''}
+                      onChange={(e) => setStep3({ floor: e.target.value === '' ? null : Number(e.target.value) })}
                     />
                     <span className={styles.areaUnit}>층</span>
                   </div>
@@ -102,10 +118,9 @@ export const Step3ConstructionConditions = () => {
                     </SelectButton>
                   ))}
                 </div>
-                <ChatHint
-                  visible={step3.truckAccess === '모름'}
-                  message="공사 현장에 2.5톤 트럭 접근이 가능한지 어떻게 확인하나요?"
-                />
+                {step3.truckAccess === '모름' && (
+                  <p>관리사무소나 시공업체에 진입로 폭과 차량 높이 제한을 확인해 주세요.</p>
+                )}
               </div>
 
               <div className={styles.field}>
@@ -125,7 +140,8 @@ export const Step3ConstructionConditions = () => {
             </div>
           </div>
 
-          <StepActions onNext={nextStep} onSecondary={prevStep} />
+          {error && <p role="alert">{error}</p>}
+          <StepActions onNext={handleNext} onSecondary={prevStep} />
         </div>
       </div>
     </div>

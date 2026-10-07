@@ -25,8 +25,15 @@ test.describe('Estimate — authenticated', () => {
     await page.getByRole('button', { name: '서울' }).click();
     await page.getByRole('button', { name: '아파트' }).click();
     await page.getByLabel('전용 면적').fill('25');
-    await page.getByRole('button', { name: '3' }).first().click();
+    await page
+      .getByRole('group', { name: '방 개수', exact: true })
+      .getByRole('button', { name: '3개', exact: true })
+      .click();
+    await page
+      .getByRole('group', { name: '화장실 개수', exact: true })
+      .getByRole('button', { name: '2개', exact: true })
+      .click();
     await page.getByRole('button', { name: '다음 단계' }).click();
-    await expect(page.getByText(/공종|공정 선택|시공범위|공사 범위/).first()).toBeVisible();
+    await expect(page.getByRole('heading', { name: /시공 대상 공정/ })).toBeVisible();
   });
 });
