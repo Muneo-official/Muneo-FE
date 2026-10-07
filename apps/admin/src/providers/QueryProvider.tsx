@@ -1,7 +1,8 @@
 'use client';
 
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { type ReactNode, useState } from 'react';
+import { type ReactNode, useEffect, useState } from 'react';
+import { useAuthStore } from '@/store/authStore';
 
 export const QueryProvider = ({ children }: { children: ReactNode }) => {
   const [queryClient] = useState(
@@ -16,6 +17,16 @@ export const QueryProvider = ({ children }: { children: ReactNode }) => {
           },
         },
       })
+  );
+
+  useEffect(
+    () =>
+      useAuthStore.subscribe((state, previous) => {
+        if (state.admin?.id !== previous.admin?.id || state.admin?.role !== previous.admin?.role) {
+          queryClient.clear();
+        }
+      }),
+    [queryClient]
   );
 
   return <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>;
