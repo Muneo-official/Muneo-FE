@@ -5,8 +5,8 @@ import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { saveRisk } from '@/api/analyze';
 import { useUser } from '@/app/(main)/_components/UserProvider/UserProvider';
-import { buildInsights } from '../../_lib/buildInsights';
 import { useAnalysisStore } from '../../_store/analysisStore';
+import { DiagnosisInsights } from '../DiagnosisInsights/DiagnosisInsights';
 import { ProcessSection } from '../ProcessSection/ProcessSection';
 import * as styles from './DiagnosisReport.css';
 
@@ -73,25 +73,12 @@ export const DiagnosisReport = () => {
         />
       </div>
 
+      <DiagnosisInsights result={result} />
+
       <div className={styles.sections}>
         {result.sections.map((section) => (
           <ProcessSection key={section.id} section={section} />
         ))}
-      </div>
-
-      <div className={styles.insightBox}>
-        <div className={styles.insightHeader}>
-          <span className={styles.insightIcon}>💡</span>
-          <span className={styles.insightTitle}>종합 인사이트</span>
-        </div>
-        <ul className={styles.insightList}>
-          {buildInsights(result).map((sentence, i) => (
-            <li key={i} className={styles.insightItem}>
-              <span className={styles.insightBullet} aria-hidden="true" />
-              <p className={styles.insightText}>{sentence}</p>
-            </li>
-          ))}
-        </ul>
       </div>
 
       {saveErrorMsg && <p className={styles.saveError}>{saveErrorMsg}</p>}

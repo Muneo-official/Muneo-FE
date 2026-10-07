@@ -1,6 +1,7 @@
 'use client';
 
 import { CircleWarningIcon, StatusCard, TriangleWarningIcon } from '@muneo/design-system';
+import { DiagnosisInsights } from '@/app/(main)/analysis/_components/DiagnosisInsights/DiagnosisInsights';
 import { ProcessSection } from '@/app/(main)/analysis/_components/ProcessSection/ProcessSection';
 import { type DiagnosisResult } from '@/app/(main)/analysis/_types/analysis.types';
 import * as styles from './DiagnosisDetailView.css';
@@ -34,36 +35,28 @@ export const DiagnosisDetailView = ({ result }: DiagnosisDetailViewProps) => {
         <StatusCard
           variant="warning"
           icon={<CircleWarningIcon width={24} height={24} />}
-          label="발견한 리스크 항목"
+          label="불분명 항목"
           value={`${result.riskCount}건`}
-          description="모호 표현/중복 기재"
+          description="범위·규격 확인 필요"
           highlight
           className={styles.summaryCard}
         />
         <StatusCard
           variant="info"
           icon={<CircleWarningIcon width={24} height={24} />}
-          label="정보 미비"
+          label="중복 항목"
           value={`${result.insufficientCount}건`}
-          description="수량·단위·브랜드 누락"
+          description="범위·비용 중복 확인"
           highlight
           className={styles.summaryCard}
         />
       </div>
 
+      <DiagnosisInsights result={result} />
       <div className={styles.sections}>
         {result.sections.map((section) => (
           <ProcessSection key={section.id} section={section} />
         ))}
-      </div>
-
-      <div className={styles.summaryBox}>
-        <span className={styles.summaryTitle}>진단 요약</span>
-        <div className={styles.summaryBadges}>
-          <span className={`${styles.summaryBadge} ${styles.badgeDanger}`}>누락 {result.missingCount}</span>
-          <span className={`${styles.summaryBadge} ${styles.badgeWarning}`}>불분명 {result.riskCount}</span>
-          <span className={`${styles.summaryBadge} ${styles.badgeInfo}`}>미비 {result.insufficientCount}</span>
-        </div>
       </div>
     </div>
   );

@@ -18,7 +18,7 @@ export const DiagnosisItem = ({ item }: DiagnosisItemProps) => {
   const style = STATUS_STYLES[item.status];
 
   return (
-    <div className={styles.item}>
+    <div id={`diagnosis-item-${item.id}`} tabIndex={-1} className={styles.item}>
       <span className={`${styles.badge} ${style.badge}`}>{item.status}</span>
       <div className={styles.texts}>
         <span className={styles.title}>{item.title}</span>

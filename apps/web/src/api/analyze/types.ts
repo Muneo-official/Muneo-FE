@@ -13,6 +13,7 @@ export interface RiskAnalyzeRequestBody {
 }
 
 export interface ApiProcessItem {
+  id?: string;
   title: string;
   description: string;
   guide: string;
@@ -20,6 +21,7 @@ export interface ApiProcessItem {
 }
 
 export interface ApiProcessSection {
+  id?: string;
   process: string;
   display_name: string;
   items: ApiProcessItem[];

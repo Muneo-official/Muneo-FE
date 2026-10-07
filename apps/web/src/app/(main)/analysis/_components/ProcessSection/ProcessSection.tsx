@@ -16,6 +16,7 @@ export const ProcessSection = ({ section }: ProcessSectionProps) => {
   return (
     <div className={styles.section}>
       <button
+        id={`process-toggle-${section.id}`}
         type="button"
         className={styles.sectionHeader}
         onClick={() => setOpen((prev) => !prev)}
@@ -26,7 +27,11 @@ export const ProcessSection = ({ section }: ProcessSectionProps) => {
         </span>
         <span className={styles.sectionName}>{section.name}</span>
       </button>
-      <div className={`${styles.collapseWrapper}${open ? '' : ` ${styles.collapseWrapperClosed}`}`}>
+      <div
+        inert={!open}
+        aria-hidden={!open}
+        className={`${styles.collapseWrapper}${open ? '' : ` ${styles.collapseWrapperClosed}`}`}
+      >
         <div className={styles.itemList}>
           {section.items.map((item) => (
             <DiagnosisItem key={item.id} item={item} />
