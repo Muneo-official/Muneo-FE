@@ -5,7 +5,7 @@ test.describe('Landing page', () => {
     await page.goto('/');
     await expect(page).toHaveTitle(/문어/);
     await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
-    await expect(page.getByRole('button', { name: 'AI 상담 챗 열기' })).toBeVisible();
+    await expect(page.getByRole('button', { name: 'AI 상담 챗 열기' })).toHaveCount(0);
   });
 
   test('Hero CTA 클릭 시 /login 인터셉팅 모달이 열린다', async ({ page }) => {

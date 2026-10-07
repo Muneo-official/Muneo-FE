@@ -15,14 +15,9 @@ setAnalyticsUser(user)    ── push ──▶  (user_id 등 보관)
 - **GTM**이 dataLayer를 읽어 GA4로 보낸다. 어디로(측정 ID), 무엇을(파라미터) 보낼지는 GTM 화면에서 관리한다.
 - 코드와 GTM을 잇는 값은 환경 변수 **`NEXT_PUBLIC_GTM_ID` 하나뿐**이다.
 
-### 현재 사용 중인 ID
+### 이전 컨테이너에 대해
 
-| 항목            | 값             |
-| --------------- | -------------- |
-| GA4 측정 ID     | `G-SQEYTRD2DP` |
-| GTM 컨테이너 ID | `GTM-THC48L8D` |
-
-2026-09 이전에 `muneo.kr` 도메인을 쓰던 다른 제품의 GA4·GTM 계정은 이 제품과 관계없다. 2026-09-26 기준 프로덕션에는 `NEXT_PUBLIC_GTM_ID`가 설정돼 있지 않아 GTM이 로드되지 않았다.
+지금 프로덕션의 `NEXT_PUBLIC_GTM_ID`에는 이전 개발자 계정의 컨테이너 ID가 들어 있을 가능성이 높다. 5단계에서 새 ID로 바꾸는 순간 이전 컨테이너로 가던 데이터는 끊긴다. GA4는 속성 간에 과거 데이터를 옮길 수 없으므로, 이전 데이터가 필요하면 이전 개발자에게 권한을 따로 요청해야 한다.
 
 ### 진행 순서 (약 1시간, 보고서 반영은 24~48시간 뒤)
 
@@ -106,7 +101,7 @@ Next.js는 화면을 이동할 때 새로고침 없이 주소만 바꾼다. 코�
 
 기본값(2개월)이면 탐색(Explore) 보고서에서 2개월이 지난 데이터를 볼 수 없다.
 
-- 관리 → 데이터 수집 및 수정 → **데이터 보존(Data retention)** → 이벤트 데이터 보존 **14개월** → 저장
+- 관리 → 데이터 수집 및 수정 → **데이 터 보존(Data retention)** → 이벤트 데이터 보존 **14개월** → 저장
 
 ### 3-6. 맞춤 정의(Custom definitions) — 필수
 
@@ -133,15 +128,7 @@ GA4는 등록한 파라미터만 보고서의 측정기준으로 보여 준다. 
 
 전환으로 볼 이벤트를 지정한다. 이벤트가 아직 한 번도 들어오지 않았어도 이름으로 미리 만들 수 있다.
 
-관리 → 데이터 표시 → **이벤트** → **이벤트 만들기**에서 아래 이름마다 한 번씩 만든다.
-
-1. 이벤트 이름 입력
-2. **주요 이벤트로 표시** 켜기
-   - 기본 주요 이벤트 값: **설정 안함** (금액을 넣으면 가입 1건마다 매출이 생긴 것처럼 기록된다)
-   - 계산 방법: **이벤트당 한 번**
-3. 이벤트 생성 방법: **코드로 만들기** 선택. 이 이벤트들은 이미 코드가 GTM을 거쳐 보낸다. 화면에 설치 코드가 나와도 붙여 넣지 않는다.
-   - "코드 없이 만들기"는 기존 이벤트를 조건으로 새 이벤트를 파생시키는 기능이라, 코드가 보내는 이벤트와 겹쳐 두 번 집계될 수 있다.
-4. **만들기**
+관리 → 데이터 표시 → **주요 이벤트** → **새 주요 이벤트** → 아래 이름을 하나씩 입력
 
 - `sign_up` — 회원가입 완료
 - `estimate_generate_success` — 가견적 생성 완료
@@ -207,7 +194,7 @@ GA4는 등록한 파라미터만 보고서의 측정기준으로 보여 준다. 
 
 - 이름: `CE - 문어 dataLayer 이벤트`
 - 유형: **맞춤 이벤트(Custom Event)**
-- 이벤트 이름: `^(page_view|login|sign_up|click_cta_.+|estimate_.+|analysis_.+|chat_.+)$`
+- 이벤트 이름: `^(page_view|login|sign_up|click_cta_.+|estimate_.+|analysis_.+)$`
 - **정규 표현식 일치 사용** 체크, 실행 조건 **모든 맞춤 이벤트**
 
 **④ 태그** — 태그 → 새로 만들기
@@ -264,7 +251,6 @@ GA4는 등록한 파라미터만 보고서의 측정기준으로 보여 준다. 
 | 카카오 로그인             | `page_view`(/home) 직전에 `login`                         | `method` = `kakao`                                        |
 | 견적 1~3단계 진행         | `estimate_step_complete` ×3 → `estimate_generate_success` | `step` = 1, 2, 3                                          |
 | 견적서 진단 실행          | `analysis_submit_success`                                 | `file_count`                                              |
-| 챗 메시지 전송            | `chat_message_send`                                       |                                                           |
 | 사이드바로 화면 이동      | 이동마다 `page_view` 한 번씩                              | 두 번씩 뜨면 3-1 다시 확인                                |
 
 4. 동시에 GA4 → 관리 → **DebugView**를 열면 같은 이벤트가 몇 초 안에 들어온다. 미리보기 모드의 트래픽은 자동으로 디버그 표시가 붙는다.
@@ -339,8 +325,6 @@ GTM은 게시할 때마다 버전이 남는다. 문제가 생기면 **버전 →
 | `page_view`                       | 모든 화면 진입·이동                                 | `page_title`, `page_referrer`(두 번째 화면부터) | `components/analytics/PageViewTracker.tsx`                                    |
 | `click_cta_landing_header_signup` | 랜딩 헤더 "시작하기" 클릭                           | `link_text`, `link_url`, `position`             | `app/(landing)/_components/Header/Header.tsx`                                 |
 | `click_cta_landing_hero_signup`   | 랜딩 히어로 CTA 클릭                                | `link_text`, `link_url`, `position`             | `app/(landing)/_components/HeroSection/HeroCtaButton.tsx`                     |
-| `click_cta_chat_open`             | 플로팅 챗 열기                                      | `link_text`, `position`                         | `components/FloatingChatLauncher/FloatingChatLauncher.tsx`                    |
-| `click_cta_chat_login_redirect`   | 챗의 "로그인하러 가기" 클릭                         | `link_text`, `link_url`, `position`             | `components/FloatingChatLauncher/FloatingChatLauncher.tsx`                    |
 | `login`                           | 이메일 로그인 성공 / 카카오 로그인 후 `(main)` 도착 | `method`: `email` \| `kakao`                    | `app/(auth)/_hooks/useLoginForm.ts`, `components/analytics/AnalyticsUser.tsx` |
 | `sign_up`                         | 이메일 가입 성공 / 카카오 추가 정보 제출 성공       | `method`: `email` \| `kakao`                    | `app/(auth)/_hooks/useSignupForm.ts`, `useSocialSignupForm.ts`                |
 | `estimate_step_complete`          | 견적 다음 단계로 이동 (1→2, 2→3, 3→4)               | `step`: 완료한 단계(1~3)                        | `app/(main)/estimate/_store/estimateStore.ts`                                 |
@@ -348,7 +332,6 @@ GTM은 게시할 때마다 버전이 남는다. 문제가 생기면 **버전 →
 | `estimate_generate_error`         | 가견적 생성 실패                                    | `process_count`                                 | `app/(main)/estimate/page.tsx`                                                |
 | `analysis_submit_success`         | 견적서 진단 성공                                    | `file_count`                                    | `app/(main)/analysis/_store/analysisStore.ts`                                 |
 | `analysis_submit_error`           | 견적서 진단 실패 (사용자가 취소한 경우 제외)        | `file_count`                                    | `app/(main)/analysis/_store/analysisStore.ts`                                 |
-| `chat_message_send`               | 챗 메시지 전송                                      | 없음                                            | `components/FloatingChatLauncher/useChatMessages.ts`                          |
 
 **카카오 로그인을 잡는 방법:** 카카오 로그인은 서버 리다이렉트(`/auth/callback/success` → `/home`)로 끝나서 브라우저가 성공 순간을 알 수 없다. 그래서 카카오 버튼을 누를 때 `sessionStorage`에 표시를 남기고, `(main)` 영역에 도착하면 `AnalyticsUser`가 표시를 꺼내 `login`(`kakao`)을 보낸다. 신규 회원은 가입 폼 제출 때 `sign_up`을 보내면서 표시를 지우므로 `login`이 중복되지 않는다.
 

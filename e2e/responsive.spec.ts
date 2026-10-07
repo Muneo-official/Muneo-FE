@@ -96,18 +96,3 @@ test('모바일 이력 표는 표 안에서 스크롤하고 날짜 필터를 열
   await expect(page.getByRole('dialog', { name: '날짜 선택' })).toBeVisible();
   await expectNoHorizontalOverflow(page);
 });
-
-test('모바일 채팅창은 작은 높이에서도 입력과 닫기 버튼이 보인다', async ({ page }) => {
-  await page.setViewportSize({ width: 320, height: 568 });
-  await page.goto('/home');
-  await page.getByRole('button', { name: 'AI 상담 챗 열기', exact: true }).click();
-  const panel = page.locator('#floating-chat-panel');
-  await expect(panel).toBeVisible();
-  await expect(panel.locator('input')).toBeInViewport();
-  const box = await panel.boundingBox();
-  expect(box?.x).toBeGreaterThanOrEqual(0);
-  expect((box?.x ?? 0) + (box?.width ?? 0)).toBeLessThanOrEqual(320);
-  expect(box?.y).toBeGreaterThanOrEqual(0);
-  await page.getByRole('button', { name: 'AI 상담 챗 닫기', exact: true }).click();
-  await expect(panel).toBeHidden();
-});

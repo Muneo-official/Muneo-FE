@@ -63,7 +63,7 @@ export const HeroSection = () => {
             </figure>
           </div>
         </div>
-        <p className={styles.subHeadline}>가견적서 생성부터 리스크 진단, AI 상담까지 한 곳에서</p>
+        <p className={styles.subHeadline}>가견적서 생성부터 견적서 리스크 진단까지 한 곳에서</p>
       </div>
       <ScrollIndicator />
     </section>

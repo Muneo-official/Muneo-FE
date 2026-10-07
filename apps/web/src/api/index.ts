@@ -4,7 +4,6 @@ export * from './types';
 export * from './auth';
 export * from './user';
 export * from './history';
-export * from './chatbot';
 export * from './analyze';
 export * from './estimate';
 export * from './files';

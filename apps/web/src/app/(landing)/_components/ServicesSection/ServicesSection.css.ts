@@ -91,7 +91,6 @@ export const cardVisible = style({
 
 export const delay1 = style({ transitionDelay: '0.1s' });
 export const delay2 = style({ transitionDelay: '0.25s' });
-export const delay3 = style({ transitionDelay: '0.4s' });
 
 export const cardContent = style({
   display: 'flex',

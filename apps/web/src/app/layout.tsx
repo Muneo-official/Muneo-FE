@@ -5,7 +5,6 @@ import { type Metadata, type Viewport } from 'next';
 import localFont from 'next/font/local';
 import { Suspense } from 'react';
 import { PageViewTracker } from '@/components/analytics';
-import { FloatingChatLauncher } from '@/components/FloatingChatLauncher';
 import {
   DEFAULT_OG_IMAGE,
   DEFAULT_OG_IMAGE_ALT,
@@ -84,10 +83,7 @@ const RootLayout = ({ children }: { children: React.ReactNode }) => {
   return (
     <html lang="ko" className={`${lightTheme} ${paperlogy.variable}`} data-scroll-behavior="smooth">
       <body>
-        <QueryProvider>
-          {children}
-          <FloatingChatLauncher />
-        </QueryProvider>
+        <QueryProvider>{children}</QueryProvider>
         {gtmId && <GoogleTagManager gtmId={gtmId} />}
         <Suspense>
           <PageViewTracker />

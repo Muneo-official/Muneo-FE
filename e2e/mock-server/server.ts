@@ -1,6 +1,5 @@
 import { createServer, type IncomingMessage, type ServerResponse } from 'node:http';
 import type { RiskReport } from '../../apps/web/src/api/analyze/types';
-import type { ChatResponse } from '../../apps/web/src/api/chatbot/types';
 import type {
   EstimateGenerateRequest,
   EstimateGenerateResponse,
@@ -103,12 +102,6 @@ const MOCK_RISKS: RiskItem[] = [
     result: { report: MOCK_REPORT },
   },
 ];
-
-const MOCK_CHAT_RESPONSE: ChatResponse = {
-  answer: '강마루는 합판 위에 무늬목을 입힌 마감재입니다.',
-  used: { is_interior: true, use_estimate_cases: false, use_legal_docs: false, use_defect_docs: false },
-  sources: [],
-};
 
 const MOCK_SAVE_ID: EstimateSaveResponse = { id: 'est-new' };
 
@@ -313,16 +306,6 @@ const server = createServer(async (req, res) => {
     }
     await parseJson(req);
     send(res, success(MOCK_USER));
-    return;
-  }
-
-  // POST /api/v1/chatbot/chat (raw JSON, not enveloped)
-  if (key === 'POST /api/v1/chatbot/chat') {
-    if (!hasAccessCookie(req)) {
-      send(res, fail('UNAUTHORIZED', '로그인이 필요합니다.', 401));
-      return;
-    }
-    sendRaw(res, 200, MOCK_CHAT_RESPONSE);
     return;
   }
 

@@ -3,19 +3,9 @@ import { getClientApiBaseUrl } from './baseUrl';
 
 const REFRESH_PATH = 'api/v1/users/refresh';
 const PRE_AUTH_PATHS = ['api/v1/users/login', 'api/v1/users/signup', 'api/v1/auth/oauth', 'api/v1/auth/social/signup'];
-const SKIP_AUTO_REDIRECT_PATHS = ['api/v1/chatbot/chat'];
 
 const isPreAuth = (url: string) => PRE_AUTH_PATHS.some((p) => url.includes(p));
 const isRefresh = (url: string) => url.includes(REFRESH_PATH);
-const skipsAutoRedirect = (url: string) => {
-  try {
-    const normalized = new URL(url).pathname.replace(/^\//, '');
-    return SKIP_AUTO_REDIRECT_PATHS.includes(normalized);
-  } catch {
-    return false;
-  }
-};
-
 let refreshPromise: Promise<Response> | null = null;
 
 const triggerRefresh = () => {
@@ -55,7 +45,7 @@ const createClient = () =>
           }
           const refreshRes = await triggerRefresh();
           if (!refreshRes.ok) {
-            if (!skipsAutoRedirect(request.url) && typeof window !== 'undefined') {
+            if (typeof window !== 'undefined') {
               window.location.href = '/login';
             }
             throw error;

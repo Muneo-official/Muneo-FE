@@ -30,10 +30,10 @@ describe('analytics', () => {
 
   describe('trackEvent', () => {
     it('GTM이 로드되기 전에도 dataLayer를 만들어 이벤트를 쌓는다', () => {
-      trackEvent('chat_message_send');
+      trackEvent('page_view', {});
 
       expect(events()).toHaveLength(1);
-      expect(events()[0]).toMatchObject({ event: 'chat_message_send' });
+      expect(events()[0]).toMatchObject({ event: 'page_view' });
     });
 
     it('앞 이벤트의 파라미터가 섞이지 않도록 event_params를 비운 뒤 푸시한다', () => {

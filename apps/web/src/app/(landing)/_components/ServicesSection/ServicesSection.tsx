@@ -17,14 +17,9 @@ const SERVICES = [
     title: '리스크진단',
     description: ['견적서의 누락/중복/모호 항목을', 'AI가 자동 탐지합니다'],
   },
-  {
-    number: '03',
-    title: 'AI 챗봇 상담',
-    description: ['내가 모르는 시공 전문 지식을', 'AI에게 24시간 질문하세요'],
-  },
 ];
 
-const DELAYS = [styles.delay1, styles.delay2, styles.delay3];
+const DELAYS = [styles.delay1, styles.delay2];
 
 const SECTION_TITLE_ID = 'services-title';
 
