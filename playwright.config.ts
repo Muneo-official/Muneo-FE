@@ -1,6 +1,8 @@
 import { defineConfig, devices } from '@playwright/test';
 
-const MOCK_API_PORT = 4000;
+const MOCK_API_PORT = Number(process.env.MOCK_PORT ?? 4000);
+const WEB_PORT = Number(process.env.E2E_PORT ?? 3000);
+const WEB_URL = `http://localhost:${WEB_PORT}`;
 const MOCK_API_URL = `http://localhost:${MOCK_API_PORT}`;
 
 export default defineConfig({
@@ -11,7 +13,8 @@ export default defineConfig({
   workers: 1,
   reporter: 'html',
   use: {
-    baseURL: 'http://localhost:3000',
+    baseURL: WEB_URL,
+    channel: process.env.PLAYWRIGHT_CHANNEL === 'chrome' ? 'chrome' : undefined,
     trace: 'on-first-retry',
   },
   projects: [
@@ -35,11 +38,14 @@ export default defineConfig({
       stderr: 'pipe',
     },
     {
-      command: 'pnpm dev:web',
-      url: 'http://localhost:3000',
-      reuseExistingServer: !process.env.CI,
+      command: `pnpm --filter web exec next dev --port ${WEB_PORT}`,
+      url: WEB_URL,
+      reuseExistingServer: !process.env.CI && process.env.E2E_REUSE_SERVER === 'true',
       env: {
         NEXT_PUBLIC_API_BASE_URL: MOCK_API_URL,
+        NEXT_PUBLIC_GTM_ID: '',
+        PORT: String(WEB_PORT),
+        E2E_DIST_DIR: process.env.E2E_DIST_DIR ?? '.next-e2e',
       },
       stdout: process.env.CI ? 'pipe' : 'ignore',
       stderr: 'pipe',

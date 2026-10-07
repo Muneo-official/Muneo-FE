@@ -5,6 +5,7 @@ vite.config.ts.timestamp-*
 
 # build
 .next
+.next-*
 dist
 out
 build

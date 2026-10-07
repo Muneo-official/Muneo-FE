@@ -28,6 +28,8 @@ for (const width of [320, 390, 768, 1024, 1440]) {
       '/profile',
       '/history/est-1',
       '/history/risk-1',
+      '/preview/diagnosis',
+      '/maintenance',
     ]) {
       await page.goto(path);
       await expect(page).toHaveURL(path);
@@ -69,13 +71,29 @@ test('320px에서 견적 입력과 공정 선택 후 결과까지 진행한다',
   await page.getByRole('button', { name: '서울', exact: true }).click();
   await page.getByRole('button', { name: '아파트', exact: true }).click();
   await page.getByLabel('전용 면적').fill('25');
-  await page.getByRole('button', { name: '3개', exact: true }).click();
+  await page
+    .getByRole('group', { name: '방 개수', exact: true })
+    .getByRole('button', { name: '3개', exact: true })
+    .click();
+  await page
+    .getByRole('group', { name: '화장실 개수', exact: true })
+    .getByRole('button', { name: '2개', exact: true })
+    .click();
   await page.getByRole('button', { name: '다음 단계' }).click();
   await expect(page.getByRole('heading', { name: /Step 2/ })).toBeVisible();
   await expectNoHorizontalOverflow(page);
-  await page.getByRole('button', { name: '전체 리모델링', exact: true }).click();
+  await page.getByRole('button', { name: '부분 시공', exact: true }).click();
+  await page.getByRole('button', { name: /주방 싱크대/ }).click();
+  await page.getByRole('button', { name: '주방 · 입력 필요', exact: true }).click();
+  await page.getByRole('button', { name: 'ㄷ자', exact: true }).click();
   await page.getByRole('button', { name: '다음 단계' }).click();
   await expect(page.getByRole('heading', { name: /Step 3/ })).toBeVisible();
+  await page.getByRole('button', { name: '10년 이하', exact: true }).click();
+  await page.getByRole('button', { name: '있음', exact: true }).click();
+  await page.getByLabel('층수').fill('5');
+  await page.getByRole('button', { name: '공실', exact: true }).click();
+  await page.getByRole('button', { name: '가능', exact: true }).click();
+  await page.getByRole('button', { name: '미정', exact: true }).click();
   await expectNoHorizontalOverflow(page);
   await page.getByRole('button', { name: '다음 단계' }).click();
   await expect(page.getByText('총 예상 견적 범위 (부가세 별도)', { exact: true })).toBeVisible({ timeout: 30_000 });
