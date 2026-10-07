@@ -5,9 +5,3 @@ export interface HistoryRow {
   constructionType: string;
   vendor?: string | null;
 }
-
-export interface SummaryStats {
-  estimateCount: number;
-  diagnosedCount: number;
-  riskCount: number;
-}

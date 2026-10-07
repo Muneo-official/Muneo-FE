@@ -48,12 +48,36 @@ export const greetingSubtitle = style({
   margin: 0,
 });
 
-export const summaryRow = style({
-  '@media': {
-    [media.compact]: { gap: '12px' },
-    [media.mobile]: { flexDirection: 'column' },
-  },
+export const actions = style({
+  display: 'grid',
+  gridTemplateColumns: 'repeat(2, minmax(0, 1fr))',
+  gap: '20px',
+  margin: '12px 0 24px',
+  '@media': { [media.mobile]: { gridTemplateColumns: '1fr' } },
+});
+export const actionCard = style({
   display: 'flex',
-  gap: '22px',
-  width: '100%',
+  flexDirection: 'column',
+  gap: '16px',
+  padding: '28px',
+  borderRadius: '20px',
+  background: vars.color.white,
+  border: `1px solid ${vars.color.neutral.n200}`,
+  textDecoration: 'none',
+  ':hover': { borderColor: vars.color.brand.primary },
+  ':focus-visible': { outline: `3px solid ${vars.color.brand.primary}`, outlineOffset: '3px' },
+  '@media': { [media.mobile]: { padding: '24px 20px' } },
+});
+export const actionEyebrow = style({ color: vars.color.brand.primary, fontSize: '14px', fontWeight: 600 });
+export const actionTitle = style({
+  color: vars.color.neutral.n900,
+  fontSize: '23px',
+  fontWeight: 700,
+  lineHeight: 1.5,
+});
+export const actionDescription = style({
+  color: vars.color.neutral.n600,
+  fontSize: '15px',
+  lineHeight: 1.8,
+  wordBreak: 'keep-all',
 });

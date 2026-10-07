@@ -1,9 +1,8 @@
-import { DellSquareIcon, DoneRingRoundFillIcon, SadIcon, vars } from '@muneo/design-system';
 import { getServerHistory, type EstimateItem, type RiskItem } from '@/api/history';
 import { getServerMe } from '@/api/user/server';
+import { TransitionLink } from '@/components/TransitionLink';
 import { HistoryTable } from './_components/HistoryTable/HistoryTable';
-import { SummaryCard } from './_components/SummaryCard/SummaryCard';
-import { type HistoryRow, type SummaryStats } from './_types/home.types';
+import { type HistoryRow } from './_types/home.types';
 import * as styles from './page.css';
 
 const toDate = (isoStr: string) => isoStr.slice(0, 10);
@@ -41,13 +40,7 @@ const buildView = (estimates: EstimateItem[], risks: RiskItem[]) => {
     .slice(0, 10)
     .map((entry) => entry.row);
 
-  const stats: SummaryStats = {
-    estimateCount: estimates.length,
-    diagnosedCount: risks.length,
-    riskCount: risks.filter((r) => r.result.report.summary.total_risk_items > 0).length,
-  };
-
-  return { stats, rows };
+  return rows;
 };
 
 const HomePage = async () => {
@@ -55,26 +48,7 @@ const HomePage = async () => {
 
   const { estimates, risks } = await getServerHistory(user.id);
 
-  const { stats, rows } = buildView(estimates, risks);
-
-  const SUMMARY_CARDS = [
-    {
-      icon: <DellSquareIcon width={22} height={22} style={{ color: vars.color.brand.secondary }} />,
-      label: '그동안 생성한 가견적서',
-      count: stats.estimateCount,
-    },
-    {
-      icon: <DoneRingRoundFillIcon width={22} height={22} />,
-      label: '진단 완료한 견적',
-      count: stats.diagnosedCount,
-    },
-    {
-      icon: <SadIcon width={22} height={22} />,
-      label: '리스크 발생 견적',
-      count: stats.riskCount,
-      danger: true as const,
-    },
-  ];
+  const rows = buildView(estimates, risks);
 
   return (
     <div className={styles.page}>
@@ -83,13 +57,26 @@ const HomePage = async () => {
           <h1 className={styles.greetingTitle}>
             안녕하세요, <span className={styles.greetingName}>{user.name}</span> 님
           </h1>
-          <p className={styles.greetingSubtitle}>오늘도 문어와 함께 현명한 의사 결정을 내리세요.</p>
+          <p className={styles.greetingSubtitle}>인테리어 준비, 어디서부터 시작할까요?</p>
         </div>
 
-        <div className={styles.summaryRow}>
-          {SUMMARY_CARDS.map((props) => (
-            <SummaryCard key={props.label} {...props} />
-          ))}
+        <div className={styles.actions}>
+          <TransitionLink href="/estimate" className={styles.actionCard}>
+            <span className={styles.actionEyebrow}>견적서를 받기 전이라면</span>
+            <h2 className={styles.actionTitle}>
+              가견적서 생성하기 <span aria-hidden="true">→</span>
+            </h2>
+            <p className={styles.actionDescription}>우리 집 정보와 원하는 공정을 입력하고 예상 비용 범위를 확인해요.</p>
+          </TransitionLink>
+          <TransitionLink href="/analysis" className={styles.actionCard}>
+            <span className={styles.actionEyebrow}>업체 견적서가 있다면</span>
+            <h2 className={styles.actionTitle}>
+              견적서 진단하기 <span aria-hidden="true">→</span>
+            </h2>
+            <p className={styles.actionDescription}>
+              견적서를 올리고 누락·불분명·중복 항목과 업체에 물어볼 내용을 확인해요.
+            </p>
+          </TransitionLink>
         </div>
 
         <HistoryTable rows={rows} />

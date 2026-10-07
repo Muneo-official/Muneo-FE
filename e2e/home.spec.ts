@@ -3,11 +3,11 @@ import { expect, test } from '@playwright/test';
 test.use({ storageState: 'playwright/.auth/user.json' });
 
 test.describe('Home — authenticated', () => {
-  test('홈 페이지에 사용자 이름과 요약 카드가 표시된다', async ({ page }) => {
+  test('홈 페이지에 사용자 이름과 시작 버튼이 표시된다', async ({ page }) => {
     await page.goto('/home');
     await expect(page).toHaveURL(/\/home/);
     await expect(page.getByRole('heading', { level: 1 })).toContainText('문어테스터');
-    await expect(page.getByText('진단 완료한 견적')).toBeVisible();
+    await expect(page.getByRole('link', { name: /견적서 진단하기/ })).toBeVisible();
   });
 
   test('최근 이력 행 클릭 시 상세 페이지로 이동한다', async ({ page }) => {
