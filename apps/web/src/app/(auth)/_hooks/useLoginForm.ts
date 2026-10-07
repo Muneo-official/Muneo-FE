@@ -8,6 +8,7 @@ import { getKakaoLoginUrl } from '@/api/auth';
 import { isApiError } from '@/api/errors';
 import { login } from '@/api/user';
 import { markSocialLoginStart, trackAuth } from '@/lib/analytics';
+import { getSafeReturnPath } from '@/lib/authRedirect';
 import { loginSchema, type LoginFormValues } from '@/lib/validations/auth';
 
 export const useLoginForm = () => {
@@ -21,12 +22,14 @@ export const useLoginForm = () => {
     register,
     handleSubmit,
     setError,
+    clearErrors,
     formState: { errors },
   } = useForm<LoginFormValues>({
     resolver: zodResolver(loginSchema),
   });
 
   const onSubmit = handleSubmit(async (data) => {
+    clearErrors('root');
     setIsSubmitting(true);
     try {
       await login(data);
@@ -34,7 +37,7 @@ export const useLoginForm = () => {
       if (isApiError(e) && e.code === 'INVALID_LOGIN_INFO') {
         setError('password', { message: '이메일 또는 비밀번호가 올바르지 않습니다.' });
       } else {
-        setError('password', { message: '로그인 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.' });
+        setError('root', { message: '로그인 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.' });
       }
       return;
     } finally {
@@ -47,18 +50,19 @@ export const useLoginForm = () => {
     startRedirect(() => {
       // 이전 세션에서 받아 둔 (main) 영역 캐시를 비운다. 바로 이어지는 push가 이 refresh 요청을 대체한다.
       router.refresh();
-      router.push('/home');
+      router.replace(getSafeReturnPath(new URLSearchParams(window.location.search).get('next')));
     });
   });
 
   const handleKakaoLogin = async () => {
+    clearErrors('root');
     setIsKakaoLoading(true);
     try {
       const { loginUrl } = await getKakaoLoginUrl();
       markSocialLoginStart('kakao');
       window.location.href = loginUrl;
-    } catch (e) {
-      console.error('카카오 로그인 URL 조회 실패', e);
+    } catch {
+      setError('root', { message: '카카오 로그인에 연결하지 못했어요. 잠시 후 다시 시도해 주세요.' });
       setIsKakaoLoading(false);
     }
   };

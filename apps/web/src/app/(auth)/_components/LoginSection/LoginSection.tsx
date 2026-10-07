@@ -13,12 +13,6 @@ interface LoginSectionProps {
 export const LoginSection = ({ onLogoClick, onClose, onForgotPassword, onSignUp }: LoginSectionProps) => {
   const { register, errors, isLoading, isRedirecting, isKakaoLoading, onSubmit, handleKakaoLogin } = useLoginForm();
 
-  const handleForgotPassword =
-    onForgotPassword ??
-    (() => {
-      window.alert('준비중인 기능입니다.');
-    });
-
   return (
     <LoginModal
       register={register}
@@ -30,7 +24,7 @@ export const LoginSection = ({ onLogoClick, onClose, onForgotPassword, onSignUp 
       onLogoClick={onLogoClick}
       onClose={onClose}
       onKakaoLogin={handleKakaoLogin}
-      onForgotPassword={handleForgotPassword}
+      onForgotPassword={onForgotPassword}
       onSignUp={onSignUp}
     />
   );

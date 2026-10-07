@@ -71,12 +71,15 @@ export const LoginModal = ({
               error={errors.password?.message}
               {...register('password')}
             />
-            <button type="button" className={styles.forgotPassword} onClick={onForgotPassword} disabled={isBusy}>
-              비밀번호 찾기
-            </button>
+            {onForgotPassword && (
+              <button type="button" className={styles.forgotPassword} onClick={onForgotPassword} disabled={isBusy}>
+                비밀번호 찾기
+              </button>
+            )}
           </div>
         </div>
 
+        {errors.root?.message && <p role="alert">{errors.root.message}</p>}
         <div className={styles.actionSection}>
           <Button
             type="submit"
@@ -86,7 +89,7 @@ export const LoginModal = ({
             aria-busy={Boolean(isLoading)}
           >
             {isLoading && <span className={styles.spinner} aria-hidden />}
-            {isRedirecting ? '홈으로 이동 중...' : isLoading ? '로그인 중...' : '로그인'}
+            {isRedirecting ? '화면으로 이동 중...' : isLoading ? '로그인 중...' : '로그인'}
           </Button>
 
           <div className={styles.divider}>

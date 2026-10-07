@@ -2,10 +2,9 @@
 
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useRouter } from 'next/navigation';
-import { useState } from 'react';
+import { useState, useTransition } from 'react';
 import { useForm } from 'react-hook-form';
 import { signup } from '@/api/user';
-import { useViewTransitionRouter } from '@/hooks/useViewTransitionRouter';
 import { trackAuth } from '@/lib/analytics';
 import { applyValidationErrors } from '@/lib/forms/applyValidationErrors';
 import { signupSchema, type SignupFormValues } from '@/lib/validations/auth';
@@ -21,7 +20,7 @@ const FIELD_MAP: Partial<Record<string, keyof SignupFormValues>> = {
 
 export const useSignupForm = () => {
   const router = useRouter();
-  const { push } = useViewTransitionRouter();
+  const [isRedirecting, startRedirect] = useTransition();
   const [isLoading, setIsLoading] = useState(false);
 
   const {
@@ -46,8 +45,10 @@ export const useSignupForm = () => {
         birthDate: data.birthDate,
       });
       trackAuth('sign_up', 'email');
-      push('/home');
-      router.refresh();
+      startRedirect(() => {
+        router.refresh();
+        router.replace('/home');
+      });
     } catch (e) {
       if (!applyValidationErrors(setError, e, FIELD_MAP, 'email')) {
         setError('email', { message: '회원가입 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.' });
@@ -61,7 +62,7 @@ export const useSignupForm = () => {
     register,
     setValue,
     errors,
-    isLoading,
+    isLoading: isLoading || isRedirecting,
     onSubmit,
   };
 };
