@@ -20,3 +20,12 @@ export const main = style({
   minWidth: 0,
   overflowY: 'auto',
 });
+
+export const qaNotice = style({
+  fontFamily: vars.typography.fontFamily,
+  padding: vars.space.md,
+  margin: `0 0 ${vars.space.lg}`,
+  borderRadius: vars.radius.sm,
+  background: vars.color.semantic.warningBg,
+  color: vars.color.neutral.n900,
+});
