@@ -19,7 +19,7 @@ export const useUserQuery = (userId: number) =>
   useQuery({
     queryKey: userKeys.detail(userId),
     queryFn: () => getUser(userId),
-    enabled: Number.isFinite(userId) && userId > 0,
+    enabled: Number.isSafeInteger(userId) && userId > 0,
   });
 
 const invalidate = (qc: ReturnType<typeof useQueryClient>) => qc.invalidateQueries({ queryKey: userKeys.all });
