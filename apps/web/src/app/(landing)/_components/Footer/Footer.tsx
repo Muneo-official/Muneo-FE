@@ -1,22 +1,20 @@
 import { Logo } from '@muneo/design-system';
-import { COPYRIGHT, TAGLINE } from '@/constants/app';
+import { CONTACT_EMAIL, COPYRIGHT, OPERATOR_NAME, TAGLINE } from '@/constants/app';
+import { POLICY_LINKS } from '@/constants/policies';
 import * as styles from './Footer.css';
 
 const LINK_GROUPS = [
   {
     title: '서비스',
     items: [
-      { label: '서비스 소개', href: '#intro' },
-      { label: '가이드라인', href: '#guide' },
-      { label: 'FAQ', href: '#faq' },
+      { label: '서비스 소개', href: '/#intro' },
+      { label: '가이드라인', href: '/#guide' },
+      { label: 'FAQ', href: '/#faq' },
     ],
   },
   {
     title: '정보',
-    items: [
-      { label: '이용약관', href: '#' },
-      { label: '개인정보처리방침', href: '#' },
-    ],
+    items: POLICY_LINKS,
   },
 ];
 
@@ -35,6 +33,10 @@ export const Footer = () => {
               <br />
               합리적인 시공을 위한 첫 걸음
             </p>
+            <address className={styles.operator}>
+              <span>개인 운영 · {OPERATOR_NAME}</span>
+              <a href={`mailto:${CONTACT_EMAIL}`}>문의 {CONTACT_EMAIL}</a>
+            </address>
           </div>
           <ul className={styles.links}>
             {LINK_GROUPS.map(({ title, items }) => (

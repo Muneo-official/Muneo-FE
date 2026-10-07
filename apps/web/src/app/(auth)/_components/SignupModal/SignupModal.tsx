@@ -6,6 +6,7 @@ import { type FieldErrors, type UseFormRegister, type UseFormSetValue } from 're
 import { formatBirthDate, formatPhoneNumber } from '@/lib/formatters/inputFormat';
 import { type SignupFormValues } from '@/lib/validations/auth';
 import { AuthModalHeader } from '../AuthModalHeader';
+import { PolicyLinks } from '../PolicyLinks/PolicyLinks';
 import * as styles from './SignupModal.css';
 
 export interface SignupModalProps {
@@ -113,6 +114,7 @@ export const SignupModal = ({
         </div>
 
         <div className={styles.actionSection}>
+          <PolicyLinks />
           <Button type="submit" variant="primary" className={styles.fullWidth} disabled={isLoading}>
             가입하기
           </Button>
