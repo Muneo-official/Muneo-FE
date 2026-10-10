@@ -50,3 +50,11 @@ export const textarea = style({
   resize: 'vertical',
 });
 export const error = style({ color: vars.color.semantic.danger, fontSize: '14px', lineHeight: 1.6 });
+export const conflict = style({
+  display: 'flex',
+  flexDirection: 'column',
+  gap: '12px',
+  fontSize: '14px',
+  lineHeight: 1.7,
+});
+export const comment = style({ whiteSpace: 'pre-wrap', overflowWrap: 'anywhere' });
