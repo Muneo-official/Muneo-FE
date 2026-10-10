@@ -1,2 +1,8 @@
-export { saveDiagnosisFeedback } from './api';
-export { FEEDBACK_REASONS, type DiagnosisFeedbackRequest, type FeedbackRating, type FeedbackReason } from './types';
+export { deleteDiagnosisFeedback, getDiagnosisFeedback, saveDiagnosisFeedback } from './api';
+export {
+  FEEDBACK_REASONS,
+  type DiagnosisFeedback,
+  type DiagnosisFeedbackRequest,
+  type FeedbackRating,
+  type FeedbackReason,
+} from './types';

@@ -13,10 +13,15 @@ export const FEEDBACK_REASONS = {
 } as const;
 export type FeedbackReason = (typeof FEEDBACK_REASONS)[FeedbackRating][number]['value'];
 
-/** 백엔드 협의용 v1 계약. 승인 후에만 api 모드로 활성화한다. */
+/** 2026-10-10 확정 계약. 사용자 식별은 인증 쿠키로만 처리한다. */
 export interface DiagnosisFeedbackRequest {
   schema_version: 1;
   rating: FeedbackRating;
   reasons: FeedbackReason[];
   comment: string;
+}
+
+export interface DiagnosisFeedback extends DiagnosisFeedbackRequest {
+  report_version: string;
+  updated_at: string;
 }
