@@ -41,6 +41,11 @@ const ResultSummary = ({ result, kind }: { result: Record<string, JsonValue>; ki
         <strong>총 예상 견적 (원)</strong>
         <Fields value={range} />
       </div>
+    ) : typeof range === 'string' ? (
+      <div className={styles.notice}>
+        <strong>총 예상 견적</strong>
+        <p>{range}</p>
+      </div>
     ) : null;
   }
   const report = result.report;

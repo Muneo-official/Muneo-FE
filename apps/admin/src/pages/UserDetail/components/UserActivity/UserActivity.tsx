@@ -13,6 +13,18 @@ const errorMessage = (error: unknown) => {
   if (error.status === 403) {
     return '이 데이터를 조회할 관리자 권한이 없습니다.';
   }
+  if (error.code === 'USER_NOT_FOUND') {
+    return '사용자를 찾을 수 없습니다. 사용자 목록에서 다시 확인해 주세요.';
+  }
+  if (error.status === 400) {
+    return '사용자 또는 페이지 조회 조건이 올바르지 않습니다. 사용자 목록에서 다시 선택해 주세요.';
+  }
+  if (error.status === 503) {
+    return '사용자 이용 내역 저장소에 일시적으로 연결할 수 없습니다. 잠시 후 다시 시도해 주세요.';
+  }
+  if (error.status === 500) {
+    return '서버에서 이용 내역을 처리하지 못했습니다. 잠시 후 다시 시도해 주세요.';
+  }
   if (error.status === 404 || error.status === 501) {
     return '조회 API가 아직 제공되지 않거나 사용자를 찾을 수 없습니다. API 연결 상태를 확인해 주세요.';
   }
@@ -116,8 +128,8 @@ export const UserActivity = ({ userId }: { userId: number }) => {
         <p>예상 견적과 진단은 사용자가 저장한 입력·결과만 조회합니다. 저장하지 않은 생성 결과는 포함되지 않습니다.</p>
         <p>업로드 원본 파일, 약관 동의 이력, 가입·최근 접속 일시는 현재 관리자 API에서 제공하지 않습니다.</p>
         <p>
-          진단 피드백은 good/bad, 선택 이유, 추가 의견을 표시합니다. 피드백 저장 및 관리자 조회 API가 연결되어야 실제
-          기록을 확인할 수 있습니다.
+          진단 피드백은 good/bad, 선택 이유, 추가 의견과 연결된 진단 ID를 표시합니다. 사용자 화면에서 의견을 변경한
+          뒤에는 새로고침으로 확인해 주세요.
         </p>
       </details>
     </Card>

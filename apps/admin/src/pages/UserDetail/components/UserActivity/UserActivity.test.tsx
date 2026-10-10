@@ -22,6 +22,29 @@ const renderActivity = (userId = 101) => {
 afterEach(() => vi.resetAllMocks());
 
 describe('사용자 이용 내역 화면', () => {
+  it.each([
+    [400, 'VALIDATION_FAILED', '조회 조건이 올바르지 않습니다'],
+    [400, 'INVALID_PARAMETER_TYPE', '조회 조건이 올바르지 않습니다'],
+    [403, 'ADMIN_ACCESS_FORBIDDEN', '관리자 권한이 없습니다'],
+    [404, 'USER_NOT_FOUND', '사용자를 찾을 수 없습니다'],
+    [503, 'ADMIN_ACTIVITY_STORE_UNAVAILABLE', '이용 내역 저장소에 일시적으로'],
+    [500, 'INTERNAL_SERVER_ERROR', '서버에서 이용 내역을 처리하지 못했습니다'],
+  ])('백엔드 명세의 %s %s 오류를 0건과 구분한다', async (status, code, message) => {
+    mockGet.mockRejectedValue(new ApiError('실패', status, code));
+    renderActivity();
+    expect(await screen.findByRole('alert')).toHaveTextContent(message);
+    expect(screen.queryByText('저장된 예상 견적 기록이 없습니다.')).not.toBeInTheDocument();
+  });
+
+  it('명세의 문자열 견적 범위도 요약에 표시한다', async () => {
+    mockGet.mockResolvedValue(
+      paginate([{ ...qaEstimates[0], result: { 총_견적_범위: '1,000만원~1,200만원' } }], 0, 10)
+    );
+    renderActivity();
+    expect(await screen.findByText('총 예상 견적')).toBeInTheDocument();
+    expect(screen.getByText('1,000만원~1,200만원')).toBeInTheDocument();
+  });
+
   it('API 미연결을 빈 기록과 구분하고 재시도로 복구한다', async () => {
     mockGet.mockRejectedValueOnce(new ApiError('미지원', 404, 'NOT_FOUND')).mockResolvedValue(paginate([], 0, 10));
     renderActivity();
