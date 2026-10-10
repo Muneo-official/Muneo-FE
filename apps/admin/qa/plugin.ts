@@ -3,7 +3,7 @@ import { type Plugin } from 'vite';
 import { paginate, qaAdmin, qaEstimates, qaFeedback, qaReports, qaUsers } from './fixtures';
 
 const COOKIE = 'muneo_admin_qa_session=local-only';
-const send = (res: ServerResponse, status: number, result: unknown = null) => {
+const send = (res: ServerResponse, status: number, result: unknown = null, code?: string) => {
   res.statusCode = status;
   res.setHeader('Content-Type', 'application/json; charset=utf-8');
   res.setHeader('Cache-Control', 'no-store');
@@ -11,7 +11,7 @@ const send = (res: ServerResponse, status: number, result: unknown = null) => {
     JSON.stringify({
       success: status < 400,
       status,
-      code: status < 400 ? 'SUCCESS' : 'QA_ERROR',
+      code: code ?? (status < 400 ? 'SUCCESS' : 'QA_ERROR'),
       timestamp: new Date().toISOString(),
       message: status < 400 ? 'QA 가상 응답' : 'QA 오류 응답',
       result,
@@ -84,10 +84,13 @@ const handle = async (req: IncomingMessage, res: ServerResponse) => {
     return send(res, 404);
   }
   if (user.id === 104) {
-    return send(res, 503);
+    return send(res, 503, null, 'ADMIN_ACTIVITY_STORE_UNAVAILABLE');
   }
   if (user.id === 106) {
-    return send(res, 403);
+    return send(res, 403, null, 'ADMIN_ACCESS_FORBIDDEN');
+  }
+  if (user.id === 107) {
+    return send(res, 404, null, 'USER_NOT_FOUND');
   }
   const records = kind === 'estimates' ? qaEstimates : kind === 'risk-reports' ? qaReports : qaFeedback;
   // 105는 다른 소유자의 응답이 UI에서 차단되는지 확인하는 의도적인 오류 사례다.
