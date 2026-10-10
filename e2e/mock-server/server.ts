@@ -1,4 +1,5 @@
 import { createServer, type IncomingMessage, type ServerResponse } from 'node:http';
+import { FEEDBACK_REASONS, type DiagnosisFeedback } from '../../apps/web/src/api/feedback/types';
 import type { RiskReport } from '../../apps/web/src/api/analyze/types';
 import type {
   EstimateGenerateRequest,
@@ -104,6 +105,7 @@ const MOCK_RISKS: RiskItem[] = [
 ];
 
 const MOCK_SAVE_ID: EstimateSaveResponse = { id: 'est-new' };
+const feedbackByReport = new Map<string, DiagnosisFeedback>();
 
 // ─────────────────────────────────────────────────────────────
 // Response envelope helpers
@@ -347,6 +349,65 @@ const server = createServer(async (req, res) => {
     }
     sendRaw(res, 200, { id: 'risk-new' });
     return;
+  }
+
+  const feedbackMatch = url.pathname.match(/^\/api\/v1\/risk-detector\/([^/]+)\/feedback$/);
+  if (feedbackMatch) {
+    if (!hasAccessCookie(req)) {
+      send(res, fail('UNAUTHORIZED', '인증이 필요합니다.', 401));
+      return;
+    }
+    const reportId = feedbackMatch[1];
+    if (!MOCK_RISKS.some((item) => item.id === reportId) && reportId !== 'risk-new') {
+      send(res, fail('RISK_REPORT_NOT_FOUND', '진단을 찾을 수 없습니다.', 404));
+      return;
+    }
+    if (req.method === 'GET') {
+      const feedback = feedbackByReport.get(reportId);
+      if (feedback) send(res, success({ ...feedback, item_reviews: [] }));
+      else {
+        res.writeHead(204);
+        res.end();
+      }
+      return;
+    }
+    if (req.method === 'DELETE') {
+      feedbackByReport.delete(reportId);
+      res.writeHead(204);
+      res.end();
+      return;
+    }
+    if (req.method === 'PUT') {
+      const data = await parseJson(req);
+      const { rating, reasons, comment } = data;
+      if (
+        data.schema_version !== 1 ||
+        (rating !== 'good' && rating !== 'bad') ||
+        !Array.isArray(reasons) ||
+        reasons.length > 3 ||
+        new Set(reasons).size !== reasons.length ||
+        !reasons.every((reason) => FEEDBACK_REASONS[rating].some((option) => option.value === reason)) ||
+        typeof comment !== 'string' ||
+        comment.trim().length > 500 ||
+        !Array.isArray(data.item_reviews) ||
+        data.item_reviews.length !== 0 ||
+        'user_id' in data
+      ) {
+        send(res, fail('VALIDATION_FAILED', '요청 값을 확인해 주세요.', 400));
+        return;
+      }
+      feedbackByReport.set(reportId, {
+        schema_version: 1,
+        rating,
+        reasons: reasons as DiagnosisFeedback['reasons'],
+        comment: comment.trim(),
+        report_version: reportId,
+        updated_at: new Date().toISOString(),
+      });
+      res.writeHead(204);
+      res.end();
+      return;
+    }
   }
 
   // Health check (no auth)

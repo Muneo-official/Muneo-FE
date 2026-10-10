@@ -43,6 +43,7 @@ export default defineConfig({
       reuseExistingServer: !process.env.CI && process.env.E2E_REUSE_SERVER === 'true',
       env: {
         NEXT_PUBLIC_API_BASE_URL: MOCK_API_URL,
+        NEXT_PUBLIC_DIAGNOSIS_FEEDBACK_MODE: 'api',
         NEXT_PUBLIC_GTM_ID: '',
         PORT: String(WEB_PORT),
         E2E_DIST_DIR: process.env.E2E_DIST_DIR ?? '.next-e2e',
