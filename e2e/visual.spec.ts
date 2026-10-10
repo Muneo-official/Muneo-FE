@@ -2,11 +2,12 @@ import { expect, test } from '@playwright/test';
 
 /**
  * 시각 회귀 테스트.
- * 첫 실행 시 baseline 스냅샷을 생성하고, 이후 실행에서 픽셀 단위로 비교합니다.
- * baseline은 `__snapshots__/`(또는 `*.spec.ts-snapshots/`)에 저장됨 — 커밋 필요.
+ * 기준 이미지는 `visual.spec.ts-snapshots/`에 저장하고 커밋합니다.
+ * CI는 Linux 기준 이미지를 사용하므로 macOS에서 생성한 이미지로 대체하지 않습니다.
  *
- * 폰트 렌더링 차이로 CI/로컬에서 깨질 수 있음 → maxDiffPixelRatio로 허용 범위 조정.
- * 새 baseline 생성: `pnpm test:e2e -- --update-snapshots`
+ * 의도한 화면 변경은 CI의 actual/diff 이미지를 검토한 뒤 기준에 반영합니다.
+ * 같은 Linux 환경에서 재생성: `pnpm test:e2e:update e2e/visual.spec.ts`
+ * 갱신 절차와 검증 기록: `docs/improvements/2026-10-10/e2e-visual-baseline.md`
  */
 
 test.describe('Visual regression', () => {
