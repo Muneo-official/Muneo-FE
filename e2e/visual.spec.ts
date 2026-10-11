@@ -7,7 +7,7 @@ import { expect, test } from '@playwright/test';
  *
  * 의도한 화면 변경은 CI의 actual/diff 이미지를 검토한 뒤 기준에 반영합니다.
  * 같은 Linux 환경에서 재생성: `pnpm test:e2e:update e2e/visual.spec.ts`
- * 갱신 절차와 검증 기록: `docs/improvements/2026-10-10/e2e-visual-baseline.md`
+ * 갱신 절차와 검증 기록: 루트 `README.md`의 검사·배포 항목
  */
 
 test.describe('Visual regression', () => {
