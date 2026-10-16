@@ -2,6 +2,7 @@
 
 import { useMemo } from 'react';
 import { LoadingScreen } from '@/app/(main)/_components/LoadingScreen';
+import { isBoothDemoMode } from '../../_lib/boothDemo';
 
 const TIPS = [
   '견적서에 단가와 수량이 명시될수록 정확한 진단이 가능해요',
@@ -20,6 +21,13 @@ const PROGRESS_STEPS = [
   { delay: 55000, value: 82, duration: 40000, easing: 'linear' },
 ];
 
+/** 부스 데모 모드는 6~10초 안에 끝나므로 진행률을 그 구간에 맞춰 압축한다. */
+const BOOTH_DEMO_PROGRESS_STEPS = [
+  { delay: 100, value: 30, duration: 2000, easing: 'ease-out' },
+  { delay: 2500, value: 65, duration: 3500, easing: 'linear' },
+  { delay: 6000, value: 92, duration: 4000, easing: 'linear' },
+];
+
 interface Props {
   companyName: string | null;
   fileCount: number;
@@ -27,6 +35,7 @@ interface Props {
 }
 
 export const AnalysisLoadingScreen = ({ companyName, fileCount, onCancel }: Props) => {
+  const demo = isBoothDemoMode();
   const messages = useMemo(
     () => [
       '업로드하신 견적서를 읽고 있어요',
@@ -44,8 +53,8 @@ export const AnalysisLoadingScreen = ({ companyName, fileCount, onCancel }: Prop
       tips={TIPS}
       warningMessage="분석에 시간이 걸리고 있어요. 조금만 더 기다려 주세요."
       warningDelayMs={90000}
-      progressSteps={PROGRESS_STEPS}
-      footerText="보통 1~2분 정도 소요돼요"
+      progressSteps={demo ? BOOTH_DEMO_PROGRESS_STEPS : PROGRESS_STEPS}
+      footerText={demo ? '보통 10초 안팎으로 끝나요' : '보통 1~2분 정도 소요돼요'}
       onCancel={onCancel}
     />
   );
