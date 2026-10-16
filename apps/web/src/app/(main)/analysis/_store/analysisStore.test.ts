@@ -218,6 +218,53 @@ describe('analysisStore', () => {
     });
   });
 
+  describe('submitAnalysis — 부스 데모 모드', () => {
+    beforeEach(() => {
+      vi.stubEnv('NEXT_PUBLIC_ANALYSIS_DEMO_MODE', 'true');
+      vi.useFakeTimers();
+    });
+    afterEach(() => {
+      vi.useRealTimers();
+    });
+
+    it('API를 호출하지 않고 6~10초 뒤 고정 레포트로 전환한다', async () => {
+      useAnalysisStore.getState().setForm(VALID_FORM);
+      useAnalysisStore.getState().addFile(new File([], 'any.pdf', { type: 'application/pdf' }));
+
+      const pending = useAnalysisStore.getState().submitAnalysis(1);
+      await vi.advanceTimersByTimeAsync(5999);
+      expect(useAnalysisStore.getState().loading).toBe(true);
+
+      await vi.advanceTimersByTimeAsync(4001);
+      await pending;
+
+      const state = useAnalysisStore.getState();
+      expect(mockAnalyzeRisk).not.toHaveBeenCalled();
+      expect(state.loading).toBe(false);
+      expect(state.view).toBe('report');
+      expect(state.diagnosisResult?.vendorLabel).toBe('A업체');
+      expect(state.diagnosisResult?.missingCount).toBe(3);
+      expect(state.diagnosisResult?.riskCount).toBe(5);
+      expect(state.rawReport?.summary.total_risk_items).toBe(8);
+    });
+
+    it('대기 중 취소하면 입력 화면을 유지하고 이후에도 레포트로 바뀌지 않는다', async () => {
+      useAnalysisStore.getState().setForm(VALID_FORM);
+
+      const pending = useAnalysisStore.getState().submitAnalysis(1);
+      await vi.advanceTimersByTimeAsync(3000);
+      useAnalysisStore.getState().cancelAnalysis();
+      await vi.advanceTimersByTimeAsync(10000);
+      await pending;
+
+      const state = useAnalysisStore.getState();
+      expect(state.view).toBe('input');
+      expect(state.loading).toBe(false);
+      expect(state.diagnosisResult).toBeNull();
+      expect(state.error).toBeNull();
+    });
+  });
+
   describe('reset', () => {
     it('모든 상태를 초기값으로 되돌린다', async () => {
       const store = useAnalysisStore.getState();
