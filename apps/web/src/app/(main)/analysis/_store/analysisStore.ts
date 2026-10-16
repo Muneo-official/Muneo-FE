@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import { analyzeRisk, type RiskAnalyzeRequestBody, type RiskReport } from '@/api/analyze';
 import { trackEvent } from '@/lib/analytics';
+import { isBoothDemoMode, runBoothDemoAnalysis } from '../_lib/boothDemo';
 import { mapApiReportToDiagnosisResult } from '../_lib/mapApiReport';
 import { type AnalysisFormData, type DiagnosisResult, type UploadedFile } from '../_types/analysis.types';
 
@@ -105,10 +106,12 @@ export const useAnalysisStore = create<AnalysisStore>((set, get) => ({
       formData.append('company_name', requestBody.company_name);
       files.forEach((f) => formData.append('files', f.file, f.name));
 
-      // 3. 분석 요청 — 이전 요청이 진행 중이면 먼저 중단
+      // 3. 분석 요청 — 이전 요청이 진행 중이면 먼저 중단. 부스 데모 모드에서는 API 대신 고정 레포트를 쓴다.
       _abortController?.abort();
       _abortController = new AbortController();
-      const { report } = await analyzeRisk(formData, userId, _abortController.signal);
+      const { report } = isBoothDemoMode()
+        ? await runBoothDemoAnalysis(requestBody, _abortController.signal)
+        : await analyzeRisk(formData, userId, _abortController.signal);
 
       // 4. UI 상태 업데이트 — 저장은 사용자가 직접 버튼으로 트리거
       const diagnosisResult = mapApiReportToDiagnosisResult(report);

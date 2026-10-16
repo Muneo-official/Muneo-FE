@@ -1,5 +1,5 @@
 import { act } from '@testing-library/react';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { useAnalysisStore } from './analysisStore';
 
 vi.mock('@/api/analyze', () => ({
@@ -56,8 +56,12 @@ const VALID_FORM = {
 
 describe('analysisStore', () => {
   beforeEach(() => {
+    vi.stubEnv('NEXT_PUBLIC_ANALYSIS_DEMO_MODE', 'false');
     useAnalysisStore.getState().reset();
     vi.clearAllMocks();
+  });
+  afterEach(() => {
+    vi.unstubAllEnvs();
   });
 
   describe('초기 상태', () => {
