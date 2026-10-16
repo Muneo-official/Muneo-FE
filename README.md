@@ -17,13 +17,14 @@ Node.js 22와 pnpm 10.33.0을 사용한다. 루트에서 `pnpm install --frozen-
 
 환경 변수는 각 앱의 `.env.local`에서 관리하며 변경 후 재시작·재빌드한다.
 
-| 앱    | 변수                                      | 설정                                                                 |
-| ----- | ----------------------------------------- | -------------------------------------------------------------------- |
-| web   | `NEXT_PUBLIC_API_BASE_URL`                | 개발 API `https://api-dev.muneo.kr`                                  |
-| admin | `VITE_API_BASE_URL`                       | 개발 기본값 `https://api-dev.muneo.kr`; 운영은 배포 환경에 맞게 설정 |
-| web   | `NEXT_PUBLIC_DIAGNOSIS_FEEDBACK_MODE`     | 미설정/`api`: 서버 연동, `preview`: 체험, `disabled`: 숨김           |
-| web   | `MAINTENANCE_MODE`, `MAINTENANCE_MESSAGE` | `true`로 계획 점검 활성화, 안내 문구 설정                            |
-| web   | `NEXT_PUBLIC_GTM_ID`                      | 분석 수집이 필요한 환경에 팀 소유 `GTM-…` 설정                       |
+| 앱    | 변수                                      | 설정                                                                          |
+| ----- | ----------------------------------------- | ----------------------------------------------------------------------------- |
+| web   | `NEXT_PUBLIC_API_BASE_URL`                | 개발 API `https://api-dev.muneo.kr`                                           |
+| admin | `VITE_API_BASE_URL`                       | 개발 기본값 `https://api-dev.muneo.kr`; 운영은 배포 환경에 맞게 설정          |
+| web   | `NEXT_PUBLIC_DIAGNOSIS_FEEDBACK_MODE`     | 미설정/`api`: 서버 연동, `preview`: 체험, `disabled`: 숨김                    |
+| web   | `NEXT_PUBLIC_ANALYSIS_DEMO_MODE`          | 부스 데모(고정 레포트)가 코드에서 켜져 있는 동안 `false`면 실제 진단 API 사용 |
+| web   | `MAINTENANCE_MODE`, `MAINTENANCE_MESSAGE` | `true`로 계획 점검 활성화, 안내 문구 설정                                     |
+| web   | `NEXT_PUBLIC_GTM_ID`                      | 분석 수집이 필요한 환경에 팀 소유 `GTM-…` 설정                                |
 
 웹 브라우저 요청은 Next.js 프록시를 거치고, 어드민 개발 요청은 Vite 프록시를 거친다. 실제 데이터 대조 시 두 앱이 같은 백엔드를 사용해야 한다.
 
