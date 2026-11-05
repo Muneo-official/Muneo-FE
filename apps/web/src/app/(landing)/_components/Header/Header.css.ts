@@ -9,6 +9,7 @@ const slideDown = keyframes({
 export const header = style({
   '@media': {
     [media.mobile]: { height: '104px' },
+    '(prefers-reduced-motion: reduce)': { animation: 'none' },
   },
   animation: `${slideDown} 0.4s cubic-bezier(0, 0, 0.2, 1) both`,
   position: 'fixed',
@@ -114,4 +115,20 @@ export const navLink = style({
 export const ctaButton = style({
   flexShrink: 0,
   minWidth: '100px',
+});
+
+export const authActions = style({
+  display: 'flex',
+  alignItems: 'center',
+  gap: '16px',
+  flexShrink: 0,
+  '@media': { [media.mobile]: { gap: '10px' } },
+});
+export const loginLink = style({
+  display: 'inline-flex',
+  alignItems: 'center',
+  minHeight: '44px',
+  fontSize: '13px',
+  color: vars.color.neutral.n600,
+  textDecoration: 'none',
 });

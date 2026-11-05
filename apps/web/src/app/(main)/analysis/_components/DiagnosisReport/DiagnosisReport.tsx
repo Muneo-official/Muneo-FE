@@ -1,23 +1,39 @@
 'use client';
 
 import { Button, CircleWarningIcon, StatusCard, TriangleWarningIcon } from '@muneo/design-system';
+import { useRouter } from 'next/navigation';
 import { useRef, useState } from 'react';
 import { saveRisk } from '@/api/analyze';
+import { type FullAnalysisTrial } from '@/api/trial';
 import { useUser } from '@/app/(main)/_components/UserProvider/UserProvider';
 import { TransitionLink } from '@/components/TransitionLink';
+import { mapApiReportToDiagnosisResult } from '../../_lib/mapApiReport';
 import { useAnalysisStore } from '../../_store/analysisStore';
 import { DiagnosisFeedback } from '../DiagnosisFeedback/DiagnosisFeedback';
 import { DiagnosisInsights } from '../DiagnosisInsights/DiagnosisInsights';
 import { ProcessSection } from '../ProcessSection/ProcessSection';
 import * as styles from './DiagnosisReport.css';
 
-export const DiagnosisReport = () => {
-  const reset = useAnalysisStore((s) => s.reset);
-  const result = useAnalysisStore((s) => s.diagnosisResult);
-  const rawReport = useAnalysisStore((s) => s.rawReport);
-  const rawInput = useAnalysisStore((s) => s.rawInput);
-  const savedReportId = useAnalysisStore((s) => s.savedReportId);
-  const setSavedReportId = useAnalysisStore((s) => s.setSavedReportId);
+export const DiagnosisReport = ({ trial }: { trial?: FullAnalysisTrial }) => {
+  const resetStore = useAnalysisStore((s) => s.reset);
+  const storedResult = useAnalysisStore((s) => s.diagnosisResult);
+  const storedReport = useAnalysisStore((s) => s.rawReport);
+  const storedInput = useAnalysisStore((s) => s.rawInput);
+  const storedReportId = useAnalysisStore((s) => s.savedReportId);
+  const setStoredReportId = useAnalysisStore((s) => s.setSavedReportId);
+  const [trialReportId, setTrialReportId] = useState<string | null>(null);
+  const router = useRouter();
+  const result = trial ? mapApiReportToDiagnosisResult(trial.result.report) : storedResult;
+  const rawReport = trial?.result.report ?? storedReport;
+  const rawInput = trial?.input ?? storedInput;
+  const savedReportId = trial ? trialReportId : storedReportId;
+  const setSavedReportId = trial ? setTrialReportId : setStoredReportId;
+  const reset = () => {
+    resetStore();
+    if (trial) {
+      router.push('/analysis');
+    }
+  };
   const user = useUser();
   const savingRef = useRef(false);
   const [isSaving, setIsSaving] = useState(false);

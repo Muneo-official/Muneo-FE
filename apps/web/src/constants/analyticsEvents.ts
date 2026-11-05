@@ -3,6 +3,7 @@
 export const CTA_EVENTS = {
   landingHeaderSignup: 'click_cta_landing_header_signup',
   landingHeroSignup: 'click_cta_landing_hero_signup',
+  landingBottomSignup: 'click_cta_landing_bottom_signup',
 } as const;
 
 export type CtaEvent = (typeof CTA_EVENTS)[keyof typeof CTA_EVENTS];

@@ -8,7 +8,8 @@ import { getKakaoLoginUrl } from '@/api/auth';
 import { isApiError } from '@/api/errors';
 import { login } from '@/api/user';
 import { markSocialLoginStart, trackAuth } from '@/lib/analytics';
-import { getSafeReturnPath } from '@/lib/authRedirect';
+import { getCurrentReturnPath } from '@/lib/authRedirect';
+import { rememberSocialAuthReturn } from '@/lib/socialAuthReturn';
 import { loginSchema, type LoginFormValues } from '@/lib/validations/auth';
 
 export const useLoginForm = () => {
@@ -50,7 +51,7 @@ export const useLoginForm = () => {
     startRedirect(() => {
       // 이전 세션에서 받아 둔 (main) 영역 캐시를 비운다. 바로 이어지는 push가 이 refresh 요청을 대체한다.
       router.refresh();
-      router.replace(getSafeReturnPath(new URLSearchParams(window.location.search).get('next')));
+      router.replace(getCurrentReturnPath());
     });
   });
 
@@ -59,6 +60,7 @@ export const useLoginForm = () => {
     setIsKakaoLoading(true);
     try {
       const { loginUrl } = await getKakaoLoginUrl();
+      rememberSocialAuthReturn(getCurrentReturnPath());
       markSocialLoginStart('kakao');
       window.location.href = loginUrl;
     } catch {

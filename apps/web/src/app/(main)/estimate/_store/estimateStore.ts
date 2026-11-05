@@ -81,7 +81,10 @@ export const useEstimateStore = create<EstimateStore>((set, get) => ({
     const { currentStep } = get();
     if (currentStep < MAX_STEP) {
       trackEvent('estimate_step_complete', { step: currentStep });
-      set({ currentStep: (currentStep + 1) as EstimateStep });
+      set({
+        currentStep: (currentStep + 1) as EstimateStep,
+        ...(currentStep === 3 ? { estimateResult: null, generateError: null } : {}),
+      });
     }
   },
 

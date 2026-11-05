@@ -7,7 +7,9 @@ import { useForm } from 'react-hook-form';
 import { socialSignup } from '@/api/auth';
 import { isApiError } from '@/api/errors';
 import { trackAuth } from '@/lib/analytics';
+import { getLoginHref } from '@/lib/authRedirect';
 import { applyValidationErrors } from '@/lib/forms/applyValidationErrors';
+import { consumeSocialAuthReturn, readSocialAuthReturn } from '@/lib/socialAuthReturn';
 import { socialSignupSchema, type SocialSignupFormValues } from '@/lib/validations/auth';
 
 const API_FIELD_MAP: Partial<Record<string, keyof SocialSignupFormValues>> = {
@@ -44,11 +46,11 @@ export const useSocialSignupForm = (ticket: string) => {
       trackAuth('sign_up', 'kakao');
       startRedirect(() => {
         router.refresh();
-        router.replace('/home');
+        router.replace(consumeSocialAuthReturn());
       });
     } catch (e) {
       if (isApiError(e) && e.code === 'SOCIAL_SIGNUP_TICKET_EXPIRED') {
-        router.replace('/login');
+        router.replace(getLoginHref(readSocialAuthReturn()));
         return;
       }
       if (applyValidationErrors(setError, e, API_FIELD_MAP)) {

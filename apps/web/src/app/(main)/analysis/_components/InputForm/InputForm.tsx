@@ -28,7 +28,8 @@ const ELEVATOR_OPTIONS: Array<{ value: ElevatorOption; label: string }> = [
 ];
 
 export const InputForm = () => {
-  const { form, setForm } = useAnalysisStore();
+  const form = useAnalysisStore((state) => state.form);
+  const setForm = useAnalysisStore((state) => state.setForm);
 
   const handleNumberInput = (field: 'pyeong' | 'roomCount' | 'floor', value: string) => {
     setForm({ [field]: parsePositiveNumber(value) });

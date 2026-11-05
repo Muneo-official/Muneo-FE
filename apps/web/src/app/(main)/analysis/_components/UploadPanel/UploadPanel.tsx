@@ -3,26 +3,49 @@
 import { Button } from '@muneo/design-system';
 import { useRef, useState } from 'react';
 import { useUser } from '@/app/(main)/_components/UserProvider/UserProvider';
+import { validateFiles } from '../../_lib/analysisPayload';
 import { useAnalysisStore } from '../../_store/analysisStore';
 import * as styles from './UploadPanel.css';
 
 const ACCEPT = '.pdf,.jpg,.jpeg,.png,.csv,.xls,.xlsx';
 
-export const UploadPanel = () => {
-  const { files, loading, addFile, removeFile, submitAnalysis, reset } = useAnalysisStore();
-  const user = useUser();
+export const UploadPanelContent = ({
+  onSubmit,
+  disabled = false,
+  submitLabel = '분석 시작',
+}: {
+  onSubmit: () => void;
+  disabled?: boolean;
+  submitLabel?: string;
+}) => {
+  const files = useAnalysisStore((state) => state.files);
+  const addFile = useAnalysisStore((state) => state.addFile);
+  const removeFile = useAnalysisStore((state) => state.removeFile);
+  const reset = useAnalysisStore((state) => state.reset);
   const inputRef = useRef<HTMLInputElement>(null);
   const [dragging, setDragging] = useState(false);
+  const [fileError, setFileError] = useState<string | null>(null);
 
   const handleFiles = (fileList: FileList | null) => {
     if (!fileList) {
       return;
     }
-    Array.from(fileList).forEach((f) => {
-      if (!files.find((e) => e.name === f.name)) {
-        addFile(f);
+    const existing = new Set(files.map(({ name }) => name));
+    const added = Array.from(fileList).filter((file) => {
+      if (existing.has(file.name)) {
+        return false;
       }
+      existing.add(file.name);
+      return true;
     });
+    const message = validateFiles([...files.map(({ file }) => file), ...added]);
+    setFileError(message);
+    if (!message) {
+      added.forEach(addFile);
+    }
+    if (inputRef.current) {
+      inputRef.current.value = '';
+    }
   };
 
   return (
@@ -36,6 +59,7 @@ export const UploadPanel = () => {
         <div className={styles.uploadArea}>
           <div
             role="button"
+            aria-label="견적서 파일 업로드"
             tabIndex={0}
             className={`${styles.dropzone}${dragging ? ` ${styles.dropzoneDragging}` : ''}`}
             onClick={() => inputRef.current?.click()}
@@ -60,16 +84,9 @@ export const UploadPanel = () => {
           >
             <div className={styles.dropzoneText}>
               <p className={styles.dropzoneMain}>파일을 드래그하거나 클릭하여 업로드</p>
-              <p className={styles.dropzoneSub}>PDF, JPG, PNG, CSV, Excel 지원</p>
+              <p className={styles.dropzoneSub}>PDF, JPG, PNG, CSV, Excel · 최대 5개 / 파일당 10MB</p>
             </div>
-            <Button
-              variant="outlineSecondaryStrong"
-              size="sm"
-              onClick={(e: React.MouseEvent) => {
-                e.stopPropagation();
-                inputRef.current?.click();
-              }}
-            >
+            <Button as="span" variant="outlineSecondaryStrong" size="sm" aria-hidden="true">
               파일 업로드
             </Button>
           </div>
@@ -79,8 +96,10 @@ export const UploadPanel = () => {
             accept={ACCEPT}
             multiple
             hidden
+            aria-label="견적서 파일"
             onChange={(e) => handleFiles(e.target.files)}
           />
+          {fileError && <p role="alert">{fileError}</p>}
 
           {files.length > 0 && (
             <div className={styles.fileList}>
@@ -102,25 +121,39 @@ export const UploadPanel = () => {
         <div className={styles.divider} />
 
         <div className={styles.actions}>
-          <Button variant="outlineSecondaryStrong" size="md" className={styles.actionButton} onClick={reset}>
-            초기화 ↺
-          </Button>
           <Button
-            variant="gradient"
+            variant="outlineSecondaryStrong"
             size="md"
             className={styles.actionButton}
-            disabled={loading || !user}
             onClick={() => {
-              if (loading || !user) {
-                return;
-              }
-              void submitAnalysis(user.id);
+              reset();
+              setFileError(null);
             }}
+            disabled={disabled}
           >
-            분석 시작
+            초기화 ↺
+          </Button>
+          <Button variant="gradient" size="md" className={styles.actionButton} disabled={disabled} onClick={onSubmit}>
+            {submitLabel}
           </Button>
         </div>
       </div>
     </div>
+  );
+};
+
+export const UploadPanel = () => {
+  const user = useUser();
+  const loading = useAnalysisStore((state) => state.loading);
+  const submitAnalysis = useAnalysisStore((state) => state.submitAnalysis);
+  return (
+    <UploadPanelContent
+      disabled={loading}
+      onSubmit={() => {
+        if (!loading) {
+          void submitAnalysis(user.id);
+        }
+      }}
+    />
   );
 };

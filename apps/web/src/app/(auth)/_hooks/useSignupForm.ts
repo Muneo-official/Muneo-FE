@@ -6,6 +6,7 @@ import { useState, useTransition } from 'react';
 import { useForm } from 'react-hook-form';
 import { signup } from '@/api/user';
 import { trackAuth } from '@/lib/analytics';
+import { getCurrentReturnPath } from '@/lib/authRedirect';
 import { applyValidationErrors } from '@/lib/forms/applyValidationErrors';
 import { signupSchema, type SignupFormValues } from '@/lib/validations/auth';
 
@@ -47,7 +48,7 @@ export const useSignupForm = () => {
       trackAuth('sign_up', 'email');
       startRedirect(() => {
         router.refresh();
-        router.replace('/home');
+        router.replace(getCurrentReturnPath());
       });
     } catch (e) {
       if (!applyValidationErrors(setError, e, FIELD_MAP, 'email')) {

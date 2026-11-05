@@ -11,7 +11,6 @@ export const section = style({
   alignItems: 'center',
   alignSelf: 'stretch',
   backgroundColor: vars.color.white,
-  minHeight: '90vh',
   justifyContent: 'center',
   padding: '80px 0',
 });
@@ -40,14 +39,6 @@ export const inner = style({
   alignItems: 'center',
   gap: '49px',
   alignSelf: 'stretch',
-  opacity: 0,
-  transform: 'translateY(28px)',
-  transition: 'opacity 0.7s ease, transform 0.7s ease',
-});
-
-export const innerVisible = style({
-  opacity: 1,
-  transform: 'translateY(0)',
 });
 
 export const faqList = style({
@@ -161,4 +152,14 @@ export const answerText = style({
   lineHeight: '1.7',
   color: vars.color.neutral.n700,
   letterSpacing: '-0.075px',
+});
+
+export const policyLink = style({
+  display: 'inline-flex',
+  alignItems: 'center',
+  minHeight: '44px',
+  marginTop: '12px',
+  color: vars.color.brand.secondary,
+  fontWeight: 600,
+  textUnderlineOffset: '4px',
 });

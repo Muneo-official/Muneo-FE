@@ -20,7 +20,7 @@ export const sectionTitle = style({
   opacity: 0.9,
   textAlign: 'center',
   letterSpacing: '-0.28px',
-  whiteSpace: 'nowrap',
+  wordBreak: 'keep-all',
 });
 
 export const sectionDivider = style({
@@ -42,5 +42,5 @@ export const sectionSubtitle = style({
   color: vars.color.neutral.n500,
   textAlign: 'center',
   letterSpacing: '-0.16px',
-  whiteSpace: 'nowrap',
+  wordBreak: 'keep-all',
 });

@@ -201,9 +201,94 @@ const shouldTriggerScenario = (req: IncomingMessage, scenario: string) => scenar
 // Server
 // ─────────────────────────────────────────────────────────────
 
+const trialResults = new Map<string, { preview: unknown; full: unknown }>();
+
 const server = createServer(async (req, res) => {
   const url = new URL(req.url ?? '/', `http://localhost:${PORT}`);
   const key = `${req.method} ${url.pathname}`;
+
+  // 비회원 체험 계약 검증용. 실제 서비스에서는 Redis와 AI 분석을 사용한다.
+  const trialMatch = url.pathname.match(/^\/api\/v1\/trials\/(analysis|estimate)(\/result)?$/);
+  if (trialMatch) {
+    const kind = trialMatch[1];
+    const token = req.headers.cookie?.match(/(?:^|;\s*)muneo_trial=([^;]+)/)?.[1] ?? crypto.randomUUID();
+    const trialKey = kind + ':' + token;
+    const headers = {
+      'Set-Cookie': 'muneo_trial=' + token + '; Path=/; HttpOnly; SameSite=Lax; Max-Age=1800',
+      'Cache-Control': 'no-store',
+    };
+    const stored = trialResults.get(trialKey);
+    if (trialMatch[2]) {
+      if (!hasAccessCookie(req)) {
+        sendRaw(res, 401, { message: '로그인이 필요합니다.' });
+        return;
+      }
+      if (!stored) {
+        sendRaw(res, 410, { message: '보관 시간이 지났어요.' });
+        return;
+      }
+      sendRaw(res, 200, stored.full, headers);
+      return;
+    }
+    if (req.method === 'GET') {
+      sendRaw(res, stored ? 200 : 204, stored?.preview ?? null, headers);
+      return;
+    }
+    if (req.method === 'POST') {
+      const chunks: Buffer[] = [];
+      for await (const chunk of req) chunks.push(chunk as Buffer);
+      const raw = Buffer.concat(chunks).toString('utf8');
+      const expiresAt = new Date(Date.now() + 1800000).toISOString();
+      const items = [
+        {
+          title: '폐기물 처리 비용 확인',
+          status: '누락',
+          description: '철거 항목에 폐기물 처리비가 없어요.',
+          guide: '운반과 처리 비용이 포함되어 있나요?',
+        },
+        {
+          title: '비공개 전체 항목: 도배 인건비',
+          status: '중복',
+          description: '도배 인건비가 중복되어 있어요.',
+          guide: '인건비 범위를 구분해 주세요.',
+        },
+      ];
+      const report = {
+        ...MOCK_REPORT,
+        process_sections: [{ process: '철거', display_name: '철거 공사', items }],
+        summary: { total_risk_items: 2, chips: { 누락: 1, 중복: 1, 불분명: 0 } },
+      };
+      const estimateInput: EstimateGenerateRequest = kind === 'estimate' ? JSON.parse(raw) : MOCK_ESTIMATE_INPUT;
+      const result = {
+        ...MOCK_ESTIMATE_RESULT,
+        선택_공종: estimateInput.공종,
+        공종별_단가_범위: Object.fromEntries(
+          estimateInput.공종.map((name) => [name, { 최소: 1000000, 중간: 1500000, 최대: 2000000 }])
+        ),
+      };
+      const preview =
+        kind === 'analysis'
+          ? {
+              kind,
+              expiresAt,
+              totalItems: 2,
+              counts: { 누락: 1, 중복: 1, 불분명: 0 },
+              firstItem: { process: '철거 공사', ...items[0] },
+            }
+          : {
+              kind,
+              expiresAt,
+              totalProcesses: estimateInput.공종.length,
+              firstProcess: { name: estimateInput.공종[0], min: 1000000, max: 2000000 },
+            };
+      const full =
+        kind === 'analysis' ? { input: MOCK_RISKS[0].input, result: { report } } : { input: estimateInput, result };
+      trialResults.set(trialKey, { preview, full });
+      await delay(250);
+      sendRaw(res, 200, preview, headers);
+      return;
+    }
+  }
 
   // CORS preflight — 로컬 e2e 전용 mock이므로 Next dev origin만 허용
   // (요청 origin을 그대로 echo하면 CodeQL이 cors-misconfig로 잡음 — allowlist 고정)

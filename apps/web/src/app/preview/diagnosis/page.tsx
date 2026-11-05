@@ -1,13 +1,13 @@
 import { type Metadata } from 'next';
-import { notFound } from 'next/navigation';
+import Link from 'next/link';
+import { StartActions } from '@/app/(landing)/_components/StartActions/StartActions';
 import { DiagnosisFeedback } from '@/app/(main)/analysis/_components/DiagnosisFeedback/DiagnosisFeedback';
 import { DiagnosisInsights } from '@/app/(main)/analysis/_components/DiagnosisInsights/DiagnosisInsights';
 import { ProcessSection } from '@/app/(main)/analysis/_components/ProcessSection/ProcessSection';
 import { type DiagnosisResult } from '@/app/(main)/analysis/_types/analysis.types';
 import * as styles from './page.css';
 
-export const metadata: Metadata = { title: '진단 UI 미리보기', robots: { index: false, follow: false } };
-export const dynamic = 'force-dynamic';
+export const metadata: Metadata = { title: '견적서 진단 결과 예시', robots: { index: false, follow: false } };
 
 const PREVIEW_RESULT: DiagnosisResult = {
   vendorLabel: '미리보기 업체',
@@ -54,22 +54,25 @@ const PREVIEW_RESULT: DiagnosisResult = {
 };
 
 export default function DiagnosisPreviewPage() {
-  if (process.env.NODE_ENV === 'production' && process.env.ENABLE_UI_PREVIEWS !== 'true') {
-    notFound();
-  }
   return (
     <main className={styles.page}>
       <header className={styles.header}>
-        <p className={styles.badge}>UI 미리보기 · 예시 데이터</p>
-        <h1 className={styles.title}>진단 결과를 다음 행동으로</h1>
-        <p>업체에 확인할 내용을 정리하고, 진단에 대한 의견을 남기는 흐름을 체험해 보세요.</p>
-        <a href="/maintenance">점검 화면도 확인하기 →</a>
+        <Link href="/">← 문어 홈으로</Link>
+        <p className={styles.badge}>진단 결과 예시 · 실제 고객 자료가 아닙니다</p>
+        <h1 className={styles.title}>견적서를 확인하면, 이런 내용을 알 수 있어요</h1>
+        <p>누락·중복·불명확한 항목과 업체에 확인할 질문을 살펴보세요. 실제 결과는 견적서에 따라 달라요.</p>
       </header>
       <DiagnosisInsights result={PREVIEW_RESULT} />
       {PREVIEW_RESULT.sections.map((section) => (
         <ProcessSection key={section.id} section={section} />
       ))}
       <DiagnosisFeedback mode="preview" />
+      <section className={styles.header} aria-labelledby="preview-start-title">
+        <h2 id="preview-start-title" className={styles.title}>
+          내 견적서도 확인해 볼까요?
+        </h2>
+        <StartActions position="bottom" />
+      </section>
     </main>
   );
 }

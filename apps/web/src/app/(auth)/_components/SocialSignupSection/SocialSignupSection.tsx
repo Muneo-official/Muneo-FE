@@ -1,6 +1,8 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
+import { getLoginHref } from '@/lib/authRedirect';
+import { readSocialAuthReturn } from '@/lib/socialAuthReturn';
 import { useSocialSignupForm } from '../../_hooks/useSocialSignupForm';
 import { SocialSignupModal } from '../SocialSignupModal';
 
@@ -13,7 +15,7 @@ export const SocialSignupSection = ({ ticket }: SocialSignupSectionProps) => {
   const { register, setValue, errors, isLoading, onSubmit } = useSocialSignupForm(ticket);
 
   const handleClose = () => router.push('/');
-  const handleLogin = () => router.replace('/login');
+  const handleLogin = () => router.replace(getLoginHref(readSocialAuthReturn()));
 
   return (
     <SocialSignupModal

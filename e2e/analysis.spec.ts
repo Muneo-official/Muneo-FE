@@ -14,7 +14,7 @@ test.describe('Analysis — authenticated', () => {
     await page.goto('/analysis');
     const startButton = page.getByRole('button', { name: '분석 시작' });
     await startButton.click();
-    await expect(page.getByText(/모든 공사 정보를 입력/)).toBeVisible();
+    await expect(page.getByText(/공사 정보를 모두 입력/)).toBeVisible();
   });
 
   test('초기화 버튼이 업로드 파일 목록을 비운다', async ({ page }) => {

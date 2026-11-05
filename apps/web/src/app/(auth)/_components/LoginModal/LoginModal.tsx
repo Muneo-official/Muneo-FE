@@ -4,6 +4,7 @@ import { Button, CloseRoundFill, KakaoIcon, TextField } from '@muneo/design-syst
 import { useId } from 'react';
 import { type FieldErrors, type UseFormRegister } from 'react-hook-form';
 import { type LoginFormValues } from '@/lib/validations/auth';
+import { AuthIntentNotice } from '../AuthIntentNotice/AuthIntentNotice';
 import { AuthModalHeader } from '../AuthModalHeader';
 import * as styles from './LoginModal.css';
 
@@ -51,6 +52,7 @@ export const LoginModal = ({
       <form className={styles.inner} method="post" onSubmit={onSubmit} noValidate>
         <div className={styles.upper}>
           <AuthModalHeader onLogoClick={onLogoClick} />
+          <AuthIntentNotice mode="login" />
 
           <div className={styles.formSection}>
             <TextField

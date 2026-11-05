@@ -1,4 +1,5 @@
 import { Button, TriangleWarningIcon } from '@muneo/design-system';
+import { RetryLoginButton } from './RetryLoginButton';
 import * as styles from './page.css';
 
 const REASON_MESSAGES: Record<string, string> = {
@@ -22,9 +23,7 @@ const SocialLoginErrorPage = async ({ searchParams }: SocialLoginErrorPageProps)
       <h2 className={styles.title}>오류가 발생했습니다</h2>
       <p className={styles.description}>{message}</p>
       <div className={styles.actions}>
-        <Button as="a" variant="primary" href="/login">
-          다시 로그인하기
-        </Button>
+        <RetryLoginButton />
         <Button as="a" variant="outlineSecondaryStrong" href="/">
           홈으로
         </Button>

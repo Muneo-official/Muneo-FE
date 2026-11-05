@@ -1,5 +1,7 @@
 'use client';
 
+import { useRouter } from 'next/navigation';
+import { getCurrentReturnPath, getSignupHref } from '@/lib/authRedirect';
 import { useLoginForm } from '../../_hooks/useLoginForm';
 import { LoginModal } from '../LoginModal';
 
@@ -11,6 +13,7 @@ interface LoginSectionProps {
 }
 
 export const LoginSection = ({ onLogoClick, onClose, onForgotPassword, onSignUp }: LoginSectionProps) => {
+  const router = useRouter();
   const { register, errors, isLoading, isRedirecting, isKakaoLoading, onSubmit, handleKakaoLogin } = useLoginForm();
 
   return (
@@ -25,7 +28,7 @@ export const LoginSection = ({ onLogoClick, onClose, onForgotPassword, onSignUp 
       onClose={onClose}
       onKakaoLogin={handleKakaoLogin}
       onForgotPassword={onForgotPassword}
-      onSignUp={onSignUp}
+      onSignUp={onSignUp ?? (() => router.push(getSignupHref(getCurrentReturnPath())))}
     />
   );
 };

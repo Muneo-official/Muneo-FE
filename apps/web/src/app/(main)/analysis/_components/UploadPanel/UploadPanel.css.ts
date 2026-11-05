@@ -9,6 +9,8 @@ export const card = style({
   backgroundColor: vars.color.white,
   borderRadius: '15px',
   width: '600px',
+  maxWidth: '100%',
+  minWidth: 0,
   flexShrink: 0,
   padding: '28px 32px',
   display: 'flex',
@@ -172,4 +174,7 @@ export const actions = style({
 
 export const actionButton = style({
   flex: '1 0 0',
+  whiteSpace: 'normal',
+  textAlign: 'center',
+  '@media': { [media.mobile]: { flex: '1 1 100%' } },
 });

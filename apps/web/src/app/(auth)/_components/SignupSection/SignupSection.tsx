@@ -1,5 +1,7 @@
 'use client';
 
+import { useRouter } from 'next/navigation';
+import { getCurrentReturnPath, getLoginHref } from '@/lib/authRedirect';
 import { useSignupForm } from '../../_hooks/useSignupForm';
 import { SignupModal } from '../SignupModal';
 
@@ -10,6 +12,7 @@ interface SignupSectionProps {
 }
 
 export const SignupSection = ({ onLogoClick, onClose, onLogin }: SignupSectionProps) => {
+  const router = useRouter();
   const { register, setValue, errors, isLoading, onSubmit } = useSignupForm();
 
   return (
@@ -19,7 +22,7 @@ export const SignupSection = ({ onLogoClick, onClose, onLogin }: SignupSectionPr
       errors={errors}
       isLoading={isLoading}
       onSubmit={onSubmit}
-      onLogin={onLogin}
+      onLogin={onLogin ?? (() => router.push(getLoginHref(getCurrentReturnPath())))}
       onLogoClick={onLogoClick}
       onClose={onClose}
     />

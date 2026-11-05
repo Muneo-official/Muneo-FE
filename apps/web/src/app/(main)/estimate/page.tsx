@@ -24,8 +24,6 @@ const EstimatePage = () => {
   const currentStep = useEstimateStore((s) => s.currentStep);
   const step1 = useEstimateStore((s) => s.step1);
   const step2 = useEstimateStore((s) => s.step2);
-  const step3 = useEstimateStore((s) => s.step3);
-  const step4 = useEstimateStore((s) => s.step4);
   const isGenerating = useEstimateStore((s) => s.isGenerating);
   const generateError = useEstimateStore((s) => s.generateError);
   const estimateResult = useEstimateStore((s) => s.estimateResult);
@@ -34,45 +32,39 @@ const EstimatePage = () => {
   const goToStep = useEstimateStore((s) => s.goToStep);
 
   useEffect(() => {
-    if (currentStep !== 4 || estimateResult !== null || isGenerating || generateError !== null) {
+    if (currentStep !== 4 || useEstimateStore.getState().estimateResult) {
       return;
     }
-
-    const MIN_LOADING_MS = 10000;
-
+    const controller = new AbortController();
+    const { step1, step2, step3, step4 } = useEstimateStore.getState();
+    setGeneratingState(true, null);
+    const processCount = step2.selectedProcesses.length;
     const fetchEstimate = async () => {
-      setGeneratingState(true, null);
-      const processCount = step2.selectedProcesses.length;
       try {
         const payload = mapToApiPayload(step1, step2, step3, step4);
-        const [result] = await Promise.all([
-          generateEstimate(payload),
-          new Promise<void>((resolve) => setTimeout(resolve, MIN_LOADING_MS)),
-        ]);
+        const result = await generateEstimate(payload, controller.signal);
+        if (controller.signal.aborted) {
+          return;
+        }
         setEstimateResult(result);
         setGeneratingState(false, null);
         trackEvent('estimate_generate_success', { process_count: processCount });
       } catch {
+        if (controller.signal.aborted) {
+          return;
+        }
         setGeneratingState(false, '가견적 생성에 실패했습니다. 다시 시도해 주세요.');
         trackEvent('estimate_generate_error', { process_count: processCount });
       }
     };
+    void fetchEstimate();
+    return () => {
+      controller.abort();
+      setGeneratingState(false, null);
+    };
+  }, [currentStep, setGeneratingState, setEstimateResult]);
 
-    fetchEstimate();
-  }, [
-    currentStep,
-    estimateResult,
-    isGenerating,
-    generateError,
-    step1,
-    step2,
-    step3,
-    step4,
-    setGeneratingState,
-    setEstimateResult,
-  ]);
-
-  if (currentStep === 4 && isGenerating) {
+  if (currentStep === 4 && (isGenerating || (!estimateResult && !generateError))) {
     return (
       <div className={styles.page}>
         <div className={styles.content}>

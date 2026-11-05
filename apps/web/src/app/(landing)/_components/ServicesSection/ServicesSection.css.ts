@@ -9,7 +9,7 @@ export const section = style({
   display: 'flex',
   flexDirection: 'column',
   alignItems: 'center',
-  minHeight: '90vh',
+  padding: '80px 0',
   justifyContent: 'center',
   alignSelf: 'stretch',
   background: '#FBFCFF',
@@ -26,10 +26,10 @@ export const container = style({
   alignItems: 'center',
   gap: '10px',
   width: '100%',
-  maxWidth: '1440px',
+  maxWidth: '1200px',
   height: '100%',
   margin: '0 auto',
-  padding: '36px 160px 34px',
+  padding: '0 40px',
 });
 
 export const inner = style({
@@ -41,14 +41,6 @@ export const inner = style({
   alignItems: 'center',
   gap: '49px',
   alignSelf: 'stretch',
-  opacity: 0,
-  transform: 'translateY(28px)',
-  transition: 'opacity 0.7s ease, transform 0.7s ease',
-});
-
-export const innerVisible = style({
-  opacity: 1,
-  transform: 'translateY(0)',
 });
 
 export const cardsRow = style({
@@ -73,24 +65,13 @@ export const card = style({
   flexDirection: 'column',
   alignItems: 'flex-start',
   gap: '10px',
-  padding: '20px 100px 59px 28px',
+  padding: '32px',
   borderRadius: '16px',
   background: 'linear-gradient(180deg, #EEF0FF 0%, rgba(238, 240, 255, 0.09) 100%)',
   boxShadow: '0px 2px 2px 0px rgba(0, 0, 0, 0.12)',
   alignSelf: 'stretch',
   flex: '1 0 0',
-  opacity: 0,
-  transform: 'translateY(16px)',
-  transition: 'opacity 0.5s ease, transform 0.5s ease',
 });
-
-export const cardVisible = style({
-  opacity: 1,
-  transform: 'translateY(0)',
-});
-
-export const delay1 = style({ transitionDelay: '0.1s' });
-export const delay2 = style({ transitionDelay: '0.25s' });
 
 export const cardContent = style({
   display: 'flex',
@@ -125,6 +106,7 @@ export const cardDescription = style({
   fontFamily: vars.typography.fontFamily,
   fontWeight: vars.typography.fontWeight.regular,
   fontSize: vars.typography.fontSize.base,
-  lineHeight: '18px',
+  lineHeight: '1.8',
+  wordBreak: 'keep-all',
   color: vars.color.neutral.n500,
 });

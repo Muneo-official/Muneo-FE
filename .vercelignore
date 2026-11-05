@@ -1,0 +1,13 @@
+**/node_modules/**
+**/.next*/**
+**/dist/**
+**/build/**
+**/.turbo/**
+.yarn/**
+.git/**
+**/.env*
+**/cookies.txt
+playwright-report/**
+test-results/**
+playwright/.auth/**
+**/*.tsbuildinfo

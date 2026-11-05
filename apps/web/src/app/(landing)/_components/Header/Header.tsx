@@ -3,6 +3,7 @@
 import { Button, Logo } from '@muneo/design-system';
 import { clsx } from 'clsx';
 import { useEffect, useState } from 'react';
+import { PendingLinkLabel } from '@/components/PendingLinkLabel';
 import { TransitionLink } from '@/components/TransitionLink';
 import { CTA_EVENTS } from '@/constants/analyticsEvents';
 import { TAGLINE } from '@/constants/app';
@@ -10,9 +11,9 @@ import { trackCtaClick } from '@/lib/analytics';
 import * as styles from './Header.css';
 
 const NAV_ITEMS = [
-  { label: '서비스 소개', href: '#intro' },
-  { label: '가이드라인', href: '#guide' },
-  { label: 'FAQ', href: '#faq' },
+  { label: '서비스 소개', href: '/#intro' },
+  { label: '이용 방법', href: '/#guide' },
+  { label: 'FAQ', href: '/#faq' },
 ];
 
 export const Header = () => {
@@ -47,22 +48,26 @@ export const Header = () => {
           </ul>
         </nav>
 
-        <Button
-          as={TransitionLink}
-          href="/login"
-          viewTransition
-          variant="gradient"
-          className={styles.ctaButton}
-          onClick={() =>
-            trackCtaClick(CTA_EVENTS.landingHeaderSignup, {
-              linkText: '시작하기',
-              linkUrl: '/login',
-              position: 'header',
-            })
-          }
-        >
-          시작하기
-        </Button>
+        <div className={styles.authActions}>
+          <TransitionLink href="/login" className={styles.loginLink}>
+            로그인
+          </TransitionLink>
+          <Button
+            as={TransitionLink}
+            href="/try/analysis"
+            variant="gradient"
+            className={styles.ctaButton}
+            onClick={() =>
+              trackCtaClick(CTA_EVENTS.landingHeaderSignup, {
+                linkText: '무료로 시작하기',
+                linkUrl: '/try/analysis',
+                position: 'header',
+              })
+            }
+          >
+            <PendingLinkLabel>무료로 시작하기</PendingLinkLabel>
+          </Button>
+        </div>
       </div>
     </header>
   );

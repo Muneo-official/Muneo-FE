@@ -4,7 +4,6 @@ import { style } from '@vanilla-extract/css';
 export const footer = style({
   backgroundColor: vars.color.white,
   borderTop: `1px solid ${vars.color.neutral.n200}`,
-  marginTop: '60px',
 });
 
 export const container = style({
@@ -73,18 +72,6 @@ export const links = style({
   listStyle: 'none',
   padding: 0,
   margin: 0,
-});
-
-export const operator = style({
-  fontFamily: vars.typography.fontFamily,
-  display: 'flex',
-  flexDirection: 'column',
-  gap: '4px',
-  fontStyle: 'normal',
-  fontSize: '13px',
-  lineHeight: 1.8,
-  color: vars.color.neutral.n600,
-  overflowWrap: 'anywhere',
 });
 
 export const linkGroup = style({

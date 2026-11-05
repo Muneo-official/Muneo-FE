@@ -6,8 +6,11 @@ import {
   type EstimateSaveResponse,
 } from './types';
 
-export const generateEstimate = (payload: EstimateGenerateRequest): Promise<EstimateGenerateResponse> =>
-  client.post('api/v1/estimates/generate', { json: payload }).json<EstimateGenerateResponse>();
+export const generateEstimate = (
+  payload: EstimateGenerateRequest,
+  signal?: AbortSignal
+): Promise<EstimateGenerateResponse> =>
+  client.post('api/v1/estimates/generate', { json: payload, signal, timeout: 180000 }).json<EstimateGenerateResponse>();
 
 export const saveEstimate = (payload: EstimateSaveRequest, userId: number): Promise<EstimateSaveResponse> =>
   client

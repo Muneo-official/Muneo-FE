@@ -109,20 +109,20 @@ describe('analysisStore', () => {
 
   describe('addFile / removeFile', () => {
     it('addFile로 파일이 추가된다', () => {
-      useAnalysisStore.getState().addFile(new File([], 'a.pdf', { type: 'application/pdf' }));
+      useAnalysisStore.getState().addFile(new File(['test'], 'a.pdf', { type: 'application/pdf' }));
       expect(useAnalysisStore.getState().files).toHaveLength(1);
       expect(useAnalysisStore.getState().files[0].name).toBe('a.pdf');
     });
 
     it('addFile은 기존 파일을 유지하면서 누적한다', () => {
-      useAnalysisStore.getState().addFile(new File([], 'a.pdf', { type: 'application/pdf' }));
-      useAnalysisStore.getState().addFile(new File([], 'b.pdf', { type: 'application/pdf' }));
+      useAnalysisStore.getState().addFile(new File(['test'], 'a.pdf', { type: 'application/pdf' }));
+      useAnalysisStore.getState().addFile(new File(['test'], 'b.pdf', { type: 'application/pdf' }));
       expect(useAnalysisStore.getState().files).toHaveLength(2);
     });
 
     it('removeFile은 name이 일치하는 파일을 제거한다', () => {
-      useAnalysisStore.getState().addFile(new File([], 'a.pdf', { type: 'application/pdf' }));
-      useAnalysisStore.getState().addFile(new File([], 'b.pdf', { type: 'application/pdf' }));
+      useAnalysisStore.getState().addFile(new File(['test'], 'a.pdf', { type: 'application/pdf' }));
+      useAnalysisStore.getState().addFile(new File(['test'], 'b.pdf', { type: 'application/pdf' }));
       useAnalysisStore.getState().removeFile('a.pdf');
       const { files } = useAnalysisStore.getState();
       expect(files).toHaveLength(1);
@@ -130,7 +130,7 @@ describe('analysisStore', () => {
     });
 
     it('removeFile에 없는 name을 넘기면 변화가 없다', () => {
-      useAnalysisStore.getState().addFile(new File([], 'a.pdf', { type: 'application/pdf' }));
+      useAnalysisStore.getState().addFile(new File(['test'], 'a.pdf', { type: 'application/pdf' }));
       useAnalysisStore.getState().removeFile('not-exists.pdf');
       expect(useAnalysisStore.getState().files).toHaveLength(1);
     });
@@ -151,6 +151,7 @@ describe('analysisStore', () => {
       mockSaveRisk.mockResolvedValue({ id: 'saved-id' });
 
       useAnalysisStore.getState().setForm(VALID_FORM);
+      useAnalysisStore.getState().addFile(new File(['test'], 'input.pdf', { type: 'application/pdf' }));
       useAnalysisStore.getState().submitAnalysis(1);
       expect(useAnalysisStore.getState().loading).toBe(true);
     });
@@ -169,7 +170,8 @@ describe('analysisStore', () => {
       mockSaveRisk.mockResolvedValue({ id: 'saved-id' });
 
       useAnalysisStore.getState().setForm(VALID_FORM);
-      useAnalysisStore.getState().addFile(new File([], 'estimate.png', { type: 'image/png' }));
+      useAnalysisStore.getState().addFile(new File(['test'], 'input.pdf', { type: 'application/pdf' }));
+      useAnalysisStore.getState().addFile(new File(['test'], 'estimate.png', { type: 'image/png' }));
 
       await act(async () => {
         await useAnalysisStore.getState().submitAnalysis(1);
@@ -196,6 +198,7 @@ describe('analysisStore', () => {
       mockAnalyzeRisk.mockRejectedValue(new Error('네트워크 오류'));
 
       useAnalysisStore.getState().setForm(VALID_FORM);
+      useAnalysisStore.getState().addFile(new File(['test'], 'input.pdf', { type: 'application/pdf' }));
 
       await act(async () => {
         await useAnalysisStore.getState().submitAnalysis(1);
@@ -203,7 +206,7 @@ describe('analysisStore', () => {
 
       const state = useAnalysisStore.getState();
       expect(state.loading).toBe(false);
-      expect(state.error).toBe('분석 중 오류가 발생했습니다.');
+      expect(state.error).toBe('네트워크 오류');
       expect(state.view).toBe('input');
       expect(state.diagnosisResult).toBeNull();
     });
@@ -213,7 +216,7 @@ describe('analysisStore', () => {
         await useAnalysisStore.getState().submitAnalysis(1);
       });
 
-      expect(useAnalysisStore.getState().error).toBe('모든 공사 정보를 입력해주세요.');
+      expect(useAnalysisStore.getState().error).toContain('공사 정보를 모두 입력');
       expect(mockAnalyzeRisk).not.toHaveBeenCalled();
     });
   });
@@ -229,7 +232,8 @@ describe('analysisStore', () => {
 
     it('API를 호출하지 않고 6~10초 뒤 고정 레포트로 전환한다', async () => {
       useAnalysisStore.getState().setForm(VALID_FORM);
-      useAnalysisStore.getState().addFile(new File([], 'any.pdf', { type: 'application/pdf' }));
+      useAnalysisStore.getState().addFile(new File(['test'], 'input.pdf', { type: 'application/pdf' }));
+      useAnalysisStore.getState().addFile(new File(['test'], 'any.pdf', { type: 'application/pdf' }));
 
       const pending = useAnalysisStore.getState().submitAnalysis(1);
       await vi.advanceTimersByTimeAsync(5999);
@@ -250,6 +254,7 @@ describe('analysisStore', () => {
 
     it('대기 중 취소하면 입력 화면을 유지하고 이후에도 레포트로 바뀌지 않는다', async () => {
       useAnalysisStore.getState().setForm(VALID_FORM);
+      useAnalysisStore.getState().addFile(new File(['test'], 'input.pdf', { type: 'application/pdf' }));
 
       const pending = useAnalysisStore.getState().submitAnalysis(1);
       await vi.advanceTimersByTimeAsync(3000);
@@ -266,10 +271,52 @@ describe('analysisStore', () => {
   });
 
   describe('reset', () => {
+    it('취소한 응답이 늦게 도착해도 새 요청의 로딩과 결과를 덮지 않는다', async () => {
+      let resolveFirst!: (value: { report: typeof MOCK_REPORT }) => void;
+      let resolveSecond!: (value: { report: typeof MOCK_REPORT }) => void;
+      mockAnalyzeRisk
+        .mockImplementationOnce(
+          () =>
+            new Promise((resolve) => {
+              resolveFirst = resolve;
+            })
+        )
+        .mockImplementationOnce(
+          () =>
+            new Promise((resolve) => {
+              resolveSecond = resolve;
+            })
+        );
+      useAnalysisStore.getState().setForm(VALID_FORM);
+      useAnalysisStore.getState().addFile(new File(['test'], 'input.pdf'));
+      const first = useAnalysisStore.getState().submitAnalysis(1);
+      useAnalysisStore.getState().cancelAnalysis();
+      expect(useAnalysisStore.getState().form).toEqual(VALID_FORM);
+      expect(useAnalysisStore.getState().files).toHaveLength(1);
+      const second = useAnalysisStore.getState().submitAnalysis(1);
+      resolveFirst({ report: MOCK_REPORT });
+      await first;
+      expect(useAnalysisStore.getState().loading).toBe(true);
+      expect(useAnalysisStore.getState().view).toBe('input');
+      resolveSecond({
+        report: { ...MOCK_REPORT, subtitle_fields: { ...MOCK_REPORT.subtitle_fields, company_name: '새 결과' } },
+      });
+      await second;
+      expect(useAnalysisStore.getState().diagnosisResult?.vendorLabel).toBe('새 결과');
+      expect(useAnalysisStore.getState().loading).toBe(false);
+    });
+
+    it('견적서가 없으면 분석 요청을 보내지 않는다', async () => {
+      useAnalysisStore.getState().setForm(VALID_FORM);
+      await useAnalysisStore.getState().submitAnalysis(1);
+      expect(mockAnalyzeRisk).not.toHaveBeenCalled();
+      expect(useAnalysisStore.getState().error).toContain('견적서를 한 개 이상');
+    });
+
     it('모든 상태를 초기값으로 되돌린다', async () => {
       const store = useAnalysisStore.getState();
       store.setForm({ spaceType: '아파트', pyeong: 32 });
-      store.addFile(new File([], 'a.pdf', { type: 'application/pdf' }));
+      store.addFile(new File(['test'], 'a.pdf', { type: 'application/pdf' }));
       store.reset();
       const state = useAnalysisStore.getState();
       expect(state.view).toBe('input');

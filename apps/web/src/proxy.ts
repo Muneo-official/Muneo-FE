@@ -29,6 +29,9 @@ export const proxy = async (request: NextRequest) => {
   if (accessToken) {
     return NextResponse.next();
   }
+  if (!request.cookies.get('refresh_token')?.value) {
+    return NextResponse.redirect(new URL(getLoginHref(returnTo), request.url));
+  }
 
   let refreshRes: Response;
   try {

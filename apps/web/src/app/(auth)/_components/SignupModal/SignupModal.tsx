@@ -5,6 +5,7 @@ import { useId } from 'react';
 import { type FieldErrors, type UseFormRegister, type UseFormSetValue } from 'react-hook-form';
 import { formatBirthDate, formatPhoneNumber } from '@/lib/formatters/inputFormat';
 import { type SignupFormValues } from '@/lib/validations/auth';
+import { AuthIntentNotice } from '../AuthIntentNotice/AuthIntentNotice';
 import { AuthModalHeader } from '../AuthModalHeader';
 import { PolicyLinks } from '../PolicyLinks/PolicyLinks';
 import * as styles from './SignupModal.css';
@@ -85,6 +86,7 @@ export const SignupModal = ({
       <form className={styles.inner} method="post" onSubmit={onSubmit} noValidate>
         <div className={styles.upper}>
           <AuthModalHeader onLogoClick={onLogoClick} />
+          <AuthIntentNotice mode="signup" />
 
           <div className={styles.formSection}>
             {FIELDS.map(({ name, label, ...fieldProps }) => {

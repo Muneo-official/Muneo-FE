@@ -12,7 +12,18 @@ export const TransitionLink = forwardRef<HTMLAnchorElement, TransitionLinkProps>
 
     const handleClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
       onClick?.(e);
-      if (!viewTransition || e.defaultPrevented || !('startViewTransition' in document)) {
+      if (
+        !viewTransition ||
+        e.defaultPrevented ||
+        e.button !== 0 ||
+        e.metaKey ||
+        e.ctrlKey ||
+        e.shiftKey ||
+        e.altKey ||
+        props.target === '_blank' ||
+        props.download !== undefined ||
+        !('startViewTransition' in document)
+      ) {
         return;
       }
       e.preventDefault();
