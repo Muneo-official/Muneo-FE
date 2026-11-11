@@ -56,7 +56,7 @@ export const GuestShell = ({ children }: { children: ReactNode }) => {
           }}
           accountSlot={
             <div className={styles.account}>
-              <p className={styles.accountText}>로그인하면 결과를 저장하고 언제든 다시 볼 수 있어요</p>
+              <p className={styles.accountText}>로그인하면 결과를 저장하고 다시 볼 수 있어요</p>
               <div className={styles.accountActions}>
                 <Button
                   as={Link}

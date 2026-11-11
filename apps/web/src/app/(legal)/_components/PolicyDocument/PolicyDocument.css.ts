@@ -50,6 +50,9 @@ export const tab = style({
 });
 export const main = style({
   width: '100%',
+  wordBreak: 'keep-all',
+  overflowWrap: 'break-word',
+  textWrap: 'pretty',
   maxWidth: '1120px',
   margin: '0 auto',
   padding: '64px 32px 40px',

@@ -1,4 +1,4 @@
-import { CONTACT_EMAIL, OPERATOR_NAME } from '@/constants/app';
+import { CONTACT_EMAIL } from '@/constants/app';
 import { type PolicyContent } from './types';
 
 export const privacyContent: PolicyContent = {
@@ -10,8 +10,8 @@ export const privacyContent: PolicyContent = {
       id: 'operator',
       title: '운영자와 문의처',
       paragraphs: [
-        `문어는 ${OPERATOR_NAME}이 개인으로 운영하는 인테리어 견적 생성·진단 서비스입니다. 현재 사업자등록은 되어 있지 않습니다.`,
-        `개인정보 관련 문의와 권리 행사 요청은 운영자 ${OPERATOR_NAME}, ${CONTACT_EMAIL}로 보내실 수 있습니다.`,
+        '문어는 개인이 운영하는 인테리어 견적 생성·진단 서비스입니다. 현재 사업자등록은 되어 있지 않습니다.',
+        `개인정보 관련 문의와 권리 행사 요청은 문어 운영 담당(${CONTACT_EMAIL})으로 보내실 수 있습니다.`,
       ],
     },
     {

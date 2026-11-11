@@ -3,6 +3,7 @@
 import { useEffect } from 'react';
 import { generateEstimate } from '@/api/estimate';
 import { trackEvent } from '@/lib/analytics';
+import { EstimateErrorState } from './_components/EstimateErrorState/EstimateErrorState';
 import { EstimateLoadingScreen } from './_components/EstimateLoadingScreen/EstimateLoadingScreen';
 import { Step1BasicInfo } from './_components/Step1BasicInfo/Step1BasicInfo';
 import { Step2ProcessSelection } from './_components/Step2ProcessSelection/Step2ProcessSelection';
@@ -87,21 +88,13 @@ const EstimatePage = () => {
       <div className={styles.page}>
         <div className={styles.content}>
           <StepIndicator currentStep={currentStep} />
-          <div
-            style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '16px', padding: '48px 0' }}
-          >
-            <p style={{ color: '#EF4444', fontSize: '15px' }}>{generateError}</p>
-            <button
-              type="button"
-              onClick={() => {
-                setGeneratingState(false, null);
-                goToStep(3);
-              }}
-              style={{ padding: '10px 20px', borderRadius: '8px', border: '1px solid #E5E7EB', cursor: 'pointer' }}
-            >
-              이전 단계로 돌아가기
-            </button>
-          </div>
+          <EstimateErrorState
+            message={generateError}
+            onBack={() => {
+              setGeneratingState(false, null);
+              goToStep(3);
+            }}
+          />
         </div>
       </div>
     );

@@ -95,3 +95,9 @@ export const actionNote = style({
 export const actionNoteDanger = style({ color: vars.color.semantic.danger });
 export const actionNoteInfo = style({ color: vars.color.semantic.info });
 export const actionNoteWarning = style({ color: vars.color.semantic.warning });
+
+export const placeholderLine = style({
+  fontSize: '12px',
+  lineHeight: 'normal',
+  color: vars.color.neutral.n500,
+});

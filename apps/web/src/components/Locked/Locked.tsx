@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { type ReactNode } from 'react';
+import { type CSSProperties, type ReactNode } from 'react';
 import * as styles from './Locked.css';
 
 export const LockIcon = ({ size = 14 }: { size?: number }) => (
@@ -22,38 +22,42 @@ export const LockIcon = ({ size = 14 }: { size?: number }) => (
 
 const LOCKED_LABEL = '로그인 후 확인할 수 있어요';
 
+const join = (...names: Array<string | undefined>) => names.filter(Boolean).join(' ');
+
 /**
- * 잠긴 금액·텍스트 자리. 실제 값은 서버가 보내지 않으므로 화면에서 만든 가짜 값을 흐리게 보여준다.
+ * 가려진 글자 자리. 실제 값은 서버가 보내지 않으므로 가짜 글자 대신 글자 높이의 막대만 그린다.
+ * 색은 주변 글자색을 옅게 따라가므로 어느 배경에서도 같은 톤으로 보인다.
  */
-export const LockedValue = ({ placeholder, className }: { placeholder: string; className?: string }) => (
-  <span className={[styles.value, className].filter(Boolean).join(' ')}>
+export const LockedBar = ({ width = '6em', className }: { width?: CSSProperties['width']; className?: string }) => (
+  <span className={join(styles.bar, className)} style={{ width }} aria-hidden="true" />
+);
+
+/** 잠긴 금액 자리 */
+export const LockedValue = ({ width = '7em', className }: { width?: CSSProperties['width']; className?: string }) => (
+  <span className={join(styles.value, className)}>
     <LockIcon />
-    <span className={styles.blurred} aria-hidden="true">
-      {placeholder}
-    </span>
+    <LockedBar width={width} />
     <span className={styles.srOnly}>{LOCKED_LABEL}</span>
   </span>
 );
 
 interface LockedAreaProps {
-  /** 흐리게 보여줄 가짜 내용. 실제 데이터를 넣지 않는다. */
+  /** 실제 화면과 같은 틀의 빈 자리. 실제 데이터를 넣지 않는다. */
   children: ReactNode;
   href: string;
   label: string;
   className?: string;
 }
 
-/** 실제 화면 구성을 흐리게 깔고 그 위에 로그인 버튼을 띄운다. */
+/** 실제 화면과 같은 틀의 빈 자리와 그 아래 로그인 안내 한 줄. 영역 전체가 로그인 링크다. */
 export const LockedArea = ({ children, href, label, className }: LockedAreaProps) => (
-  <div className={[styles.area, className].filter(Boolean).join(' ')}>
-    <div className={styles.blurred} aria-hidden="true" inert>
+  <Link href={href} className={join(styles.area, className)}>
+    <span className={styles.placeholder} aria-hidden="true">
       {children}
-    </div>
-    <div className={styles.overlay}>
-      <Link href={href} className={styles.unlockLink}>
-        <LockIcon />
-        {label}
-      </Link>
-    </div>
-  </div>
+    </span>
+    <span className={styles.label}>
+      <LockIcon />
+      {label}
+    </span>
+  </Link>
 );

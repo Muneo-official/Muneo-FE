@@ -5,7 +5,6 @@ import Link from 'next/link';
 import { useEffect, useMemo } from 'react';
 import { type AnalysisPreview, analyzeTrial } from '@/api/trial';
 import { AnalysisLoadingScreen } from '@/app/(main)/analysis/_components/AnalysisLoadingScreen/AnalysisLoadingScreen';
-import * as reportStyles from '@/app/(main)/analysis/_components/DiagnosisReport/DiagnosisReport.css';
 import { DiagnosisReportView } from '@/app/(main)/analysis/_components/DiagnosisReport/DiagnosisReportView';
 import { InputForm } from '@/app/(main)/analysis/_components/InputForm/InputForm';
 import { UploadPanelContent } from '@/app/(main)/analysis/_components/UploadPanel/UploadPanel';
@@ -14,10 +13,10 @@ import { mapApiReportToDiagnosisResult } from '@/app/(main)/analysis/_lib/mapApi
 import { useAnalysisStore } from '@/app/(main)/analysis/_store/analysisStore';
 import * as styles from '@/app/(main)/analysis/page.css';
 import { PendingLinkLabel } from '@/components/PendingLinkLabel';
-import { getLoginHref, getSignupHref } from '@/lib/authRedirect';
+import { getLoginHref } from '@/lib/authRedirect';
 import { useTrialResultPath } from '../_components/GuestShell';
+import { TrialActionBar } from '../_components/TrialActionBar';
 import { TrialNotice } from '../_components/TrialNotice';
-import { TrialUnlockNote } from '../_components/TrialUnlockNote';
 import { useTrialSession } from '../_hooks/useTrialSession';
 
 const RESULT_PATH = '/analysis/trial';
@@ -38,18 +37,18 @@ const TrialDiagnosisResult = ({ preview, onEdit }: { preview: AnalysisPreview; o
 
   return (
     <DiagnosisReportView result={result} lock={{ sections: preview.sections, loginHref }}>
-      <TrialUnlockNote
-        title={lockedCount > 0 ? `나머지 ${lockedCount}개 공정의 진단이 잠겨 있어요` : '전체 결과를 저장해 두세요'}
-        signupHref={getSignupHref(RESULT_PATH)}
-      />
-      <div className={reportStyles.actionRow}>
+      <TrialActionBar
+        title={
+          lockedCount > 0 ? `나머지 ${lockedCount}개 공정의 진단이 잠겨 있어요` : '로그인하면 결과를 저장할 수 있어요'
+        }
+      >
         <Button variant="outlineSecondary" size="md" onClick={onEdit}>
           입력 수정하기
         </Button>
         <Button as={Link} href={loginHref} variant="gradient" size="md">
           <PendingLinkLabel>로그인하고 전체 결과 보기</PendingLinkLabel>
         </Button>
-      </div>
+      </TrialActionBar>
     </DiagnosisReportView>
   );
 };
@@ -100,8 +99,8 @@ export const TrialAnalysis = () => {
         ) : (
           <>
             <TrialNotice>
-              로그인 없이도 같은 AI로 진단해요. 한 공정의 진단 결과를 먼저 보여드리고, 로그인하면 나머지를 바로 이어서
-              볼 수 있어요. 연락처·상세 주소 등은 가리고 올려 주세요.
+              진단은 실제 서비스와 같고, 공정 하나의 결과를 먼저 보여드려요. 견적서의 연락처·상세 주소는 가리고 올려
+              주세요.
             </TrialNotice>
             <div className={styles.pageHeader}>
               <h1 className={styles.pageTitle}>견적서 진단</h1>

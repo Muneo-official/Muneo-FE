@@ -4,9 +4,9 @@ import { style } from '@vanilla-extract/css';
 export const account = style({
   display: 'flex',
   flexDirection: 'column',
-  gap: '10px',
+  gap: '12px',
   width: '100%',
-  padding: '14px 12px',
+  padding: '16px 14px 14px',
   borderRadius: '12px',
   backgroundColor: vars.color.neutral.nSurface,
   flexShrink: 0,
@@ -14,10 +14,12 @@ export const account = style({
 
 export const accountText = style({
   fontFamily: vars.typography.fontFamily,
-  fontSize: vars.typography.fontSize.xxs,
-  color: vars.color.neutral.n600,
-  lineHeight: 1.6,
+  fontSize: '13px',
+  fontWeight: vars.typography.fontWeight.medium,
+  color: vars.color.neutral.n700,
+  lineHeight: 1.5,
   wordBreak: 'keep-all',
+  textWrap: 'balance',
 });
 
 export const accountActions = style({

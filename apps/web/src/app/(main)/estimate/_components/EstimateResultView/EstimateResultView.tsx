@@ -4,7 +4,7 @@ import { CaretDownSmIcon } from '@muneo/design-system';
 import { type ReactNode, useState } from 'react';
 import { type EstimateGenerateRequest, type EstimateLineItem, type EstimateResultData } from '@/api/estimate';
 import { type EstimateLockedProcess } from '@/api/trial';
-import { LockedArea, LockedValue } from '@/components/Locked/Locked';
+import { LockedArea, LockedBar, LockedValue } from '@/components/Locked/Locked';
 import * as styles from '../Step5EstimateReview/Step5EstimateReview.css';
 
 const formatWon = (amount: number): string => {
@@ -17,8 +17,8 @@ const formatRange = (min: number, max: number): string => `${formatWon(min)} ~ $
 const SELECTION_ONLY_KO = new Set(['전기/조명', '목공', '도장', '마감/공과잡비', '창호', '도어', '필름', '가구']);
 
 /** 잠긴 금액 자리에 흐리게 깔 가짜 값. 실제 금액과 무관하다. */
-const LOCKED_RANGE = '0,000만원 ~ 0,000만원';
-const LOCKED_ROW_NAMES = ['자재 및 시공비', '부자재 및 운반비', '인건비 및 마감'];
+const MAX_LOCKED_ROWS = 3;
+const LOCKED_NAME_WIDTHS = ['72%', '56%', '64%'];
 
 /** 비회원 체험 결과처럼 대표 공정만 공개할 때 넘긴다. */
 export interface EstimateResultLock {
@@ -101,7 +101,7 @@ const AccordionItem = ({ estimate }: { estimate: ProcessEstimateDisplay }) => {
 
 const LockedAccordionItem = ({ process, loginHref }: { process: EstimateLockedProcess; loginHref: string }) => {
   const [isOpen, setIsOpen] = useState(true);
-  const rowCount = Math.min(Math.max(process.itemCount, 1), LOCKED_ROW_NAMES.length);
+  const rowCount = Math.min(Math.max(process.itemCount, 1), MAX_LOCKED_ROWS);
 
   return (
     <div className={styles.accordionItemWrapper}>
@@ -117,7 +117,7 @@ const LockedAccordionItem = ({ process, loginHref }: { process: EstimateLockedPr
           </span>
           <span className={styles.accordionTitle}>{process.name} 공사</span>
         </div>
-        <LockedValue placeholder={LOCKED_RANGE} className={styles.accordionAmount} />
+        <LockedValue className={styles.accordionAmount} />
       </button>
 
       <div className={`${styles.accordionBody}${isOpen ? ` ${styles.accordionBodyOpen}` : ''}`} inert={!isOpen}>
@@ -129,12 +129,18 @@ const LockedAccordionItem = ({ process, loginHref }: { process: EstimateLockedPr
               <span>참조</span>
             </div>
             <div className={styles.accordionDivider} />
-            {LOCKED_ROW_NAMES.slice(0, rowCount).map((name) => (
-              <div key={name} className={styles.accordionRow}>
+            {LOCKED_NAME_WIDTHS.slice(0, rowCount).map((width) => (
+              <div key={width} className={styles.accordionRow}>
                 <div className={styles.accordionRowContent}>
-                  <span>{name}</span>
-                  <span>{LOCKED_RANGE}</span>
-                  <span className={styles.refCountGreen}>00건</span>
+                  <span>
+                    <LockedBar width={width} />
+                  </span>
+                  <span>
+                    <LockedBar width="7em" />
+                  </span>
+                  <span>
+                    <LockedBar width="2em" />
+                  </span>
                 </div>
                 <div className={styles.accordionItemDivider} />
               </div>
@@ -157,7 +163,7 @@ const TotalBanner = ({ result }: { result: EstimateResultData }) => {
         {total ? (
           <span className={styles.bannerAmount}>{formatRange(total.최소, total.최대)}</span>
         ) : (
-          <LockedValue placeholder={LOCKED_RANGE} className={styles.bannerAmount} />
+          <LockedValue width="8em" className={styles.bannerAmount} />
         )}
       </div>
       {result.참고_사례_수 > 0 && <span className={styles.bannerRef}>{result.참고_사례_수}건 참고</span>}
@@ -193,7 +199,7 @@ const ProcessTotalTable = ({ result, lock }: { result: EstimateResultData; lock?
             <div key={row.name} className={styles.tableRow}>
               <div className={styles.tableRowContent}>
                 <span>{row.name}</span>
-                {row.range ? <span>{row.range}</span> : <LockedValue placeholder={LOCKED_RANGE} />}
+                {row.range ? <span>{row.range}</span> : <LockedValue />}
               </div>
               <div className={styles.tableDivider} />
             </div>
@@ -206,7 +212,7 @@ const ProcessTotalTable = ({ result, lock }: { result: EstimateResultData; lock?
             {total ? (
               <span className={styles.totalValue}>{formatRange(total.최소, total.최대)}</span>
             ) : (
-              <LockedValue placeholder={LOCKED_RANGE} className={styles.totalValue} />
+              <LockedValue className={styles.totalValue} />
             )}
           </div>
         </div>
@@ -282,16 +288,18 @@ const SummaryPanel = ({
           ))}
         </div>
 
-        <div className={styles.correctionBox}>
-          <span className={styles.correctionTitle}>적용된 보정</span>
-          <div className={styles.correctionItems}>
-            {corrections.map((c) => (
-              <span key={c} className={styles.correctionItem}>
-                {c}
-              </span>
-            ))}
+        {corrections.length > 0 && (
+          <div className={styles.correctionBox}>
+            <span className={styles.correctionTitle}>적용된 보정</span>
+            <div className={styles.correctionItems}>
+              {corrections.map((c) => (
+                <span key={c} className={styles.correctionItem}>
+                  {c}
+                </span>
+              ))}
+            </div>
           </div>
-        </div>
+        )}
       </div>
 
       <ProcessTotalTable result={result} lock={lock} />

@@ -81,16 +81,16 @@ export const summaryTitle = style({
 
 export const editButton = style({
   '@media': {
-    [media.mobile]: { minHeight: '44px' },
+    [media.mobile]: { minHeight: '40px', padding: '0 14px', fontSize: '13px' },
   },
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'center',
-  padding: '4px 16px',
+  padding: '4px 14px',
   border: `1px solid ${vars.color.neutral.n200}`,
-  borderRadius: '6px',
+  borderRadius: '8px',
   backgroundColor: vars.color.white,
-  fontSize: vars.typography.fontSize.xxs,
+  fontSize: vars.typography.fontSize.xs,
   fontWeight: vars.typography.fontWeight.bold,
   fontFamily: vars.typography.fontFamily,
   color: vars.color.neutral.n500,

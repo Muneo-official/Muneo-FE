@@ -1,6 +1,6 @@
 import { Logo } from '@muneo/design-system';
 import Link from 'next/link';
-import { CONTACT_EMAIL, OPERATOR_NAME } from '@/constants/app';
+import { CONTACT_EMAIL } from '@/constants/app';
 import { POLICY_DRAFT_VERSION, POLICY_LINKS, POLICY_UPDATED_AT } from '@/constants/policies';
 import { type PolicyContent } from '../../_content/types';
 import * as styles from './PolicyDocument.css';
@@ -101,9 +101,9 @@ export const PolicyDocument = ({ document }: { document: PolicyContent }) => (
               )}
             </section>
           ))}
-          <section className={styles.contact} aria-label="운영자 문의">
+          <section className={styles.contact} aria-label="문의">
             <h2 className={styles.sectionTitle}>문의가 있으신가요?</h2>
-            <p>운영자 {OPERATOR_NAME}에게 이메일로 문의해 주세요.</p>
+            <p>이메일로 보내 주시면 확인 후 답변드릴게요.</p>
             <a className={styles.contactLink} href={`mailto:${CONTACT_EMAIL}`}>
               {CONTACT_EMAIL}
             </a>

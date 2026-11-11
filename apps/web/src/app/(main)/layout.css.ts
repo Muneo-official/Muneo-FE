@@ -4,6 +4,10 @@ import { globalStyle, style } from '@vanilla-extract/css';
 export const wrapper = style({
   display: 'flex',
   minHeight: '100vh',
+  // 한국어가 음절 중간에서 끊기지 않게 하고, 마지막 줄에 한 단어만 남는 줄바꿈을 피한다.
+  wordBreak: 'keep-all',
+  overflowWrap: 'break-word',
+  textWrap: 'pretty',
 });
 
 export const main = style({

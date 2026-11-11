@@ -76,7 +76,7 @@ Node.js 22와 pnpm 10.33.0을 사용한다. 루트에서 `pnpm install --frozen-
 
 ## 운영 전 남은 확인
 
-운영자는 **김승찬**, 사업자등록 없는 개인 운영, 문의는 **muneo777@naver.com**이다. 정책 본문은 [privacy.ts](<apps/web/src/app/(legal)/_content/privacy.ts>)·[terms.ts](<apps/web/src/app/(legal)/_content/terms.ts>), 버전은 [policies.ts](apps/web/src/constants/policies.ts)에서 관리한다. 현재 시행일은 미정이고 가입 동의 기록 수집은 구현 전이다.
+개인 운영(사업자등록 없음)이며 문의는 **muneo777@naver.com**이다. 정책 본문은 [privacy.ts](<apps/web/src/app/(legal)/_content/privacy.ts>)·[terms.ts](<apps/web/src/app/(legal)/_content/terms.ts>), 버전은 [policies.ts](apps/web/src/constants/policies.ts)에서 관리한다. 현재 시행일은 미정이고 가입 동의 기록 수집은 구현 전이다.
 
 | 담당              | 확인·후속 작업                                                                                                                                                      |
 | ----------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- |

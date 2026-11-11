@@ -5,6 +5,9 @@ export const modal = style({
   '@media': {
     [media.mobile]: { width: '100%', maxWidth: '404px', padding: '44px 20px 28px' },
   },
+  wordBreak: 'keep-all',
+  overflowWrap: 'break-word',
+  textWrap: 'pretty',
   position: 'relative',
   backgroundColor: vars.color.white,
   borderRadius: '16px',

@@ -1,4 +1,4 @@
-import { CONTACT_EMAIL, OPERATOR_NAME } from '@/constants/app';
+import { CONTACT_EMAIL } from '@/constants/app';
 import { type PolicyContent } from './types';
 
 export const termsContent: PolicyContent = {
@@ -10,7 +10,7 @@ export const termsContent: PolicyContent = {
       id: 'purpose',
       title: '목적과 운영자',
       paragraphs: [
-        `이 약관 초안은 ${OPERATOR_NAME}(이하 ‘운영자’)이 제공하는 문어 서비스의 이용 조건과 권리·의무를 정리한 문서입니다. 운영자는 개인이며 현재 사업자등록은 되어 있지 않습니다.`,
+        '이 약관 초안은 문어 운영자(이하 ‘운영자’)가 제공하는 문어 서비스의 이용 조건과 권리·의무를 정리한 문서입니다. 운영자는 개인이며 현재 사업자등록은 되어 있지 않습니다.',
         `서비스 문의처는 ${CONTACT_EMAIL}입니다. 이 초안의 시행일과 적용 절차는 확정 전이며, 초안을 열람한 것만으로 동의한 것으로 처리하지 않습니다.`,
       ],
     },

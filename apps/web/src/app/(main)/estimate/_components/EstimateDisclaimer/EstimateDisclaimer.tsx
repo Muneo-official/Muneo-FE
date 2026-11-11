@@ -6,7 +6,7 @@ interface EstimateDisclaimerProps {
   /** 버튼 위에 보여줄 안내 (저장 완료, 체험 잠금 안내 등) */
   notice?: ReactNode;
   /** 오른쪽 정렬되는 버튼 영역 */
-  children: ReactNode;
+  children?: ReactNode;
 }
 
 /** 가견적 결과 하단의 면책 안내와 액션 버튼. 로그인 결과와 비회원 체험 결과가 같은 모양을 쓴다. */
@@ -29,6 +29,6 @@ export const EstimateDisclaimer = ({ error, notice, children }: EstimateDisclaim
     )}
 
     {notice}
-    <div className={styles.actionRow}>{children}</div>
+    {children && <div className={styles.actionRow}>{children}</div>}
   </div>
 );

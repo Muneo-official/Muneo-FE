@@ -1,4 +1,4 @@
-import { media, vars } from '@muneo/design-system';
+import { vars } from '@muneo/design-system';
 import { keyframes, style } from '@vanilla-extract/css';
 
 export const srOnly = style({
@@ -13,71 +13,71 @@ export const srOnly = style({
   border: 0,
 });
 
-export const value = style({
-  display: 'inline-flex',
-  alignItems: 'center',
-  gap: '6px',
-  whiteSpace: 'nowrap',
-});
-
-export const blurred = style({
-  filter: 'blur(6px)',
-  userSelect: 'none',
-  pointerEvents: 'none',
-});
-
 export const icon = style({
   flexShrink: 0,
   color: 'currentColor',
-  opacity: 0.8,
 });
 
-/** 흐린 가짜 행 위에 "로그인하고 보기" 버튼을 겹쳐 올리는 영역. */
-export const area = style({
-  position: 'relative',
-  borderRadius: '12px',
-  overflow: 'hidden',
+export const bar = style({
+  display: 'inline-block',
+  flexShrink: 1,
+  minWidth: '2em',
+  maxWidth: '100%',
+  height: '0.75em',
+  borderRadius: '4px',
+  backgroundColor: 'currentColor',
+  opacity: 0.12,
+  verticalAlign: 'middle',
 });
 
-export const overlay = style({
-  position: 'absolute',
-  inset: 0,
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'center',
-  padding: '12px',
-  background: 'linear-gradient(180deg, rgba(255,255,255,0.15), rgba(255,255,255,0.55))',
-});
-
-export const unlockLink = style({
-  '@media': {
-    [media.mobile]: { minHeight: '44px' },
-  },
+export const value = style({
   display: 'inline-flex',
   alignItems: 'center',
-  gap: '6px',
-  padding: '10px 18px',
-  borderRadius: '999px',
-  backgroundColor: vars.color.white,
-  border: `1px solid ${vars.color.neutral.n200}`,
-  boxShadow: '0 6px 20px rgba(33, 30, 60, 0.12)',
-  color: vars.color.neutral.n900,
-  fontFamily: vars.typography.fontFamily,
-  fontSize: vars.typography.fontSize.xs,
-  fontWeight: vars.typography.fontWeight.bold,
-  textDecoration: 'none',
+  gap: '8px',
+  maxWidth: '100%',
   whiteSpace: 'nowrap',
-  ':hover': { borderColor: vars.color.brand.secondary },
-  ':focus-visible': { outline: `2px solid ${vars.color.brand.secondary}`, outlineOffset: '2px' },
+});
+
+export const area = style({
+  display: 'flex',
+  flexDirection: 'column',
+  gap: '10px',
+  borderRadius: '12px',
+  color: 'inherit',
+  textDecoration: 'none',
+  cursor: 'pointer',
+  ':focus-visible': { outline: `2px solid ${vars.color.brand.secondary}`, outlineOffset: '4px' },
+});
+
+export const placeholder = style({
+  display: 'block',
+  userSelect: 'none',
+});
+
+export const label = style({
+  display: 'inline-flex',
+  alignItems: 'center',
+  alignSelf: 'flex-start',
+  gap: '6px',
+  padding: '4px 0',
+  color: vars.color.brand.secondary,
+  fontFamily: vars.typography.fontFamily,
+  fontSize: vars.typography.fontSize.sm,
+  fontWeight: vars.typography.fontWeight.semiBold,
+  lineHeight: 1.5,
+  textUnderlineOffset: '4px',
+  selectors: {
+    [`${area}:hover &`]: { textDecoration: 'underline' },
+  },
 });
 
 const reveal = keyframes({
-  from: { opacity: 0, filter: 'blur(6px)' },
-  to: { opacity: 1, filter: 'blur(0)' },
+  from: { opacity: 0, transform: 'translateY(4px)' },
+  to: { opacity: 1, transform: 'none' },
 });
 
-/** 로그인 직후 전체 결과가 흐림에서 또렷해지며 나타나는 전환. */
+/** 로그인 직후 전체 결과가 자연스럽게 나타나는 전환 */
 export const unlockReveal = style({
-  animation: `${reveal} 0.6s ease-out both`,
+  animation: `${reveal} 0.4s ease-out both`,
   '@media': { '(prefers-reduced-motion: reduce)': { animation: 'none' } },
 });

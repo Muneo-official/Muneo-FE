@@ -5,27 +5,21 @@ import { useState } from 'react';
 import { type DiagnosisStatus } from '@/api/analyze';
 import { type AnalysisPreviewSection } from '@/api/trial';
 import { LockedArea, LockIcon } from '@/components/Locked/Locked';
-import { DiagnosisItem } from '../DiagnosisItem/DiagnosisItem';
+import { DiagnosisItemPlaceholder } from '../DiagnosisItem/DiagnosisItem';
 import * as styles from './ProcessSection.css';
 
 const MAX_ROWS = 3;
 const STATUS_ORDER = ['누락', '불분명', '중복'] as const;
 
-/** 잠긴 공정의 가짜 항목. 상태 배지 색만 실제 건수에 맞추고 내용은 실제 데이터와 무관하다. */
-const buildPlaceholderItems = (section: AnalysisPreviewSection) => {
+/** 잠긴 공정의 빈 자리 상태. 실제 건수 순서대로 배지를 채우고 최대 3줄만 그린다. */
+const placeholderStatuses = (section: AnalysisPreviewSection): DiagnosisStatus[] => {
   const statuses: DiagnosisStatus[] = STATUS_ORDER.flatMap((status) =>
     Array.from({ length: section.counts[status] }, () => status)
   );
   while (statuses.length < Math.min(Math.max(section.itemCount, 1), MAX_ROWS)) {
     statuses.push('정상');
   }
-  return statuses.slice(0, MAX_ROWS).map((status, index) => ({
-    id: `${section.id}_locked_${index}`,
-    status,
-    title: '견적서에서 확인이 필요한 항목이에요',
-    description: '업체에 확인할 내용과 근거를 정리했어요',
-    actionNote: '업체에 이 항목의 범위와 금액을 확인해 보세요',
-  }));
+  return statuses.slice(0, MAX_ROWS);
 };
 
 interface LockedProcessSectionProps {
@@ -63,8 +57,8 @@ export const LockedProcessSection = ({ section, loginHref }: LockedProcessSectio
         <div className={styles.itemList}>
           <LockedArea href={loginHref} label={`로그인하고 ${section.display_name} 진단 보기`}>
             <div className={styles.lockedItems}>
-              {buildPlaceholderItems(section).map((item) => (
-                <DiagnosisItem key={item.id} item={item} />
+              {placeholderStatuses(section).map((status, index) => (
+                <DiagnosisItemPlaceholder key={`${status}-${index}`} status={status} />
               ))}
             </div>
           </LockedArea>

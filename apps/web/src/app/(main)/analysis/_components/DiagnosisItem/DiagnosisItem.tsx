@@ -1,5 +1,6 @@
 import { CircleWarningIcon } from '@muneo/design-system';
 import { type DiagnosisStatus } from '@/api/analyze';
+import { LockedBar } from '@/components/Locked/Locked';
 import { type DiagnosisItemData } from '../../_types/analysis.types';
 import * as styles from './DiagnosisItem.css';
 
@@ -33,3 +34,18 @@ export const DiagnosisItem = ({ item }: DiagnosisItemProps) => {
     </div>
   );
 };
+
+/** 잠긴 공정의 빈 자리. 상태 배지만 실제 건수에 맞추고 글자는 막대로 대신한다. */
+export const DiagnosisItemPlaceholder = ({ status }: { status: DiagnosisStatus }) => (
+  <div className={styles.item}>
+    <span className={`${styles.badge} ${STATUS_STYLES[status].badge}`}>{status}</span>
+    <div className={styles.texts}>
+      <span className={styles.title}>
+        <LockedBar width="38%" />
+      </span>
+      <span className={styles.placeholderLine}>
+        <LockedBar width="62%" />
+      </span>
+    </div>
+  </div>
+);

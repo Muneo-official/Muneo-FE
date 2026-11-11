@@ -72,13 +72,11 @@ export const lockedMeta = style({
   display: 'inline-flex',
   alignItems: 'center',
   gap: '4px',
-  padding: '3px 8px',
-  borderRadius: '999px',
-  backgroundColor: vars.color.neutral.n100,
-  color: vars.color.neutral.n600,
+  marginLeft: 'auto',
+  color: vars.color.neutral.n500,
   fontFamily: vars.typography.fontFamily,
-  fontSize: vars.typography.fontSize.xxs,
-  fontWeight: vars.typography.fontWeight.semiBold,
+  fontSize: '13px',
+  fontWeight: vars.typography.fontWeight.medium,
   whiteSpace: 'nowrap',
 });
 

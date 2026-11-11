@@ -77,7 +77,8 @@ test('새로고침으로 결과를 복원하고 회원가입 후 전체 결과�
   await analyze(page);
   await page.reload();
   await expectTrialReport(page);
-  await page.getByRole('link', { name: '처음이신가요? 무료 회원가입' }).click();
+  // 사이드바의 회원가입도 결과 화면으로 돌아오게 연결돼 있다.
+  await page.getByRole('link', { name: '회원가입', exact: true }).click();
   const values = {
     이메일: 'trial@muneo.test',
     비밀번호: 'StrongPw!23',

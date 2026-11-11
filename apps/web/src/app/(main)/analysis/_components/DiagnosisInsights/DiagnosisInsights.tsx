@@ -2,7 +2,7 @@
 
 import { Button } from '@muneo/design-system';
 import { useState } from 'react';
-import { LockedArea } from '@/components/Locked/Locked';
+import { LockedArea, LockedBar } from '@/components/Locked/Locked';
 import { buildInsights } from '../../_lib/buildInsights';
 import { type DiagnosisResult } from '../../_types/analysis.types';
 import * as styles from './DiagnosisInsights.css';
@@ -77,11 +77,17 @@ export const DiagnosisInsights = ({ result, lock }: { result: DiagnosisResult; l
           {lock && hiddenCount > 0 && (
             <li>
               <LockedArea href={lock.loginHref} label={`로그인하고 나머지 ${hiddenCount}개 확인 항목 보기`}>
-                <div className={styles.item}>
-                  <span className={styles.eyebrow}>{priorities.length + 1}. 다른 공정 · 확인 필요</span>
-                  <h3 className={styles.itemTitle}>업체와 확인할 다른 항목</h3>
-                  <p className={styles.description}>이 항목의 범위와 금액을 업체에 확인해 주세요.</p>
-                </div>
+                <span className={styles.item}>
+                  <span className={styles.eyebrow}>
+                    {priorities.length + 1}. <LockedBar width="6em" />
+                  </span>
+                  <span className={styles.itemTitle}>
+                    <LockedBar width="40%" />
+                  </span>
+                  <span className={styles.description}>
+                    <LockedBar width="65%" />
+                  </span>
+                </span>
               </LockedArea>
             </li>
           )}

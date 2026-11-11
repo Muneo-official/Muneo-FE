@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { useEffect, useRef } from 'react';
 import { type EstimatePreview, generateTrialEstimate } from '@/api/trial';
 import { EstimateDisclaimer } from '@/app/(main)/estimate/_components/EstimateDisclaimer/EstimateDisclaimer';
+import { EstimateErrorState } from '@/app/(main)/estimate/_components/EstimateErrorState/EstimateErrorState';
 import { EstimateLoadingScreen } from '@/app/(main)/estimate/_components/EstimateLoadingScreen/EstimateLoadingScreen';
 import { EstimateResultView } from '@/app/(main)/estimate/_components/EstimateResultView/EstimateResultView';
 import { Step1BasicInfo } from '@/app/(main)/estimate/_components/Step1BasicInfo/Step1BasicInfo';
@@ -15,10 +16,10 @@ import { useEstimateStore } from '@/app/(main)/estimate/_store/estimateStore';
 import { mapToApiPayload } from '@/app/(main)/estimate/_utils/mapToApiPayload';
 import * as pageStyles from '@/app/(main)/estimate/page.css';
 import { PendingLinkLabel } from '@/components/PendingLinkLabel';
-import { getLoginHref, getSignupHref } from '@/lib/authRedirect';
+import { getLoginHref } from '@/lib/authRedirect';
 import { useTrialResultPath } from '../_components/GuestShell';
+import { TrialActionBar } from '../_components/TrialActionBar';
 import { TrialNotice } from '../_components/TrialNotice';
-import { TrialUnlockNote } from '../_components/TrialUnlockNote';
 import { useTrialSession } from '../_hooks/useTrialSession';
 
 const RESULT_PATH = '/estimate/trial';
@@ -37,22 +38,21 @@ const TrialEstimateResult = ({ preview, onEdit }: { preview: EstimatePreview; on
       actions={
         <EstimateDisclaimer
           notice={
-            <TrialUnlockNote
+            <TrialActionBar
               title={
                 lockedCount > 0 ? `나머지 ${lockedCount}개 공정과 총 견적이 잠겨 있어요` : '총 견적 범위가 잠겨 있어요'
               }
-              signupHref={getSignupHref(RESULT_PATH)}
-            />
+            >
+              <Button variant="outlineSecondary" size="md" onClick={() => onEdit(3)}>
+                <ArrowLeftMdIcon width={20} height={20} />
+                수정하기
+              </Button>
+              <Button as={Link} href={loginHref} variant="gradient" size="md">
+                <PendingLinkLabel>로그인하고 전체 결과 보기</PendingLinkLabel>
+              </Button>
+            </TrialActionBar>
           }
-        >
-          <Button variant="outlineSecondary" size="md" onClick={() => onEdit(3)}>
-            <ArrowLeftMdIcon width={20} height={20} />
-            수정하기
-          </Button>
-          <Button as={Link} href={loginHref} variant="gradient" size="md">
-            <PendingLinkLabel>로그인하고 전체 결과 보기</PendingLinkLabel>
-          </Button>
-        </EstimateDisclaimer>
+        />
       }
     />
   );
@@ -105,20 +105,7 @@ export const TrialEstimate = () => {
       return <TrialEstimateResult preview={result} onEdit={backToInput} />;
     }
     if (step === 4 && error) {
-      return (
-        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '16px', padding: '48px 0' }}>
-          <p role="alert" style={{ color: '#EF4444', fontSize: '15px', textAlign: 'center', wordBreak: 'keep-all' }}>
-            {error}
-          </p>
-          <button
-            type="button"
-            onClick={() => backToInput(3)}
-            style={{ padding: '10px 20px', borderRadius: '8px', border: '1px solid #E5E7EB', cursor: 'pointer' }}
-          >
-            이전 단계로 돌아가기
-          </button>
-        </div>
-      );
+      return <EstimateErrorState message={error} onBack={() => backToInput(3)} />;
     }
     if (step === 4) {
       return <EstimateLoadingScreen region={region} processCount={processCount} onCancel={() => backToInput(3)} />;
@@ -132,8 +119,7 @@ export const TrialEstimate = () => {
       <div className={pageStyles.content}>
         {!result && step !== 4 && (
           <TrialNotice>
-            로그인 없이도 같은 AI로 가견적을 만들어요. 결과 중 한 공정을 먼저 보여드리고, 로그인하면 나머지를 바로
-            이어서 볼 수 있어요.
+            가견적은 실제 서비스와 같은 방식으로 만들고, 공정 하나의 세부 견적을 먼저 보여드려요.
           </TrialNotice>
         )}
         <StepIndicator currentStep={result ? 4 : step} />
