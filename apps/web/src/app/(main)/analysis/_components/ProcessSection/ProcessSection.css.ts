@@ -67,3 +67,23 @@ export const divider = style({
   backgroundColor: vars.color.neutral.n200,
   marginTop: '4px',
 });
+
+export const lockedMeta = style({
+  display: 'inline-flex',
+  alignItems: 'center',
+  gap: '4px',
+  padding: '3px 8px',
+  borderRadius: '999px',
+  backgroundColor: vars.color.neutral.n100,
+  color: vars.color.neutral.n600,
+  fontFamily: vars.typography.fontFamily,
+  fontSize: vars.typography.fontSize.xxs,
+  fontWeight: vars.typography.fontWeight.semiBold,
+  whiteSpace: 'nowrap',
+});
+
+export const lockedItems = style({
+  display: 'flex',
+  flexDirection: 'column',
+  gap: '16px',
+});

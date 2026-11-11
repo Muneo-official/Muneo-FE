@@ -203,6 +203,88 @@ const shouldTriggerScenario = (req: IncomingMessage, scenario: string) => scenar
 
 const trialResults = new Map<string, { preview: unknown; full: unknown }>();
 
+// Muneo-Server TrialStore.project()와 같은 규칙: 대표 공정 하나만 전체 공개, 나머지는 이름·건수만.
+const RISK_WEIGHT: Record<string, number> = { 누락: 3, 불분명: 2, 중복: 1 };
+const riskCounts = (items: { status: string }[]) => ({
+  누락: items.filter((i) => i.status === '누락').length,
+  중복: items.filter((i) => i.status === '중복').length,
+  불분명: items.filter((i) => i.status === '불분명').length,
+});
+
+const projectAnalysisPreview = (report: RiskReport, expiresAt: string) => {
+  const sections = report.process_sections.map((section, index) => ({
+    section,
+    index,
+    id: section.id ?? String(index),
+  }));
+  const score = (items: { status: string }[]) => items.reduce((sum, i) => sum + (RISK_WEIGHT[i.status] ?? 0), 0);
+  const revealed = sections
+    .filter(({ section }) => section.items.length > 0)
+    .reduce<(typeof sections)[number] | null>((best, cur) => {
+      if (!best) return cur;
+      const diff = score(cur.section.items) - score(best.section.items);
+      return diff > 0 || (diff === 0 && cur.section.items.length > best.section.items.length) ? cur : best;
+    }, null);
+  const all = report.process_sections.flatMap((s) => s.items);
+  return {
+    kind: 'analysis',
+    expiresAt,
+    report: {
+      subtitle_fields: report.subtitle_fields,
+      construction_info: report.construction_info,
+      process_sections: revealed ? [{ ...revealed.section, id: revealed.id }] : [],
+    },
+    sections: sections.map(({ section, id }) => ({
+      id,
+      display_name: section.display_name,
+      itemCount: section.items.length,
+      counts: riskCounts(section.items),
+      locked: id !== revealed?.id,
+    })),
+    counts: riskCounts(all),
+    totalItems: all.length,
+  };
+};
+
+const projectEstimatePreview = (
+  input: EstimateGenerateRequest,
+  result: EstimateGenerateResponse,
+  expiresAt: string
+) => {
+  const insufficient = result.데이터_부족_공종 ?? [];
+  const evidence = (name: string) => (result.공종별_항목_명세[name] ?? []).filter((i) => i.등장_사례_수 > 0).length;
+  const revealed =
+    result.선택_공종
+      .filter((name) => result.공종별_단가_범위[name] && !insufficient.includes(name))
+      .reduce<string | null>((best, name) => (best === null || evidence(name) > evidence(best) ? name : best), null) ??
+    null;
+  const open = (name: string) => name === revealed || insufficient.includes(name);
+  const pickOpen = <T>(record: Record<string, T>) =>
+    Object.fromEntries(Object.entries(record).filter(([name]) => open(name)));
+  return {
+    kind: 'estimate',
+    expiresAt,
+    input,
+    result: {
+      선택_공종: result.선택_공종,
+      시공범위: result.시공범위,
+      보정_적용: result.보정_적용,
+      참고_사례_수: result.참고_사례_수,
+      데이터_부족_공종: insufficient,
+      공종별_단가_범위: pickOpen(result.공종별_단가_범위),
+      공종별_항목_명세: pickOpen(result.공종별_항목_명세),
+    },
+    revealedProcess: revealed,
+    lockedProcesses: result.선택_공종
+      .filter((name) => !open(name))
+      .map((name) => ({
+        name,
+        itemCount: (result.공종별_항목_명세[name] ?? []).length,
+        priced: Boolean(result.공종별_단가_범위[name]),
+      })),
+  };
+};
+
 const server = createServer(async (req, res) => {
   const url = new URL(req.url ?? '/', `http://localhost:${PORT}`);
   const key = `${req.method} ${url.pathname}`;
@@ -239,48 +321,78 @@ const server = createServer(async (req, res) => {
       for await (const chunk of req) chunks.push(chunk as Buffer);
       const raw = Buffer.concat(chunks).toString('utf8');
       const expiresAt = new Date(Date.now() + 1800000).toISOString();
-      const items = [
-        {
-          title: '폐기물 처리 비용 확인',
-          status: '누락',
-          description: '철거 항목에 폐기물 처리비가 없어요.',
-          guide: '운반과 처리 비용이 포함되어 있나요?',
-        },
-        {
-          title: '비공개 전체 항목: 도배 인건비',
-          status: '중복',
-          description: '도배 인건비가 중복되어 있어요.',
-          guide: '인건비 범위를 구분해 주세요.',
-        },
-      ];
-      const report = {
+      const report: RiskReport = {
         ...MOCK_REPORT,
-        process_sections: [{ process: '철거', display_name: '철거 공사', items }],
+        process_sections: [
+          {
+            process: '도배',
+            display_name: '도배 공사',
+            items: [
+              {
+                title: '비공개 전체 항목: 도배 인건비',
+                status: '중복',
+                description: '도배 인건비가 중복되어 있어요.',
+                guide: '인건비 범위를 구분해 주세요.',
+              },
+            ],
+          },
+          {
+            process: '철거',
+            display_name: '철거 공사',
+            items: [
+              {
+                title: '폐기물 처리 비용 확인',
+                status: '누락',
+                description: '철거 항목에 폐기물 처리비가 없어요.',
+                guide: '운반과 처리 비용이 포함되어 있나요?',
+              },
+            ],
+          },
+        ],
         summary: { total_risk_items: 2, chips: { 누락: 1, 중복: 1, 불분명: 0 } },
       };
       const estimateInput: EstimateGenerateRequest = kind === 'estimate' ? JSON.parse(raw) : MOCK_ESTIMATE_INPUT;
-      const result = {
+      const result: EstimateGenerateResponse = {
         ...MOCK_ESTIMATE_RESULT,
         선택_공종: estimateInput.공종,
         공종별_단가_범위: Object.fromEntries(
-          estimateInput.공종.map((name) => [name, { 최소: 1000000, 중간: 1500000, 최대: 2000000 }])
+          estimateInput.공종.map((name, index) => [
+            name,
+            index === 0
+              ? { 최소: 1000000, 중간: 1500000, 최대: 2000000 }
+              : { 최소: 3100000, 중간: 3500000, 최대: 3900000 },
+          ])
+        ),
+        공종별_항목_명세: Object.fromEntries(
+          estimateInput.공종.map((name, index) => [
+            name,
+            index === 0
+              ? [
+                  {
+                    description: '실크 벽지 시공',
+                    amount_range: { 최소: 600000, 중간: 800000, 최대: 1000000 },
+                    등장_사례_수: 7,
+                  },
+                  {
+                    description: '초배지',
+                    amount_range: { 최소: 400000, 중간: 500000, 최대: 600000 },
+                    등장_사례_수: 3,
+                  },
+                ]
+              : [
+                  {
+                    description: `비공개 전체 항목: ${name} 세부`,
+                    amount_range: { 최소: 3100000, 중간: 3500000, 최대: 3900000 },
+                    등장_사례_수: 0,
+                  },
+                ],
+          ])
         ),
       };
       const preview =
         kind === 'analysis'
-          ? {
-              kind,
-              expiresAt,
-              totalItems: 2,
-              counts: { 누락: 1, 중복: 1, 불분명: 0 },
-              firstItem: { process: '철거 공사', ...items[0] },
-            }
-          : {
-              kind,
-              expiresAt,
-              totalProcesses: estimateInput.공종.length,
-              firstProcess: { name: estimateInput.공종[0], min: 1000000, max: 2000000 },
-            };
+          ? projectAnalysisPreview(report, expiresAt)
+          : projectEstimatePreview(estimateInput, result, expiresAt);
       const full =
         kind === 'analysis' ? { input: MOCK_RISKS[0].input, result: { report } } : { input: estimateInput, result };
       trialResults.set(trialKey, { preview, full });

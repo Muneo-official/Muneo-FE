@@ -2,12 +2,15 @@
 
 import { Button } from '@muneo/design-system';
 import Link from 'next/link';
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { saveEstimate } from '@/api/estimate';
 import { type FullEstimateTrial } from '@/api/trial';
-import * as styles from '@/app/(landing)/try/_components/TrialLayout.css';
 import { useUser } from '@/app/(main)/_components/UserProvider/UserProvider';
+import { unlockReveal } from '@/components/Locked/Locked.css';
+import { TrialUnlockedNotice } from '@/components/TrialUnlockedNotice';
+import { EstimateDisclaimer } from '../_components/EstimateDisclaimer/EstimateDisclaimer';
 import { EstimateResultView } from '../_components/EstimateResultView/EstimateResultView';
+import { useEstimateStore } from '../_store/estimateStore';
 
 export const TrialEstimateReport = ({ trial }: { trial: FullEstimateTrial }) => {
   const user = useUser();
@@ -15,6 +18,12 @@ export const TrialEstimateReport = ({ trial }: { trial: FullEstimateTrial }) => 
   const [busy, setBusy] = useState(false);
   const [saved, setSaved] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  // 체험 입력이 같은 스토어에 4단계로 남아 있으면 /estimate 진입 시 가견적을 다시 생성하므로 비운다.
+  useEffect(() => {
+    useEstimateStore.getState().reset();
+  }, []);
+
   const save = async () => {
     if (saving.current || saved) {
       return;
@@ -32,37 +41,32 @@ export const TrialEstimateReport = ({ trial }: { trial: FullEstimateTrial }) => 
       setBusy(false);
     }
   };
+
   return (
-    <EstimateResultView
-      input={trial.input}
-      result={trial.result}
-      actions={
-        <div>
-          <p className={styles.small}>
-            현장 상태에 따라 금액이 달라질 수 있어요. 최종 공사 범위와 부가세 포함 여부는 업체와 확인해 주세요.
-          </p>
-          {error && (
-            <p role="alert" className={styles.error}>
-              {error}
-            </p>
-          )}
-          <div className={styles.actions}>
-            {saved ? (
-              <>
-                <p role="status">분석 이력에 저장했어요.</p>
-                <Button as={Link} href="/history" variant="primary">
+    <>
+      <TrialUnlockedNotice />
+      <div className={unlockReveal} style={{ width: '100%' }}>
+        <EstimateResultView
+          input={trial.input}
+          result={trial.result}
+          actions={
+            <EstimateDisclaimer error={error} notice={saved ? <p role="status">분석 이력에 저장했어요.</p> : null}>
+              <Button as={Link} href="/estimate" variant="outlineSecondary" size="md">
+                새 가견적 만들기
+              </Button>
+              {saved ? (
+                <Button as={Link} href="/history" variant="primary" size="md">
                   저장한 결과 보기
                 </Button>
-              </>
-            ) : (
-              <Button onClick={save} disabled={busy} variant="primary">
-                {busy ? '저장 중…' : '내 분석 이력에 저장'}
-              </Button>
-            )}
-            <Link href="/estimate">새 가견적 만들기</Link>
-          </div>
-        </div>
-      }
-    />
+              ) : (
+                <Button onClick={save} disabled={busy} variant="primary" size="md">
+                  {busy ? '저장 중…' : '내 분석 이력에 저장'}
+                </Button>
+              )}
+            </EstimateDisclaimer>
+          }
+        />
+      </div>
+    </>
   );
 };

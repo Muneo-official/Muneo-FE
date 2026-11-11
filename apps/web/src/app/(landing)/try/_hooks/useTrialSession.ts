@@ -1,7 +1,7 @@
 'use client';
 
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { getTrialPreview, type TrialKind, type TrialPreview } from '@/api/trial';
+import { getTrialPreview, isTrialPreview, type TrialKind, type TrialPreview } from '@/api/trial';
 
 export const useTrialSession = (kind: TrialKind) => {
   const [preview, setPreview] = useState<TrialPreview | null>(null);
@@ -18,7 +18,8 @@ export const useTrialSession = (kind: TrialKind) => {
     bootstrap.current = getTrialPreview(kind, AbortSignal.any([abort.signal, AbortSignal.timeout(10000)]))
       .then((saved) => {
         if (!abort.signal.aborted && requestId === sequence.current) {
-          setPreview(saved);
+          // 이전 형식으로 보관된 결과는 그릴 수 없으므로 새로 체험하게 한다.
+          setPreview(isTrialPreview(saved, kind) ? saved : null);
         }
       })
       .catch(() => {
@@ -55,7 +56,7 @@ export const useTrialSession = (kind: TrialKind) => {
         if (abort.signal.aborted || requestId !== sequence.current) {
           return;
         }
-        if (!result || result.kind !== kind) {
+        if (!isTrialPreview(result, kind)) {
           throw new Error('결과를 받지 못했어요. 다시 시도해 주세요.');
         }
         setPreview(result);

@@ -76,3 +76,51 @@ describe('EstimateResultView — 도어 공종', () => {
     expect(screen.queryByText(/금액을 산출하지 못한 항목/)).not.toBeInTheDocument();
   });
 });
+
+describe('EstimateResultView — 비회원 체험 잠금', () => {
+  const lockedResult = () => {
+    const { 총_견적_범위: _total, 참고_사례: _cases, 검색_쿼리: _query, ...rest } = buildResult();
+    return {
+      ...rest,
+      공종별_단가_범위: { 도배: rest.공종별_단가_범위.도배 },
+      공종별_항목_명세: {
+        도배: [
+          {
+            description: '실크 벽지 시공',
+            amount_range: { 최소: 600_000, 중간: 800_000, 최대: 1_000_000 },
+            등장_사례_수: 7,
+          },
+        ],
+      },
+    };
+  };
+  const lock = {
+    loginHref: '/login?next=%2Festimate%2Ftrial',
+    lockedProcesses: [
+      { name: '창호', itemCount: 2, priced: true },
+      { name: '도어', itemCount: 1, priced: true },
+    ],
+  };
+
+  it('대표 공정은 세부 항목까지 보여주고 나머지 공정과 총액은 잠근다', () => {
+    render(<EstimateResultView input={INPUT} result={lockedResult()} lock={lock} />);
+
+    expect(screen.getByText('실크 벽지 시공')).toBeInTheDocument();
+    expect(screen.getAllByText('267만원 ~ 453만원').length).toBeGreaterThan(0);
+    expect(screen.getByRole('link', { name: '로그인하고 창호 세부 견적 보기' })).toHaveAttribute(
+      'href',
+      lock.loginHref
+    );
+    expect(screen.getByRole('link', { name: '로그인하고 도어 세부 견적 보기' })).toBeInTheDocument();
+    // 총 견적 배너·보정 후 합계·잠긴 공정 2개(아코디언, 합산 표) 자리
+    expect(screen.getAllByText('로그인 후 확인할 수 있어요')).toHaveLength(6);
+    expect(screen.queryByText('292만원 ~ 525만원')).not.toBeInTheDocument();
+  });
+
+  it('잠긴 공정도 공정별 합산 표에 선택 순서대로 자리를 차지한다', () => {
+    render(<EstimateResultView input={INPUT} result={lockedResult()} lock={lock} />);
+
+    expect(screen.getByText('창호')).toBeInTheDocument();
+    expect(screen.getByText('도어')).toBeInTheDocument();
+  });
+});

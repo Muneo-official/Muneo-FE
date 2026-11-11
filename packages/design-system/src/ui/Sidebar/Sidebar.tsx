@@ -43,6 +43,8 @@ export interface SidebarProps {
   onItemHover?: (id: SidebarNavId) => void;
   onLogout?: () => void;
   user?: SidebarUser;
+  /** 로그인하지 않은 상태에서 사용자 카드 자리에 보여줄 내용 (예: 로그인·회원가입 버튼) */
+  accountSlot?: ReactNode;
   className?: string;
 }
 
@@ -60,7 +62,15 @@ const NAV_ITEMS: NavItemDef[] = [
   { id: 'profile', label: '내 정보', icon: <SettingFillIcon /> },
 ];
 
-export const Sidebar = ({ activeItem, onItemClick, onItemHover, onLogout, user, className }: SidebarProps) => {
+export const Sidebar = ({
+  activeItem,
+  onItemClick,
+  onItemHover,
+  onLogout,
+  user,
+  accountSlot,
+  className,
+}: SidebarProps) => {
   const [menuOpen, setMenuOpen] = useState(false);
   const panelId = useId();
   const toggleRef = useRef<HTMLButtonElement>(null);
@@ -141,6 +151,7 @@ export const Sidebar = ({ activeItem, onItemClick, onItemHover, onLogout, user, 
           </nav>
         </div>
 
+        {!user && accountSlot}
         {user && (
           <div className={userCard}>
             <div className={avatar}>{user.name.trim()[0] ?? user.email[0] ?? '?'}</div>

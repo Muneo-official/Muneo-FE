@@ -2,7 +2,9 @@
 
 import { CaretDownSmIcon } from '@muneo/design-system';
 import { type ReactNode, useState } from 'react';
-import { type EstimateGenerateRequest, type EstimateGenerateResponse, type EstimateLineItem } from '@/api/estimate';
+import { type EstimateGenerateRequest, type EstimateLineItem, type EstimateResultData } from '@/api/estimate';
+import { type EstimateLockedProcess } from '@/api/trial';
+import { LockedArea, LockedValue } from '@/components/Locked/Locked';
 import * as styles from '../Step5EstimateReview/Step5EstimateReview.css';
 
 const formatWon = (amount: number): string => {
@@ -13,6 +15,16 @@ const formatWon = (amount: number): string => {
 const formatRange = (min: number, max: number): string => `${formatWon(min)} ~ ${formatWon(max)}`;
 
 const SELECTION_ONLY_KO = new Set(['전기/조명', '목공', '도장', '마감/공과잡비', '창호', '도어', '필름', '가구']);
+
+/** 잠긴 금액 자리에 흐리게 깔 가짜 값. 실제 금액과 무관하다. */
+const LOCKED_RANGE = '0,000만원 ~ 0,000만원';
+const LOCKED_ROW_NAMES = ['자재 및 시공비', '부자재 및 운반비', '인건비 및 마감'];
+
+/** 비회원 체험 결과처럼 대표 공정만 공개할 때 넘긴다. */
+export interface EstimateResultLock {
+  lockedProcesses: EstimateLockedProcess[];
+  loginHref: string;
+}
 
 // ─────────── 아코디언 아이템 ───────────
 
@@ -87,15 +99,66 @@ const AccordionItem = ({ estimate }: { estimate: ProcessEstimateDisplay }) => {
   );
 };
 
+const LockedAccordionItem = ({ process, loginHref }: { process: EstimateLockedProcess; loginHref: string }) => {
+  const [isOpen, setIsOpen] = useState(true);
+  const rowCount = Math.min(Math.max(process.itemCount, 1), LOCKED_ROW_NAMES.length);
+
+  return (
+    <div className={styles.accordionItemWrapper}>
+      <button
+        type="button"
+        className={styles.accordionHeader}
+        onClick={() => setIsOpen((prev) => !prev)}
+        aria-expanded={isOpen}
+      >
+        <div className={styles.accordionHeaderLeft}>
+          <span className={`${styles.accordionArrow}${isOpen ? ` ${styles.accordionArrowOpen}` : ''}`}>
+            <CaretDownSmIcon width={24} height={24} />
+          </span>
+          <span className={styles.accordionTitle}>{process.name} 공사</span>
+        </div>
+        <LockedValue placeholder={LOCKED_RANGE} className={styles.accordionAmount} />
+      </button>
+
+      <div className={`${styles.accordionBody}${isOpen ? ` ${styles.accordionBodyOpen}` : ''}`} inert={!isOpen}>
+        <LockedArea href={loginHref} label={`로그인하고 ${process.name} 세부 견적 보기`}>
+          <div className={styles.accordionContent}>
+            <div className={styles.accordionTableHeader}>
+              <span>항목</span>
+              <span>예상 범위</span>
+              <span>참조</span>
+            </div>
+            <div className={styles.accordionDivider} />
+            {LOCKED_ROW_NAMES.slice(0, rowCount).map((name) => (
+              <div key={name} className={styles.accordionRow}>
+                <div className={styles.accordionRowContent}>
+                  <span>{name}</span>
+                  <span>{LOCKED_RANGE}</span>
+                  <span className={styles.refCountGreen}>00건</span>
+                </div>
+                <div className={styles.accordionItemDivider} />
+              </div>
+            ))}
+          </div>
+        </LockedArea>
+      </div>
+    </div>
+  );
+};
+
 // ─────────── 총 견적 배너 ───────────
 
-const TotalBanner = ({ result }: { result: EstimateGenerateResponse }) => {
-  const { 최소, 최대 } = result.총_견적_범위;
+const TotalBanner = ({ result }: { result: EstimateResultData }) => {
+  const total = result.총_견적_범위;
   return (
     <div className={styles.totalBanner}>
       <div className={styles.bannerLeft}>
         <span className={styles.bannerSubtitle}>총 예상 견적 범위 (부가세 별도)</span>
-        <span className={styles.bannerAmount}>{formatRange(최소, 최대)}</span>
+        {total ? (
+          <span className={styles.bannerAmount}>{formatRange(total.최소, total.최대)}</span>
+        ) : (
+          <LockedValue placeholder={LOCKED_RANGE} className={styles.bannerAmount} />
+        )}
       </div>
       {result.참고_사례_수 > 0 && <span className={styles.bannerRef}>{result.참고_사례_수}건 참고</span>}
     </div>
@@ -104,12 +167,18 @@ const TotalBanner = ({ result }: { result: EstimateGenerateResponse }) => {
 
 // ─────────── 공정별 합산 테이블 ───────────
 
-const ProcessTotalTable = ({ result }: { result: EstimateGenerateResponse }) => {
-  const rows = Object.entries(result.공종별_단가_범위).map(([processName, range]) => ({
-    name: processName,
-    range: formatRange(range.최소, range.최대),
-  }));
-  const { 최소, 최대 } = result.총_견적_범위;
+const ProcessTotalTable = ({ result, lock }: { result: EstimateResultData; lock?: EstimateResultLock }) => {
+  const ranges = result.공종별_단가_범위;
+  // 잠금 모드에서는 공개된 공정만 금액이 오므로, 선택 순서대로 잠긴 공정 자리도 함께 그린다.
+  const rows = lock
+    ? result.선택_공종
+        .filter((name) => ranges[name] || lock.lockedProcesses.some((p) => p.name === name && p.priced))
+        .map((name) => ({ name, range: ranges[name] ? formatRange(ranges[name].최소, ranges[name].최대) : null }))
+    : Object.entries(ranges).map(([processName, range]) => ({
+        name: processName,
+        range: formatRange(range.최소, range.최대),
+      }));
+  const total = result.총_견적_범위;
 
   return (
     <div className={styles.processTotal}>
@@ -124,7 +193,7 @@ const ProcessTotalTable = ({ result }: { result: EstimateGenerateResponse }) => 
             <div key={row.name} className={styles.tableRow}>
               <div className={styles.tableRowContent}>
                 <span>{row.name}</span>
-                <span>{row.range}</span>
+                {row.range ? <span>{row.range}</span> : <LockedValue placeholder={LOCKED_RANGE} />}
               </div>
               <div className={styles.tableDivider} />
             </div>
@@ -134,7 +203,11 @@ const ProcessTotalTable = ({ result }: { result: EstimateGenerateResponse }) => 
           <div className={styles.totalDivider} />
           <div className={styles.totalContent}>
             <span className={styles.totalLabel}>보정 후 합계</span>
-            <span className={styles.totalValue}>{formatRange(최소, 최대)}</span>
+            {total ? (
+              <span className={styles.totalValue}>{formatRange(total.최소, total.최대)}</span>
+            ) : (
+              <LockedValue placeholder={LOCKED_RANGE} className={styles.totalValue} />
+            )}
           </div>
         </div>
       </div>
@@ -157,7 +230,8 @@ interface SummaryPanelProps {
   modeLabel: string;
   processCount: number;
   corrections: string[];
-  result: EstimateGenerateResponse;
+  result: EstimateResultData;
+  lock?: EstimateResultLock;
   onEdit?: () => void;
 }
 
@@ -175,6 +249,7 @@ const SummaryPanel = ({
   processCount,
   corrections,
   result,
+  lock,
   onEdit,
 }: SummaryPanelProps) => {
   const rows = [
@@ -219,7 +294,7 @@ const SummaryPanel = ({
         </div>
       </div>
 
-      <ProcessTotalTable result={result} />
+      <ProcessTotalTable result={result} lock={lock} />
     </div>
   );
 };
@@ -228,12 +303,14 @@ const SummaryPanel = ({
 
 export interface EstimateResultViewProps {
   input: EstimateGenerateRequest;
-  result: EstimateGenerateResponse;
+  result: EstimateResultData;
+  /** 넘기면 공개된 공정 외의 금액·세부 항목을 잠근다. */
+  lock?: EstimateResultLock;
   onEdit?: () => void;
   actions?: ReactNode;
 }
 
-export const EstimateResultView = ({ input, result, onEdit, actions }: EstimateResultViewProps) => {
+export const EstimateResultView = ({ input, result, lock, onEdit, actions }: EstimateResultViewProps) => {
   const regionLabel = input.지역 || '-';
   const spaceLabel = input.공간유형 || '-';
   const areaLabel = input.평수 ? `${input.평수}평` : '-';
@@ -279,6 +356,7 @@ export const EstimateResultView = ({ input, result, onEdit, actions }: EstimateR
           processCount={processCount}
           corrections={result.보정_적용}
           result={result}
+          lock={lock}
           onEdit={onEdit}
         />
 
@@ -305,9 +383,14 @@ export const EstimateResultView = ({ input, result, onEdit, actions }: EstimateR
           <div className={styles.detailSection}>
             <span className={styles.detailTitle}>공정별 세부 견적</span>
             <div className={styles.accordionList}>
-              {accordionItems.map((estimate) => (
-                <AccordionItem key={estimate.processName} estimate={estimate} />
-              ))}
+              {accordionItems.map((estimate) => {
+                const locked = lock?.lockedProcesses.find((p) => p.name === estimate.processName);
+                return locked && lock ? (
+                  <LockedAccordionItem key={estimate.processName} process={locked} loginHref={lock.loginHref} />
+                ) : (
+                  <AccordionItem key={estimate.processName} estimate={estimate} />
+                );
+              })}
             </div>
           </div>
 

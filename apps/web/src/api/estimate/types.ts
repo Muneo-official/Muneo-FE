@@ -44,7 +44,7 @@ export interface EstimateGenerateRequest {
   주방?: KitchenSubRequest;
 }
 
-interface AmountRange {
+export interface AmountRange {
   최소: number;
   중간: number;
   최대: number;
@@ -76,6 +76,17 @@ export interface EstimateGenerateResponse {
   검색_쿼리: string;
   데이터_부족_공종?: string[] | null;
 }
+
+/**
+ * 결과 화면이 그리는 데 필요한 필드. 비회원 체험 결과는 대표 공정만 담겨 있고 총 견적 범위가 없다.
+ */
+export type EstimateResultData = Pick<
+  EstimateGenerateResponse,
+  '공종별_단가_범위' | '공종별_항목_명세' | '보정_적용' | '선택_공종' | '참고_사례_수' | '데이터_부족_공종'
+> & {
+  총_견적_범위?: AmountRange;
+  시공범위?: string;
+};
 
 export interface EstimateSaveRequest {
   input: EstimateGenerateRequest;

@@ -2,12 +2,22 @@
 
 import { Button } from '@muneo/design-system';
 import { useState } from 'react';
+import { LockedArea } from '@/components/Locked/Locked';
 import { buildInsights } from '../../_lib/buildInsights';
 import { type DiagnosisResult } from '../../_types/analysis.types';
 import * as styles from './DiagnosisInsights.css';
 
-export const DiagnosisInsights = ({ result }: { result: DiagnosisResult }) => {
-  const { total, priorities, questions } = buildInsights(result);
+interface DiagnosisInsightsLock {
+  /** 잠긴 공정에 있는 확인 항목 수 */
+  hiddenCount: number;
+  loginHref: string;
+}
+
+export const DiagnosisInsights = ({ result, lock }: { result: DiagnosisResult; lock?: DiagnosisInsightsLock }) => {
+  const insights = buildInsights(result);
+  const { priorities, questions } = insights;
+  const hiddenCount = lock?.hiddenCount ?? 0;
+  const total = insights.total + hiddenCount;
   const [copyStatus, setCopyStatus] = useState('');
   const [showCopyText, setShowCopyText] = useState(false);
 
@@ -27,7 +37,7 @@ export const DiagnosisInsights = ({ result }: { result: DiagnosisResult }) => {
     <section className={styles.card} aria-label="종합 인사이트">
       <div className={styles.header}>
         <span className={styles.eyebrow}>종합 인사이트 · 계약 전 확인 순서</span>
-        {total > 0 && (
+        {insights.total > 0 && (
           <Button variant="outlineSecondary" onClick={copyQuestions}>
             업체에 보낼 질문 복사
           </Button>
@@ -41,7 +51,7 @@ export const DiagnosisInsights = ({ result }: { result: DiagnosisResult }) => {
           ? '누락 → 불분명 → 중복 순으로 먼저 살펴볼 항목이에요. 실제 문제인지는 업체의 설명과 견적서로 확인해 주세요.'
           : '모든 문제가 없다는 보장은 아니에요. 공사 범위·자재 규격·추가 비용 조건을 최종 견적서와 대조해 주세요.'}
       </p>
-      {priorities.length > 0 && (
+      {(priorities.length > 0 || hiddenCount > 0) && (
         <ol className={styles.list}>
           {priorities.map((item, index) => (
             <li key={item.id} className={styles.item}>
@@ -64,6 +74,17 @@ export const DiagnosisInsights = ({ result }: { result: DiagnosisResult }) => {
               </a>
             </li>
           ))}
+          {lock && hiddenCount > 0 && (
+            <li>
+              <LockedArea href={lock.loginHref} label={`로그인하고 나머지 ${hiddenCount}개 확인 항목 보기`}>
+                <div className={styles.item}>
+                  <span className={styles.eyebrow}>{priorities.length + 1}. 다른 공정 · 확인 필요</span>
+                  <h3 className={styles.itemTitle}>업체와 확인할 다른 항목</h3>
+                  <p className={styles.description}>이 항목의 범위와 금액을 업체에 확인해 주세요.</p>
+                </div>
+              </LockedArea>
+            </li>
+          )}
         </ol>
       )}
       <p className={styles.description}>

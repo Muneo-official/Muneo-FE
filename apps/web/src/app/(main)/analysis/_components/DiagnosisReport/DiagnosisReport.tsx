@@ -1,20 +1,19 @@
 'use client';
 
-import { Button, CircleWarningIcon, StatusCard, TriangleWarningIcon } from '@muneo/design-system';
+import { Button } from '@muneo/design-system';
 import { useRouter } from 'next/navigation';
 import { useRef, useState } from 'react';
 import { saveRisk } from '@/api/analyze';
 import { type FullAnalysisTrial } from '@/api/trial';
 import { useUser } from '@/app/(main)/_components/UserProvider/UserProvider';
 import { TransitionLink } from '@/components/TransitionLink';
+import { DiagnosisReportView } from './DiagnosisReportView';
 import { mapApiReportToDiagnosisResult } from '../../_lib/mapApiReport';
 import { useAnalysisStore } from '../../_store/analysisStore';
 import { DiagnosisFeedback } from '../DiagnosisFeedback/DiagnosisFeedback';
-import { DiagnosisInsights } from '../DiagnosisInsights/DiagnosisInsights';
-import { ProcessSection } from '../ProcessSection/ProcessSection';
 import * as styles from './DiagnosisReport.css';
 
-export const DiagnosisReport = ({ trial }: { trial?: FullAnalysisTrial }) => {
+export const DiagnosisReport = ({ trial, className }: { trial?: FullAnalysisTrial; className?: string }) => {
   const resetStore = useAnalysisStore((s) => s.reset);
   const storedResult = useAnalysisStore((s) => s.diagnosisResult);
   const storedReport = useAnalysisStore((s) => s.rawReport);
@@ -62,48 +61,7 @@ export const DiagnosisReport = ({ trial }: { trial?: FullAnalysisTrial }) => {
   };
 
   return (
-    <div className={styles.container}>
-      <div className={styles.reportHeader}>
-        <div className={styles.headerLeft}>
-          <h1 className={styles.reportTitle}>진단 레포트</h1>
-          <span className={styles.reportMeta}>
-            {result.vendorLabel} · {result.areaLabel} · 분석일 {result.analyzedAt}
-          </span>
-        </div>
-      </div>
-
-      <div className={styles.summaryCards}>
-        <StatusCard
-          variant="danger"
-          icon={<TriangleWarningIcon width={24} height={24} />}
-          label="누락항목"
-          value={`${result.missingCount}건`}
-          className={styles.summaryCard}
-        />
-        <StatusCard
-          variant="warning"
-          icon={<CircleWarningIcon width={24} height={24} />}
-          label="불분명 항목"
-          value={`${result.riskCount}건`}
-          className={styles.summaryCard}
-        />
-        <StatusCard
-          variant="info"
-          icon={<CircleWarningIcon width={24} height={24} />}
-          label="중복 항목"
-          value={`${result.insufficientCount}건`}
-          className={styles.summaryCard}
-        />
-      </div>
-
-      <DiagnosisInsights result={result} />
-
-      <div className={styles.sections}>
-        {result.sections.map((section) => (
-          <ProcessSection key={section.id} section={section} />
-        ))}
-      </div>
-
+    <DiagnosisReportView result={result} className={className}>
       <DiagnosisFeedback key={result.analyzedAt} reportId={savedReportId} />
 
       {saveErrorMsg && (
@@ -132,6 +90,6 @@ export const DiagnosisReport = ({ trial }: { trial?: FullAnalysisTrial }) => {
           </Button>
         )}
       </div>
-    </div>
+    </DiagnosisReportView>
   );
 };

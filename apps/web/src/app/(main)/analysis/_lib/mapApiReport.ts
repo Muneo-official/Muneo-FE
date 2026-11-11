@@ -1,7 +1,9 @@
 import { type RiskReport } from '@/api/analyze';
 import { type DiagnosisResult } from '../_types/analysis.types';
 
-export const mapApiReportToDiagnosisResult = (report: RiskReport, fallbackDate?: string): DiagnosisResult => {
+type ReportForView = Pick<RiskReport, 'process_sections' | 'subtitle_fields' | 'construction_info'>;
+
+export const mapApiReportToDiagnosisResult = (report: ReportForView, fallbackDate?: string): DiagnosisResult => {
   const sections = report.process_sections.map((s, si) => ({
     id: s.id ?? String(si),
     name: s.display_name,

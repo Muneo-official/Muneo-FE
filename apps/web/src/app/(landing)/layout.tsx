@@ -1,16 +1,12 @@
 import { type ReactNode } from 'react';
-import { Footer } from './_components/Footer/Footer';
-import { Header } from './_components/Header/Header';
-import * as styles from './layout.css';
 
+// 랜딩(헤더·푸터)과 비회원 체험(사이드바)이 각자 레이아웃을 갖고, 로그인 모달 슬롯만 함께 쓴다.
 const LandingLayout = ({ children, modal }: { children: ReactNode; modal: ReactNode }) => {
   return (
-    <div className={styles.page}>
-      <Header />
+    <>
       {children}
-      <Footer />
       {modal}
-    </div>
+    </>
   );
 };
 
